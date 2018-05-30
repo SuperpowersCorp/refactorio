@@ -1,3 +1,5 @@
 # refactorio
 
-add description of refactorio here
+Lens based Haskell refactoring toolkit.
+
+

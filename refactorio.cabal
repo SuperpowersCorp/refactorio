@@ -1,13 +1,13 @@
 name:                refactorio
 version:             0.1.0.0
--- synopsis:
--- description:
-homepage:            https://github.com/githubuser/refactorio#readme
+synopsis:            Lens-based refactoring toolkit.
+description:         The synopsis pretty much covers it.
+homepage:            https://github.com/SuperpowersCorp/refactorio#readme
 license:             BSD3
 license-file:        LICENSE
-author:              Author name here
-maintainer:          example@example.com
-copyright:           2018 Author name here
+author:              Superpowers Corp
+maintainer:          ops@superpowerscorp.com
+copyright:           2018 Superpowers Corp
 category:            Web
 build-type:          Simple
 extra-source-files:  README.md
@@ -16,34 +16,40 @@ cabal-version:       >=1.10
 library
   hs-source-dirs:      src
   ghc-options:         -Wall
-  exposed-modules:     Lib
-  other-modules:       Lib.Prelude
+  exposed-modules:     Refactorio.Main
+                     , Refactorio.Prelude
   build-depends:       base >= 4.7 && < 5
-                     , protolude >= 0.1.6 && < 0.2
+                     , brick
+                     , haskell-src-exts
+                     , optparse-applicative
+                     , protolude
+                     , streaming
+                     , vty
   default-language:    Haskell2010
-  default-extensions:  OverloadedStrings, NoImplicitPrelude
 
-executable refactorio-exe
+executable refactorio
   hs-source-dirs:      app
   main-is:             Main.hs
   ghc-options:         -Wall -threaded -rtsopts -with-rtsopts=-N
   build-depends:       base
+                     , protolude
                      , refactorio
-                     , protolude >= 0.1.6 && < 0.2
+                     , vty
   default-language:    Haskell2010
-  default-extensions:  OverloadedStrings, NoImplicitPrelude
 
 test-suite refactorio-test
   type:                exitcode-stdio-1.0
   hs-source-dirs:      test
   main-is:             Spec.hs
-  build-depends:       base
+  build-depends:       QuickCheck
+                     , base
+                     , protolude
+                     , hspec
                      , refactorio
-                     , protolude >= 0.1.6 && < 0.2
+                     , vty
   ghc-options:         -Wall -threaded -rtsopts -with-rtsopts=-N
   default-language:    Haskell2010
-  default-extensions:  OverloadedStrings, NoImplicitPrelude
 
 source-repository head
   type:     git
-  location: https://github.com/githubuser/refactorio
+  location: https://github.com/SuperpowersCorp/refactorio

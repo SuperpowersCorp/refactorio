@@ -1,7 +1,3 @@
-module Main where
+module Main ( main ) where
 
-import Protolude
-import Lib
-
-main :: IO ()
-main = someFunc
+import Refactorio.Main ( main )
