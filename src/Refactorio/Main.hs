@@ -1,4 +1,5 @@
 {-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module Refactorio.Main
      ( main
@@ -18,7 +19,8 @@ data RefName = RefName
   deriving (Eq, Ord, Read, Show)
 
 data RefState = RefState
-  { rootDirectory :: FilePath
+  { rootDirectory    :: FilePath
+  , currentLensInput :: Text
   } deriving (Eq, Ord, Read, Show)
 
 main :: IO ()
@@ -32,6 +34,7 @@ main = void $ execParser opts >>= defaultMain app
             ( metavar "PROJECT_ROOT"
            <> value "."
             )
+      <*> pure ""
 
     app :: App RefState RefName RefEvent
     app = App
@@ -46,7 +49,9 @@ main = void $ execParser opts >>= defaultMain app
     attrMap' = const $ attrMap V.defAttr []
 
     appDraw' :: RefState -> [Widget RefEvent]
-    appDraw' st = [ B.str $ "UI SOON (dir: " <> rootDirectory st <> ")" ]
+    appDraw' st = [ B.str ("UI SOON (dir: " <> rootDirectory st <> ")")
+                <=> B.str ("input: " <> show (currentLensInput st))
+                  ]
 
     chooseCursor' :: RefState
                   -> [CursorLocation RefEvent]

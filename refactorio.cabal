@@ -21,9 +21,12 @@ library
   build-depends:       base >= 4.7 && < 5
                      , brick
                      , haskell-src-exts
+                     , haskell-src-exts-prisms
+                     , lens
                      , optparse-applicative
                      , protolude
                      , streaming
+                     , text
                      , vty
   default-language:    Haskell2010
 
@@ -32,8 +35,10 @@ executable refactorio
   main-is:             Main.hs
   ghc-options:         -Wall -threaded -rtsopts -with-rtsopts=-N
   build-depends:       base
+                     , lens
                      , protolude
                      , refactorio
+                     , text
                      , vty
   default-language:    Haskell2010
 
@@ -43,9 +48,11 @@ test-suite refactorio-test
   main-is:             Spec.hs
   build-depends:       QuickCheck
                      , base
-                     , protolude
                      , hspec
+                     , lens
+                     , protolude
                      , refactorio
+                     , text
                      , vty
   ghc-options:         -Wall -threaded -rtsopts -with-rtsopts=-N
   default-language:    Haskell2010
