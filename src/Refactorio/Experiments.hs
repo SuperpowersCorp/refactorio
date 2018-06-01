@@ -20,13 +20,6 @@ import Language.Haskell.Exts.Prisms
 srcInfoSpanL :: Lens' SrcSpanInfo SrcSpan
 srcInfoSpanL = lens srcInfoSpan $ \ssi sis -> ssi { srcInfoSpan = sis }
 
-godHelpMe :: Lens' a [a]
-godHelpMe = lens pure setErf
-  where
-    setErf :: a -> [a] -> a
-    setErf _ []    = panic "can't godHelpMe an empty list"
-    setErf _ (x:_) = x
-
 type Experiment = IO ()
 
 experiments :: [Experiment]
@@ -83,13 +76,19 @@ exampleLens = _Module
   . srcInfoSpanL
   . godHelpMe
 
+godHelpMe :: Lens' a [a]
+godHelpMe = lens pure setErf
+  where
+    setErf :: a -> [a] -> a
+    setErf _ []    = panic "can't godHelpMe an empty list"
+    setErf _ (x:_) = x
+
 findMatches :: ATraversal' (Module SrcSpanInfo) [SrcSpan] -> FilePath -> IO [SrcSpan]
 findMatches trav path = do
   sourceString <- unpack <$> readFile path
   case parseFileContentsWithMode parseMode sourceString of
     ParseFailed srcLoc' err -> panic $ "ERROR at " <> show srcLoc' <> ": " <> show err
-    ParseOk parsedMod -> return . join $ toListOf (cloneTraversal trav) parsedMod
-      --return $ parsedMod ^# optic
+    ParseOk parsedMod       -> return . join $ toListOf (cloneTraversal trav) parsedMod
   where
     parseMode = defaultParseMode
       { baseLanguage          = Haskell2010

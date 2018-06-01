@@ -8,6 +8,11 @@ module Refactorio.Main
 import           Refactorio.Prelude
 
 import           Brick                    hiding ( str )
+import           Brick.Widgets.Border            ( border
+                                                 , borderWithLabel
+                                                 )
+import           Brick.Widgets.Border.Style      ( unicode )
+import           Brick.Widgets.Center            ( center )
 import qualified Brick               as B
 import           Options.Applicative
 import qualified Graphics.Vty        as V
@@ -49,8 +54,12 @@ main = void $ execParser opts >>= defaultMain app
     attrMap' = const $ attrMap V.defAttr []
 
     appDraw' :: RefState -> [Widget RefEvent]
-    appDraw' st = [ B.str ("UI SOON (dir: " <> rootDirectory st <> ")")
-                <=> B.str ("input: " <> show (currentLensInput st))
+    appDraw' st = [ withBorderStyle unicode
+                    $ borderWithLabel (B.str "-==<] Refactorio [>==-")
+                    $ center
+                    $ border
+                    $ B.str ("UI SOON (dir: " <> rootDirectory st <> ")")
+                  <=> B.str ("input: " <> show (currentLensInput st))
                   ]
 
     chooseCursor' :: RefState
