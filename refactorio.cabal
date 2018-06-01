@@ -20,11 +20,13 @@ library
                      , Refactorio.Prelude
   build-depends:       base >= 4.7 && < 5
                      , brick
+                     , bytestring
                      , haskell-src-exts
                      , haskell-src-exts-prisms
                      , lens
                      , optparse-applicative
                      , protolude
+                     , rainbow
                      , streaming
                      , text
                      , vty
@@ -35,6 +37,7 @@ executable refactorio
   main-is:             Main.hs
   ghc-options:         -Wall -threaded -rtsopts -with-rtsopts=-N
   build-depends:       base
+                     , bytestring
                      , lens
                      , protolude
                      , refactorio
@@ -48,6 +51,7 @@ test-suite refactorio-test
   main-is:             Spec.hs
   build-depends:       QuickCheck
                      , base
+                     , bytestring
                      , hspec
                      , lens
                      , protolude

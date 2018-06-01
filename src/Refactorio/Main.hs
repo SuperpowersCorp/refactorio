@@ -7,15 +7,15 @@ module Refactorio.Main
 
 import           Refactorio.Prelude
 
-import           Brick                    hiding ( str )
-import           Brick.Widgets.Border            ( border
-                                                 , borderWithLabel
-                                                 )
-import           Brick.Widgets.Border.Style      ( unicode )
-import           Brick.Widgets.Center            ( center )
-import qualified Brick               as B
+import           Brick                           hiding ( str )
+import qualified Brick                      as B
+import           Brick.Widgets.Border                   ( border
+                                                        , borderWithLabel
+                                                        )
+import           Brick.Widgets.Border.Style             ( unicode )
+import           Brick.Widgets.Center                   ( center )
+import qualified Graphics.Vty               as V
 import           Options.Applicative
-import qualified Graphics.Vty        as V
 
 data RefEvent = RefEvent
   deriving (Eq, Ord, Read, Show)
