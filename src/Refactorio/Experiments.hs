@@ -1,14 +1,12 @@
 {-# LANGUAGE LambdaCase          #-}
 {-# LANGUAGE NoImplicitPrelude   #-}
 {-# LANGUAGE OverloadedStrings   #-}
--- {-# LANGUAGE RankNTypes          #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
 module Refactorio.Experiments
      ( experiment1
      , experiment2
      , experiment3
-     , experiment3a
      ) where
 
 import           Refactorio.Prelude                 hiding ( (<>)
@@ -23,22 +21,14 @@ import           Refactorio.Prelude                 hiding ( (<>)
 import           Control.Lens                       hiding ( pre
                                                            , (&)
                                                            )
-import           Control.Monad.Catch.Pure                  ( catch )
+import           Data.List                                 ( isInfixOf
+                                                           , isSuffixOf
+                                                           )
 import           Data.Monoid                               ( (<>) )
 import qualified Data.ByteString              as BS
-import           Data.String                               ( String )
 import qualified Data.Text                    as T
 import           Language.Haskell.Exts
 import           Language.Haskell.Exts.Prisms
-import           Pipes                                     ( Producer'
-                                                           , Proxy
-                                                           , for
-                                                           , runEffect
-                                                           )
-import           Pipes.Safe                                ( runSafeT )
-import           Pipes.Files                               ( find
-                                                           , glob
-                                                           )
 import           Rainbow                                   ( Chunk
                                                            , chunk
                                                            , chunksToByteStrings
@@ -46,7 +36,11 @@ import           Rainbow                                   ( Chunk
                                                            , red
                                                            , toByteStringsColors256
                                                            )
-import qualified Pipes.Prelude as P
+-- import           Streaming
+import qualified Streaming.Prelude            as S
+import           Streaming.Files                           ( FileInfo
+                                                           , tree
+                                                           )
 
 experiment1 :: IO ()
 experiment1 = mapM_ print =<< findMatches moduleNameL examplePath
@@ -59,12 +53,12 @@ experiment2 = mapM_ printPrettily =<< findMatches moduleNameL examplePath
   where
     examplePath = "./src/Refactorio/Experiments.hs"
 
-    printPrettily :: SrcSpan -> IO ()
-    printPrettily span = do
-      -- TODO: obviously don't read the file each time
-      putColorFrom span =<< readFile path
-      where
-        path = srcSpanFilename span
+printPrettily :: SrcSpan -> IO ()
+printPrettily span = do
+  -- TODO: obviously don't read the file each time
+  putColorFrom span =<< readFile path
+    where
+      path = srcSpanFilename span
 
 putColorFrom :: SrcSpan -> Text -> IO ()
 putColorFrom span src = do
@@ -117,22 +111,14 @@ putColorFrom span src = do
 
           lx = fromMaybe (panic "unpossible!") . lastMay $ xs
 
-experiment3 :: IO ()
-experiment3 = void . runSafeT . runEffect
-  $ for (find examplePath (glob "*.hs")) (lift . print)
-    `catch` (\(e :: SomeException) -> liftIO . print $ e)
+experiment3 :: FilePath -> IO ()
+experiment3 = S.mapM_ showMatches
+  . S.filter (not . (".stack-work" `isInfixOf`) . fst)
+  . S.filter ((".hs" `isSuffixOf`) . fst)
+  . tree
   where
-    examplePath = "./src"
-
-experiment3a :: IO ()
-experiment3a = runEffect $ for producer body
-  where
-    producer :: Producer' String IO ()
-    producer = P.stdinLn
-
-    --                      a'   a   b' b   m  r
-    body :: String -> Proxy Void _2 _3 Void IO ()
-    body = lift . print
+    showMatches :: FileInfo -> IO ()
+    showMatches (path, _) = mapM_ printPrettily =<< findMatches moduleNameL path
 
 moduleNameL :: Traversal' (Module SrcSpanInfo) [SrcSpan]
 moduleNameL = _Module

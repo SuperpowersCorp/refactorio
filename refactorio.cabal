@@ -16,23 +16,24 @@ cabal-version:       >=1.10
 library
   hs-source-dirs:      src
   ghc-options:         -Wall
-  exposed-modules:     Refactorio.Main
+  exposed-modules:     Refactorio.Experiments
+                     , Refactorio.Main
                      , Refactorio.Prelude
+                     , Streaming.Files
   build-depends:       base >= 4.7 && < 5
                      , brick
                      , bytestring
+                     , directory
                      , exceptions
                      , haskell-src-exts
                      , haskell-src-exts-prisms
                      , lens
                      , optparse-applicative
-                     , pipes
-                     , pipes-files
-                     , pipes-safe
                      , protolude
                      , rainbow
                      , streaming
                      , text
+                     , unix
                      , vty
   default-language:    Haskell2010
 
@@ -42,13 +43,13 @@ executable refactorio
   ghc-options:         -Wall -threaded -rtsopts -with-rtsopts=-N
   build-depends:       base
                      , bytestring
+                     , directory
                      , exceptions
                      , lens
-                     , pipes
-                     , pipes-safe
                      , protolude
                      , refactorio
                      , text
+                     , unix
                      , vty
   default-language:    Haskell2010
 
@@ -59,14 +60,14 @@ test-suite refactorio-test
   build-depends:       QuickCheck
                      , base
                      , bytestring
+                     , directory
                      , exceptions
                      , hspec
                      , lens
-                     , pipes
-                     , pipes-safe
                      , protolude
                      , refactorio
                      , text
+                     , unix
                      , vty
   ghc-options:         -Wall -threaded -rtsopts -with-rtsopts=-N
   default-language:    Haskell2010
