@@ -152,6 +152,22 @@ searchByLens path s = makeLens s >>= \case
     where
       showMatches t (p, _) = mapM_ printPrettily =<< findMatches t p
 
+-- eg.
+-- _getByLens "." "_Module . biplate . _FieldUpdate . _1 . srcInfoSpanL . unListL"
+
+_getByLens :: FilePath -> Text -> IO [[SrcSpan]]
+_getByLens path s = makeLens s >>= \case
+  Left err -> panic . show $ err
+  Right trav ->
+    fmap S.fst'
+      . S.toList
+      . S.mapM (showMatches trav)
+      . S.filter (\(p, _) -> ".hs" `isSuffixOf` p && not (".stack-work" `isInfixOf` p))
+      . tree
+      $ path
+    where
+      showMatches t (p, _) = findMatches t p
+
 _searchByArbLens :: FilePath -> Text -> IO ()
 _searchByArbLens path s = makeLens s >>= \case
   Left err -> print err
