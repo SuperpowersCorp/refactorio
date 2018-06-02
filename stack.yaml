@@ -3,8 +3,11 @@ resolver: lts-9.21
 packages:
 - .
 
+allow-newer: true
+
 extra-deps:
 - haskell-src-exts-prisms-1.18.2.0
-- lens-4.14
-- primitive-0.6.1.0
-- vector-0.11.0.0
+- hierarchy-0.3.1.4
+- lens-4.15.4
+- pipes-4.3.9
+- pipes-files-0.1.2

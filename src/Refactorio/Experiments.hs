@@ -1,22 +1,44 @@
-{-# LANGUAGE LambdaCase        #-}
-{-# LANGUAGE NoImplicitPrelude #-}
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE RankNTypes        #-}
+{-# LANGUAGE LambdaCase          #-}
+{-# LANGUAGE NoImplicitPrelude   #-}
+{-# LANGUAGE OverloadedStrings   #-}
+-- {-# LANGUAGE RankNTypes          #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 
-module Refactorio.Experiments ( experiments ) where
+module Refactorio.Experiments
+     ( experiment1
+     , experiment2
+     , experiment3
+     , experiment3a
+     ) where
 
 import           Refactorio.Prelude                 hiding ( (<>)
+                                                           , Proxy
+                                                           , catch
+                                                           , finally
+                                                           , find
                                                            , to
+                                                           , for
                                                            )
 
 import           Control.Lens                       hiding ( pre
                                                            , (&)
                                                            )
+import           Control.Monad.Catch.Pure                  ( catch )
 import           Data.Monoid                               ( (<>) )
 import qualified Data.ByteString              as BS
+import           Data.String                               ( String )
 import qualified Data.Text                    as T
 import           Language.Haskell.Exts
 import           Language.Haskell.Exts.Prisms
+import           Pipes                                     ( Producer'
+                                                           , Proxy
+                                                           , for
+                                                           , runEffect
+                                                           )
+import           Pipes.Safe                                ( runSafeT )
+import           Pipes.Files                               ( find
+                                                           , glob
+                                                           )
 import           Rainbow                                   ( Chunk
                                                            , chunk
                                                            , chunksToByteStrings
@@ -24,15 +46,7 @@ import           Rainbow                                   ( Chunk
                                                            , red
                                                            , toByteStringsColors256
                                                            )
-
-type Experiment = IO ()
-
-experiments :: [Experiment]
-experiments =
-  [ experiment1
-  , experiment2
-  , experiment3
-  ]
+import qualified Pipes.Prelude as P
 
 experiment1 :: IO ()
 experiment1 = mapM_ print =<< findMatches moduleNameL examplePath
@@ -103,12 +117,22 @@ putColorFrom span src = do
 
           lx = fromMaybe (panic "unpossible!") . lastMay $ xs
 
--- Same as experiment2 but lets do it on a whole directory
 experiment3 :: IO ()
-experiment3 = putLn "experiment3 not impl"
-  --mapM_ print =<< findMatches exampleLens examplePath
-  -- where
-  --   examplePath = "./src"
+experiment3 = void . runSafeT . runEffect
+  $ for (find examplePath (glob "*.hs")) (lift . print)
+    `catch` (\(e :: SomeException) -> liftIO . print $ e)
+  where
+    examplePath = "./src"
+
+experiment3a :: IO ()
+experiment3a = runEffect $ for producer body
+  where
+    producer :: Producer' String IO ()
+    producer = P.stdinLn
+
+    --                      a'   a   b' b   m  r
+    body :: String -> Proxy Void _2 _3 Void IO ()
+    body = lift . print
 
 moduleNameL :: Traversal' (Module SrcSpanInfo) [SrcSpan]
 moduleNameL = _Module

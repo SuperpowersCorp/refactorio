@@ -21,10 +21,14 @@ library
   build-depends:       base >= 4.7 && < 5
                      , brick
                      , bytestring
+                     , exceptions
                      , haskell-src-exts
                      , haskell-src-exts-prisms
                      , lens
                      , optparse-applicative
+                     , pipes
+                     , pipes-files
+                     , pipes-safe
                      , protolude
                      , rainbow
                      , streaming
@@ -38,7 +42,10 @@ executable refactorio
   ghc-options:         -Wall -threaded -rtsopts -with-rtsopts=-N
   build-depends:       base
                      , bytestring
+                     , exceptions
                      , lens
+                     , pipes
+                     , pipes-safe
                      , protolude
                      , refactorio
                      , text
@@ -52,8 +59,11 @@ test-suite refactorio-test
   build-depends:       QuickCheck
                      , base
                      , bytestring
+                     , exceptions
                      , hspec
                      , lens
+                     , pipes
+                     , pipes-safe
                      , protolude
                      , refactorio
                      , text
