@@ -8,6 +8,9 @@ allow-newer: true
 extra-deps:
 - haskell-src-exts-prisms-1.18.2.0
 - hierarchy-0.3.1.4
+- io-capture-1.0.0
 - lens-4.15.4
+- mueval-0.9.3
 - pipes-4.3.9
 - pipes-files-0.1.2
+- show-0.6

@@ -27,6 +27,7 @@ library
                      , exceptions
                      , haskell-src-exts
                      , haskell-src-exts-prisms
+                     , hint
                      , lens
                      , optparse-applicative
                      , protolude
@@ -45,6 +46,7 @@ executable refactorio
                      , bytestring
                      , directory
                      , exceptions
+                     , hint
                      , lens
                      , protolude
                      , refactorio
@@ -62,6 +64,7 @@ test-suite refactorio-test
                      , bytestring
                      , directory
                      , exceptions
+                     , hint
                      , hspec
                      , lens
                      , protolude
