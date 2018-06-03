@@ -10,6 +10,16 @@ Lens based Haskell refactoring toolkit.
 >
 > - Fred Brooks
 
+## Pro-Tip
+
+For now:
+
+    alias refio="stack exec refactorio --"
+
+and run it from the project root to get an experience something like:
+
+    refio _Module.biplate._ModuleName.end -d ../voltron/src
+
 ## TODOs
 
 - [ ] Replace examples with open source examples
