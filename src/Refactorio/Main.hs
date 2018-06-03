@@ -6,13 +6,11 @@ module Refactorio.Main
      ( main
      ) where
 
-import Refactorio.Prelude  hiding ( (<>)
-                                  , (&)
-                                  )
+import Refactorio.Prelude  hiding ( (<>) )
 
 import Data.Text
 import Options.Applicative
-import Rainbow.Extra
+import Rainbow.Extra       hiding ( (&) )
 import Refactorio.Config
 import Refactorio.Lenses
 import Refactorio.Theme

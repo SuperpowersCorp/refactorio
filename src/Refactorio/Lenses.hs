@@ -14,18 +14,14 @@ import           Control.Lens                       hiding ( (&)
 import qualified Data.List                    as L
 import           Data.Monoid                               ( (<>) )
 import           Data.Text                    as T  hiding ( span )
-import           Language.Haskell.Exts              hiding ( Style
-                                                           , style
-                                                           )
+import           Language.Haskell.Exts              hiding ( Style )
 import           Language.Haskell.Interpreter       hiding ( OverloadedStrings
                                                            , RankNTypes
                                                            )
 import           Rainbow.Extra                      hiding ( (&) )
 import           Refactorio.InterPrelude                   ( srcSpanInfoL )
 import           Refactorio.Theme
-import           Streaming.Files                           ( FileInfo
-                                                           , tree
-                                                           )
+import           Streaming.Files                           ( tree )
 import           Refactorio.Config
 
 searchByLens :: Config -> IO ()
@@ -40,7 +36,6 @@ searchByLens Config {..} = makeLens lensText >>= \case
       showMatches t (p, _) = findMatches t p
                                >>= mapM_ (\x -> printPrettily theme x >> newLine)
 
-      reportFile :: FileInfo -> IO ()
       reportFile (p, _) = putChunkLn (chunk (pack p) & filename theme)
 
 makeLens :: Text -> IO (Either InterpreterError
