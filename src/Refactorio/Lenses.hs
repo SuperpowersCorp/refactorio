@@ -1,8 +1,7 @@
-{-# LANGUAGE RecordWildCards #-}
-{-# LANGUAGE FlexibleContexts  #-}
 {-# LANGUAGE LambdaCase        #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE RecordWildCards   #-}
 
 module Refactorio.Lenses where
 
@@ -23,6 +22,7 @@ import           Language.Haskell.Interpreter       hiding ( OverloadedStrings
                                                            , RankNTypes
                                                            )
 import           Rainbow.Extra                      hiding ( (&) )
+import           Refactorio.InterPrelude                   ( srcSpanInfoL )
 import           Refactorio.Style
 import           Streaming.Files                           ( FileInfo
                                                            , tree
@@ -67,18 +67,10 @@ findMatches trav path = do
     ParseFailed srcLoc' err -> panic $ "ERROR at " <> show srcLoc' <> ": " <> show err
     ParseOk parsedMod       -> return $ toListOf (cloneTraversal trav) parsedMod
 
-printPrettily :: Style -> SrcSpanInfo -> IO ()
-printPrettily style spanInfo =
-  -- TODO: obviously don't read the file each time
-  putColorFrom style span =<< readFile path
+printPrettily :: Style -> SrcSpanInfo -> IO () -- TODO: don't read the file each time
+printPrettily style spanInfo = putColorFrom style span =<< readFile (srcSpanFilename span)
     where
-      path = srcSpanFilename span
-
       span = spanInfo ^. srcSpanInfoL
-
-      -- TODO: DRY up vs InterPrelude
-      srcSpanInfoL :: Lens' SrcSpanInfo SrcSpan
-      srcSpanInfoL = lens srcInfoSpan $ \ssi sis -> ssi { srcInfoSpan = sis }
 
 putColorFrom :: Style -> SrcSpan -> Text -> IO ()
 putColorFrom style span src = do

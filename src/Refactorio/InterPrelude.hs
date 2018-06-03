@@ -1,19 +1,17 @@
 module Refactorio.InterPrelude where
 
 import Control.Lens
+import Data.Data.Lens
 import Language.Haskell.Exts
 import Language.Haskell.Exts.Prisms
 
-srcInfoSpanL :: Lens' SrcSpanInfo SrcSpan
-srcInfoSpanL = lens srcInfoSpan $ \ssi sis -> ssi { srcInfoSpan = sis }
+srcSpanInfoL :: Lens' SrcSpanInfo SrcSpan
+srcSpanInfoL = lens srcInfoSpan $ \ssi sis -> ssi { srcInfoSpan = sis }
 
 moduleNameL :: Applicative f
             => LensLike f (Module SrcSpanInfo) (Module SrcSpanInfo) SrcSpan SrcSpan
-moduleNameL = _Module
-  . _2
-  . _Just
-  . _ModuleHead
-  . _2
-  . _ModuleName
-  . _1
-  . srcInfoSpanL
+moduleNameL = _Module._2._Just._ModuleHead._2._ModuleName._1.srcSpanInfoL
+
+anyModuleNameL :: Applicative f
+               => LensLike f (Module SrcSpanInfo) (Module SrcSpanInfo) SrcSpan SrcSpan
+anyModuleNameL = _Module . biplate . _ModuleName . _1 . srcSpanInfoL
