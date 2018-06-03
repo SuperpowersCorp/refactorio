@@ -74,11 +74,11 @@ printPrettily style spanInfo =
     where
       path = srcSpanFilename span
 
-      span = spanInfo ^. srcInfoSpanL
+      span = spanInfo ^. srcSpanInfoL
 
       -- TODO: DRY up vs InterPrelude
-      srcInfoSpanL :: Lens' SrcSpanInfo SrcSpan
-      srcInfoSpanL = lens srcInfoSpan $ \ssi sis -> ssi { srcInfoSpan = sis }
+      srcSpanInfoL :: Lens' SrcSpanInfo SrcSpan
+      srcSpanInfoL = lens srcInfoSpan $ \ssi sis -> ssi { srcInfoSpan = sis }
 
 putColorFrom :: Style -> SrcSpan -> Text -> IO ()
 putColorFrom style span src = do
