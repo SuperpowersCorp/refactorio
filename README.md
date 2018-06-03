@@ -27,3 +27,4 @@ Lens based Haskell refactoring toolkit.
   - [ ] Keep files in memory across edits
   - [ ] Preview / review / selective application
   - [ ] Undo
+- [ ] Figure out which existing haskell function `concatStreams` can be reduced to.
