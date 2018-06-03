@@ -31,3 +31,4 @@ Lens based Haskell refactoring toolkit.
   - [ ] Preview / review / selective application
   - [ ] Undo
 - [ ] Figure out which existing haskell function `concatStreams` can be reduced to.
+- [ ] Can we cache generated lenses somehow?
