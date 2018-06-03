@@ -22,7 +22,7 @@ library
                      , Refactorio.Lenses
                      , Refactorio.Main
                      , Refactorio.Prelude
-                     , Refactorio.Style
+                     , Refactorio.Theme
                      , Streaming.Files
   build-depends:       base >= 4.7 && < 5
                      , bytestring
