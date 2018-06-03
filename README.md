@@ -15,14 +15,14 @@ Lens based Haskell refactoring toolkit.
 - [ ] Replace examples with open source examples
 - [ ] Sort out issue with `Control.Lens` not being available in installed executable
 - [ ] Update traversals to point at `[(SrcSpan, a)]`
+  - [ ] Add `-f`/`--fmap` option for modifing `a`s
+  - [ ] Add `-s`/`--smap` option for modifing the `SrcSpan`'s as:
+    - [ ] Text ?
+    - [ ] String ?
+    - [ ] Other (ByteString)?
 - [ ] Seek guidance from the pros on
   - [ ] CT/lenses
   - [ ] Cool lens tricks that might be applicable
-- [ ] Add `-f`/`--fmap` option for modifing `a`s
-- [ ] Add `-s`/`--smap` option for modifing the `SrcSpan`'s as:
-  - [ ] Text ?
-  - [ ] String ?
-  - [ ] Other (ByteString)?
 - [ ] Use mueval or otherwise lock down evaluation so that shared scripts can
       be used safely.
 - [ ] Line Numbers
