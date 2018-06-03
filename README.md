@@ -26,9 +26,13 @@ Lens based Haskell refactoring toolkit.
       be used safely.
 - [ ] Line Numbers
 - [ ] Context lines
+- [ ] Allow storing of lenses in `~/.refactorio`
 - [ ] Brick TUI with:
   - [ ] Keep files in memory across edits
   - [ ] Preview / review / selective application
   - [ ] Undo
+  - [ ] Fetch/store/share lenses via:
+    - [ ] GitHub/gist?
+    - [ ] anything else?
 - [ ] Figure out which existing haskell function `concatStreams` can be reduced to.
 - [ ] Can we cache generated lenses somehow?
