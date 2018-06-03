@@ -6,7 +6,7 @@ homepage:            https://github.com/SuperpowersCorp/refactorio#readme
 license:             BSD3
 license-file:        LICENSE
 author:              Superpowers Corp
-maintainer:          ops@superpowerscorp.com
+maintainer:          john@superpowerscorp.com
 copyright:           2018 Superpowers Corp
 category:            Web
 build-type:          Simple
