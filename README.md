@@ -38,6 +38,7 @@ and run it from the project root to get an experience something like:
 - [ ] Sort out issue with `Control.Lens` not being available in installed executable
 - [ ] Line Numbers
 - [ ] Context lines
+- [ ] Suppress printing of filename when there are no matches (tardis?)
 - [ ] Update traversals to point at `[(SrcSpan, a)]`
   - [ ] Add `-f`/`--fmap` option for modifing `a`s
   - [ ] Add `-s`/`--smap` option for modifing the `SrcSpan`'s as:
