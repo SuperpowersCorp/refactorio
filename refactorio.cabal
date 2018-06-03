@@ -18,7 +18,6 @@ library
   ghc-options:         -Wall
   exposed-modules:     Rainbow.Extra
                      , Refactorio.Config
-                     , Refactorio.Experiments
                      , Refactorio.InterPrelude
                      , Refactorio.Lenses
                      , Refactorio.Main
@@ -26,7 +25,6 @@ library
                      , Refactorio.Style
                      , Streaming.Files
   build-depends:       base >= 4.7 && < 5
-                     , brick
                      , bytestring
                      , directory
                      , exceptions
