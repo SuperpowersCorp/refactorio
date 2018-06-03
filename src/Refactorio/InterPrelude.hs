@@ -17,7 +17,6 @@ moduleNameL = _Module
   . _ModuleName
   . _1
   . srcInfoSpanL
---  . unListL
 
 unListL :: Lens' a [a]
 unListL = lens pure setL

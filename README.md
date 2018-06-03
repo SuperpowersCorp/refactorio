@@ -12,6 +12,7 @@ Lens based Haskell refactoring toolkit.
 
 ## TODOs
 
+- [ ] Replace examples with open source examples
 - [ ] Sort out issue with `Control.Lens` not being available in installed executable
 - [ ] Update traversals to point at `[(SrcSpan, a)]`
 - [ ] Seek guidance from the pros on
