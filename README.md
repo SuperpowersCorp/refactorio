@@ -47,3 +47,5 @@ and run it from the project root to get an experience something like:
     - [ ] anything else?
 - [ ] Figure out which existing haskell function `concatStreams` can be reduced to.
 - [ ] Can we cache generated lenses somehow?
+- [ ] Better Themes
+- [ ] Better Banner Image

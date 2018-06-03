@@ -40,5 +40,5 @@ performSearch config@Config {..} = do
     [ chunk "  for matches to: " & searchHdr theme
     , chunk lensText & searchValue theme
     ]
-  putLn ""
+  newLine
   searchByLens config

@@ -18,4 +18,4 @@ putChunks :: Renderable a => [Chunk a] -> IO ()
 putChunks = mapM_ putStr . chunksToByteStrings toByteStringsColors256
 
 putChunksLn :: Renderable a => [Chunk a] -> IO ()
-putChunksLn cs = putChunks cs >> putLn ""
+putChunksLn cs = putChunks cs >> newLine
