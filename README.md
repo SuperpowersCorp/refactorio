@@ -23,7 +23,10 @@ and run it from the project root to get an experience something like:
 ## TODOs
 
 - [ ] Replace examples with open source examples
+- [ ] Display error messages nicely
 - [ ] Sort out issue with `Control.Lens` not being available in installed executable
+- [ ] Line Numbers
+- [ ] Context lines
 - [ ] Update traversals to point at `[(SrcSpan, a)]`
   - [ ] Add `-f`/`--fmap` option for modifing `a`s
   - [ ] Add `-s`/`--smap` option for modifing the `SrcSpan`'s as:
@@ -33,11 +36,8 @@ and run it from the project root to get an experience something like:
 - [ ] Seek guidance from the pros on
   - [ ] CT/lenses
   - [ ] Cool lens tricks that might be applicable
-- [ ] Use mueval or otherwise lock down evaluation so that shared scripts can
-      be used safely.
-- [ ] Line Numbers
-- [ ] Context lines
 - [ ] Allow storing of lenses in `~/.refactorio`
+- [ ] Use mueval so that shared scripts can  be used safely.
 - [ ] Brick TUI with:
   - [ ] Keep files in memory across edits
   - [ ] Preview / review / selective application
