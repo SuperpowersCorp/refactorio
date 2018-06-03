@@ -20,8 +20,10 @@ library
                      , Refactorio.Config
                      , Refactorio.Experiments
                      , Refactorio.InterPrelude
+                     , Refactorio.Lenses
                      , Refactorio.Main
                      , Refactorio.Prelude
+                     , Refactorio.Style
                      , Streaming.Files
   build-depends:       base >= 4.7 && < 5
                      , brick

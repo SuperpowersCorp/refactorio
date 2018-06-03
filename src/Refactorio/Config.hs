@@ -4,8 +4,11 @@ module Refactorio.Config where
 
 import Refactorio.Prelude
 
+import Refactorio.Style
+
 
 data Config = Config
   { projectRoot :: FilePath
   , lensText    :: Text
-  } deriving (Eq, Ord, Read, Show)
+  , style       :: Style
+  }
