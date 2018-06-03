@@ -18,7 +18,7 @@ Lens based Haskell refactoring toolkit.
   - [ ] CT/lenses
   - [ ] Cool lens tricks that might be applicable
 - [ ] Add `-f`/`--fmap` option for modifing `a`s
-- [ ] Add `-s`/`--smap` option for modifing the `SrcSpan`'s
+- [ ] Add `-s`/`--smap` option for modifing the `SrcSpan`'s as:
   - [ ] Text ?
   - [ ] String ?
   - [ ] Other (ByteString)?
