@@ -18,8 +18,8 @@ defaultTheme :: Theme
 defaultTheme = Theme
   { filename    = \c -> c & fore green
   , match       = \c -> c & fore yellow & inverse
-  , searchHdr   = \c -> c & fore brightBlue
-  , searchValue = \c -> c & fore blue & inverse
-  , withinHdr   = \c -> c & fore brightBlue
-  , withinValue = \c -> c & fore blue
+  , searchHdr   = \c -> c & fore red
+  , searchValue = \c -> c & fore red & inverse & bold
+  , withinHdr   = \c -> c & fore red
+  , withinValue = \c -> c & fore red & bold
   }
