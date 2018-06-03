@@ -45,7 +45,7 @@ searchByLens Config {..} = makeLens lensText >>= \case
       reportFile (p, _) = putChunkLn (chunk (pack p) & filename style)
 
 makeLens :: Text -> IO (Either InterpreterError
-                        (ATraversal' (Module SrcSpanInfo) SrcSpan))
+                        (ATraversal' (Module SrcSpanInfo) SrcSpanInfo))
 makeLens s = runInterpreter $ do
   loadModules
     [ "/Users/john/.refactorio/InterPrelude.hs"
@@ -60,19 +60,25 @@ makeLens s = runInterpreter $ do
     ]
   interpret (unpack s) infer
 
-findMatches :: ATraversal' (Module SrcSpanInfo) SrcSpan -> FilePath -> IO [SrcSpan]
+findMatches :: ATraversal' (Module SrcSpanInfo) SrcSpanInfo -> FilePath -> IO [SrcSpanInfo]
 findMatches trav path = do
   sourceString <- unpack <$> readFile path
   case parseFileContentsWithMode (parseMode path) sourceString of
     ParseFailed srcLoc' err -> panic $ "ERROR at " <> show srcLoc' <> ": " <> show err
     ParseOk parsedMod       -> return $ toListOf (cloneTraversal trav) parsedMod
 
-printPrettily :: Style -> SrcSpan -> IO ()
-printPrettily style span =
+printPrettily :: Style -> SrcSpanInfo -> IO ()
+printPrettily style spanInfo =
   -- TODO: obviously don't read the file each time
   putColorFrom style span =<< readFile path
     where
       path = srcSpanFilename span
+
+      span = spanInfo ^. srcInfoSpanL
+
+      -- TODO: DRY up vs InterPrelude
+      srcInfoSpanL :: Lens' SrcSpanInfo SrcSpan
+      srcInfoSpanL = lens srcInfoSpan $ \ssi sis -> ssi { srcInfoSpan = sis }
 
 putColorFrom :: Style -> SrcSpan -> Text -> IO ()
 putColorFrom style span src = do
