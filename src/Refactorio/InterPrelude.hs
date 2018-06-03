@@ -20,3 +20,6 @@ moduleNameL = _Module._2._Just._ModuleHead._2._ModuleName._1.srcSpanInfoL
 anyModuleNameL :: Applicative f
                => LensLike f (Module SrcSpanInfo) (Module SrcSpanInfo) SrcSpan SrcSpan
 anyModuleNameL = _Module . biplate . _ModuleName . _1 . srcSpanInfoL
+
+target :: (Functor f, Field2 s t a b) => (a -> f b) -> s -> f t
+target = _2
