@@ -45,7 +45,7 @@ searchByLens Config {..} = makeLens lensText >>= \case
       reportFile (p, _) = putChunkLn (chunk (pack p) & filename style)
 
 makeLens :: Text -> IO (Either InterpreterError
-                        (ATraversal' (Module SrcSpanInfo) [SrcSpan]))
+                        (ATraversal' (Module SrcSpanInfo) SrcSpan))
 makeLens s = runInterpreter $ do
   loadModules
     [ "/Users/john/.refactorio/InterPrelude.hs"
@@ -60,12 +60,12 @@ makeLens s = runInterpreter $ do
     ]
   interpret (unpack s) infer
 
-findMatches :: ATraversal' (Module SrcSpanInfo) [SrcSpan] -> FilePath -> IO [SrcSpan]
+findMatches :: ATraversal' (Module SrcSpanInfo) SrcSpan -> FilePath -> IO [SrcSpan]
 findMatches trav path = do
   sourceString <- unpack <$> readFile path
   case parseFileContentsWithMode (parseMode path) sourceString of
     ParseFailed srcLoc' err -> panic $ "ERROR at " <> show srcLoc' <> ": " <> show err
-    ParseOk parsedMod       -> return . join $ toListOf (cloneTraversal trav) parsedMod
+    ParseOk parsedMod       -> return $ toListOf (cloneTraversal trav) parsedMod
 
 printPrettily :: Style -> SrcSpan -> IO ()
 printPrettily style span =

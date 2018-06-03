@@ -17,10 +17,3 @@ moduleNameL = _Module
   . _ModuleName
   . _1
   . srcInfoSpanL
-
-unListL :: Lens' a [a]
-unListL = lens pure setL
-  where
-    setL :: a -> [a] -> a
-    setL x []    = x
-    setL _ (x:_) = x
