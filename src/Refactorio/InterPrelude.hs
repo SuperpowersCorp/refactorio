@@ -1,9 +1,14 @@
+{-# LANGUAGE MultiParamTypeClasses #-}
+
 module Refactorio.InterPrelude where
 
 import Control.Lens
 import Data.Data.Lens
 import Language.Haskell.Exts
 import Language.Haskell.Exts.Prisms
+
+done :: (Functor f, Field1 s t a b) => (a -> f b) -> s -> f t
+done = _1
 
 srcSpanInfoL :: Lens' SrcSpanInfo SrcSpan
 srcSpanInfoL = lens srcInfoSpan $ \ssi sis -> ssi { srcInfoSpan = sis }
