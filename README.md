@@ -20,6 +20,17 @@ and run it from the project root to get an experience something like:
 
     refio _Module.biplate._ModuleName.end -d ../voltron/src
 
+## Some examples to try
+
+    refio _Module.biplate._ModuleName.end
+    refio _Module.biplate._Int.end
+    refio _Module.biplate._String.end
+    refio _Module.biplate._FieldUpdate.end
+    refio _Module.biplate._Frac.end
+    refio '_Module.biplate._Int.filtered(odd.view target).end'
+    refio '_Module.biplate._Int.filtered(even.view target).end'
+    refio '_Module.biplate._Int.filtered((>10).view target).end'
+
 ## TODOs
 
 - [ ] Replace examples with open source examples
