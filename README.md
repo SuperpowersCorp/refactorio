@@ -13,12 +13,12 @@ Lens based Haskell refactoring toolkit.
 ## TODOs
 
 - [ ] Sort out issue with `Control.Lens` not being available in installed executable
-- [ ] Update traversals to point at [(SrcSpan, a)]
+- [ ] Update traversals to point at `[(SrcSpan, a)]`
 - [ ] Seek guidance from the pros on
   - [ ] CT/lenses
   - [ ] Cool lens tricks that might be applicable
 - [ ] Add `-f`/`--fmap` option for modifing `a`s
-- [ ] Add `-s`/`--smap` option for modifing the SrcSpan's
+- [ ] Add `-s`/`--smap` option for modifing the `SrcSpan`'s
   - [ ] Text ?
   - [ ] String ?
   - [ ] Other (ByteString)?
