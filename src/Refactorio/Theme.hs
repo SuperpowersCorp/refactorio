@@ -1,11 +1,11 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 
-module Refactorio.Style where
+module Refactorio.Theme where
 
 import Rainbow.Extra
 
 
-data Style = Style
+data Theme = Theme
   { filename    :: Chunk' -> Chunk'
   , match       :: Chunk' -> Chunk'
   , searchHdr   :: Chunk' -> Chunk'
@@ -14,8 +14,8 @@ data Style = Style
   , withinValue :: Chunk' -> Chunk'
   }
 
-defaultStyle :: Style
-defaultStyle = Style
+defaultTheme :: Theme
+defaultTheme = Theme
   { filename    = \c -> c & fore green
   , match       = \c -> c & fore yellow & inverse
   , searchHdr   = \c -> c & fore brightBlue

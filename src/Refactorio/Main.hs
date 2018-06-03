@@ -15,7 +15,7 @@ import Options.Applicative
 import Rainbow.Extra
 import Refactorio.Config
 import Refactorio.Lenses
-import Refactorio.Style
+import Refactorio.Theme
 
 main :: IO ()
 main = void $ execParser opts >>= performSearch
@@ -30,17 +30,17 @@ main = void $ execParser opts >>= performSearch
                       <> value "."
                     )
       <*> ( pack <$> argument str ( metavar "TRAVERSAL" )  )
-      <*> pure defaultStyle
+      <*> pure defaultTheme
 
 performSearch :: Config -> IO ()
 performSearch config@Config {..} = do
   putChunksLn
-    [ chunk "Searching within: " & withinHdr style
-    , chunk (pack projectRoot) & withinValue style
+    [ chunk "Searching within: " & withinHdr theme
+    , chunk (pack projectRoot) & withinValue theme
     ]
   putChunksLn
-    [ chunk "  for matches to: " & searchHdr style
-    , chunk lensText & searchValue style
+    [ chunk "  for matches to: " & searchHdr theme
+    , chunk lensText & searchValue theme
     ]
   putLn ""
   searchByLens config

@@ -11,7 +11,6 @@ import qualified Streaming.Prelude            as S
 import           Control.Lens                       hiding ( (&)
                                                            , pre
                                                            )
-import qualified Data.ByteString              as BS
 import qualified Data.List                    as L
 import           Data.Monoid                               ( (<>) )
 import           Data.Text                    as T  hiding ( span )
@@ -23,7 +22,7 @@ import           Language.Haskell.Interpreter       hiding ( OverloadedStrings
                                                            )
 import           Rainbow.Extra                      hiding ( (&) )
 import           Refactorio.InterPrelude                   ( srcSpanInfoL )
-import           Refactorio.Style
+import           Refactorio.Theme
 import           Streaming.Files                           ( FileInfo
                                                            , tree
                                                            )
@@ -39,10 +38,10 @@ searchByLens Config {..} = makeLens lensText >>= \case
     $ projectRoot
     where
       showMatches t (p, _) = findMatches t p
-                               >>= mapM_ (\x -> printPrettily style x >> newLine)
+                               >>= mapM_ (\x -> printPrettily theme x >> newLine)
 
       reportFile :: FileInfo -> IO ()
-      reportFile (p, _) = putChunkLn (chunk (pack p) & filename style)
+      reportFile (p, _) = putChunkLn (chunk (pack p) & filename theme)
 
 makeLens :: Text -> IO (Either InterpreterError
                         (ATraversal' (Module SrcSpanInfo) SrcSpanInfo))
@@ -67,21 +66,21 @@ findMatches trav path = do
     ParseFailed srcLoc' err -> panic $ "ERROR at " <> show srcLoc' <> ": " <> show err
     ParseOk parsedMod       -> return $ toListOf (cloneTraversal trav) parsedMod
 
-printPrettily :: Style -> SrcSpanInfo -> IO () -- TODO: don't read the file each time
-printPrettily style spanInfo = putColorFrom style span =<< readFile (srcSpanFilename span)
+printPrettily :: Theme -> SrcSpanInfo -> IO () -- TODO: don't read the file each time
+printPrettily theme spanInfo = putColorFrom theme span =<< readFile (srcSpanFilename span)
     where
       span = spanInfo ^. srcSpanInfoL
 
-putColorFrom :: Style -> SrcSpan -> Text -> IO ()
-putColorFrom style span src = do
-  mapM_ BS.putStr
+putColorFrom :: Theme -> SrcSpan -> Text -> IO ()
+putColorFrom theme span src = do
+  mapM_ putStr
     . chunksToByteStrings toByteStringsColors256
     . chunkify
     . L.take (srcSpanEndLine span - srcSpanStartLine span + 1)
     . L.drop (srcSpanStartLine span - 1)
     . T.lines
     $ src
-  BS.putStr "\n"
+  putStr ("\n" :: ByteString)
   where
     chunkify :: [Text] -> [Chunk Text]
     chunkify = \case
@@ -93,7 +92,7 @@ putColorFrom style span src = do
 
           val :: Chunk Text
           val = (chunk . T.take n . T.drop startc $ x)
-            & match style
+            & match theme
             where
               n = endc - startc
 
@@ -107,7 +106,7 @@ putColorFrom style span src = do
         where
           firstLine = [pre, firstVal]
 
-          middleLines
+          middleLines                        -- TODO: we need 'total' concentwation
             | L.length xs <  2 = panic "unpossible!"
             | L.length xs == 2 = []
             | otherwise = case initMay xs of
@@ -133,9 +132,7 @@ parseMode path = defaultParseMode
   }
   where
     configuredExtensions = extensions defaultParseMode ++ tempManualExtensions
-
     tempManualExtensions = fmap EnableExtension
       [ OverloadedStrings
-        -- , NoImplicitPrelude
       , RankNTypes
       ]

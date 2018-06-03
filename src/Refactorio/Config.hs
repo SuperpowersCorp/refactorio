@@ -4,11 +4,11 @@ module Refactorio.Config where
 
 import Refactorio.Prelude
 
-import Refactorio.Style
+import Refactorio.Theme
 
 
 data Config = Config
   { projectRoot :: FilePath
   , lensText    :: Text
-  , style       :: Style
+  , theme       :: Theme
   }
