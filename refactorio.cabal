@@ -16,7 +16,10 @@ cabal-version:       >=1.10
 library
   hs-source-dirs:      src
   ghc-options:         -Wall
-  exposed-modules:     Refactorio.Experiments
+  exposed-modules:     Rainbow.Extra
+                     , Refactorio.Config
+                     , Refactorio.Experiments
+                     , Refactorio.InterPrelude
                      , Refactorio.Main
                      , Refactorio.Prelude
                      , Streaming.Files

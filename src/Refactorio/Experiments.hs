@@ -14,15 +14,16 @@ module Refactorio.Experiments
 import           Refactorio.Prelude                 hiding ( (<>)
                                                            , Proxy
                                                            )
+import qualified Streaming.Prelude            as S
 
-import           Control.Lens                       hiding ( pre
-                                                           , (&)
+import           Control.Lens                       hiding ( (&)
+                                                           , pre
                                                            )
+import qualified Data.ByteString              as BS
 import           Data.List                                 ( isInfixOf
                                                            , isSuffixOf
                                                            )
 import           Data.Monoid                               ( (<>) )
-import qualified Data.ByteString              as BS
 import qualified Data.Text                    as T
 import           Language.Haskell.Exts
 import           Language.Haskell.Exts.Prisms
@@ -41,13 +42,11 @@ import           Rainbow                                   ( Chunk
                                                            , red
                                                            , toByteStringsColors256
                                                            )
--- import           Streaming
-import qualified Streaming.Prelude            as S
-import           Streaming.Files                           ( FileInfo
-                                                           , tree
-                                                           )
 import           Refactorio.InterPrelude                   ( srcInfoSpanL
                                                            , unListL
+                                                           )
+import           Streaming.Files                           ( FileInfo
+                                                           , tree
                                                            )
 
 experiment1 :: IO ()

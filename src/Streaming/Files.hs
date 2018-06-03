@@ -6,9 +6,9 @@ module Streaming.Files
      ) where
 
 import           Refactorio.Prelude
+import qualified Streaming.Prelude  as S
 
 import           Streaming
-import qualified Streaming.Prelude as S
 import           System.Directory
 import           System.Posix.Files
 
