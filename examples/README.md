@@ -6,7 +6,7 @@ However, I have tried to create some examples that, while contrived, are pretty
 similar to things that have come up in my day to day experience and where my
 otherwise fantastic tools like `ag` have let me down.
 
-While any of the ag examples could be improved upon with various refinements
+While many of the `ag` examples could be improved upon with various refinements
 that would solve one or more of the problems described here, as you can see, in
 comparison Refactorio lets you specify exactly what you want with a minimum of
 muss and fuss (assuming you are comfortable with lenses).
@@ -26,14 +26,14 @@ With Refactorio:
 
 ![ref-xmonad-int](ref-xmonad-int.png)
 
-As you can see, it's not perfect*, but it's a lot better.
+As you can see, it's not perfect, but it's a lot better.
 
-*The main problem evidenced by this screenshot is that it picks up for example
+(The main problem evidenced by this screenshot is that it picks up for example
 those `ratio = 1/2`'s because `1` and `2` are both integer constants that get
 `fromInteger 1` and `fromInteger 2`'d at compile time. Unfortunately I think
-this is unavoidable without a lot more work.
+this is unavoidable without a lot more work).
 
-With Refactorio you can take things a step further and filter to only the
+With Refactorio you can also take things a step further and filter to only the
 numbers that are greater than, say, 20:
 
 ![ref-xmonad-int-gt-20](ref-xmonad-int-gt-20.png)
@@ -67,4 +67,16 @@ In the meantime, with Refactorio:
 
 ![ref-xmonad-all-modulenames](ref-xmonad-all-modulenames.png)
 
+## Misc
+
+I think this conveys the idea pretty well, but here are a couple of other
+examples that might ignite your imagination:
+
+Finding all type signatures:
+
+![ref-xmonad-typesig](ref-xmonad-typesig.png)
+
+Finding all field updates:
+
+![ref-xmonad-fieldupdate](ref-xmonad-fieldupdate.png)
 
