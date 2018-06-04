@@ -20,7 +20,9 @@ and run it from the project root to get an experience something like:
 
     refio _Module.biplate._ModuleName.end -d ../voltron/src
 
-## Some examples to try
+## Examples
+
+Try these on your projects:
 
     refio _Module.biplate._ModuleName.end
     refio _Module.biplate._Int.end
@@ -49,7 +51,7 @@ and run it from the project root to get an experience something like:
   - [ ] CT/lenses
   - [ ] Cool lens tricks that might be applicable
 - [ ] Allow storing of lenses in `~/.refactorio`
-- [ ] Use mueval so that shared scripts can  be used safely.
+- [ ] Use mueval so that shared lenses can be used safely.
 - [ ] Brick TUI with:
   - [ ] Keep files in memory across edits
   - [ ] Preview / review / selective application
