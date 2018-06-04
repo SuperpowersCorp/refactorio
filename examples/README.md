@@ -33,6 +33,11 @@ those `ratio = 1/2`'s because `1` and `2` are both integer constants that get
 `fromInteger 1` and `fromInteger 2`'d at compile time. Unfortunately I think
 this is unavoidable without a lot more work.
 
+With Refactorio you can take things a step further and filter to only the
+numbers that are greater than, say, 20:
+
+![ref-xmonad-int-gt-20](ref-xmonad-int-gt-20.png)
+
 ## Module Names
 
 Let's say you wanted to find all of the module names declared in your project.
