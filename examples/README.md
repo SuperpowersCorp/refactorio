@@ -70,7 +70,7 @@ In the meantime, with Refactorio:
 ## Misc
 
 I think this conveys the idea pretty well, but here are a couple of other
-examples that might ignite your imagination:
+examples that might tickle your imagination:
 
 Finding all type signatures:
 
