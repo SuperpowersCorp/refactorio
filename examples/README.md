@@ -80,3 +80,7 @@ Finding all field updates:
 
 ![ref-xmonad-fieldupdate](ref-xmonad-fieldupdate.png)
 
+Finding all deriving clauses:
+
+![ref-xmonad-deriving](ref-xmonad-deriving.png)
+
