@@ -26,7 +26,7 @@ import           Refactorio.Config
 
 searchByLens :: Config -> IO ()
 searchByLens Config {..} = makeLens lensText >>= \case
-  Left err -> print err
+  Left err -> displayError theme err
   Right trav -> S.mapM_ (showMatches trav)
     . S.chain reportFile
     . S.filter (\(p, _) -> ".hs" `L.isSuffixOf` p && not (".stack-work" `L.isInfixOf` p))
@@ -37,6 +37,23 @@ searchByLens Config {..} = makeLens lensText >>= \case
                                >>= mapM_ (\x -> printPrettily theme x >> newLine)
 
       reportFile (p, _) = putChunkLn (chunk (pack p) & filename theme)
+
+displayError :: Theme -> InterpreterError -> IO ()
+displayError theme = \case
+  GhcException msg -> putChunkLn
+    $ chunk ("GHC Exception:\n  " <> (show msg :: Text))
+    & errorColor theme
+  NotAllowed msg -> putChunkLn
+    $ chunk ("Not allowed:\n  " <> (show msg :: Text))
+    & errorColor theme
+  UnknownError msg -> putChunkLn
+    $ chunk ("An unknown error has occured:\n  " <> (show msg :: Text))
+    & errorColor theme
+  WontCompile errors -> do
+    putChunkLn
+      $ chunk ("Encountered " <> show (L.length errors) <> " errors in the definition of your lens:")
+      & errorColor theme
+    mapM_ (\e -> putChunkLn . errorColor theme . chunk . pack . errMsg $ e) errors
 
 makeLens :: Text -> IO (Either InterpreterError
                         (ATraversal' (Module SrcSpanInfo) SrcSpanInfo))

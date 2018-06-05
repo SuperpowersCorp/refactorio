@@ -36,7 +36,7 @@ Try these on your projects:
 ## TODOs
 
 - [ ] Replace examples with open source examples
-- [ ] Display error messages nicely
+- [X] Display error messages (at least somewhat) nicely
 - [ ] Sort out issue with `Control.Lens` not being available in installed executable
 - [ ] Line Numbers
 - [ ] Context lines

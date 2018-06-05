@@ -6,20 +6,24 @@ import Rainbow.Extra
 
 
 data Theme = Theme
-  { filename    :: Chunk' -> Chunk'
-  , match       :: Chunk' -> Chunk'
-  , searchHdr   :: Chunk' -> Chunk'
-  , searchValue :: Chunk' -> Chunk'
-  , withinHdr   :: Chunk' -> Chunk'
-  , withinValue :: Chunk' -> Chunk'
+  { errorColor  :: StyleFn
+  , filename    :: StyleFn
+  , match       :: StyleFn
+  , searchHdr   :: StyleFn
+  , searchValue :: StyleFn
+  , withinHdr   :: StyleFn
+  , withinValue :: StyleFn
   }
+
+type StyleFn = Chunk' -> Chunk'
 
 defaultTheme :: Theme
 defaultTheme = Theme
-  { filename    = \c -> c & fore green
+  { errorColor  = \c -> c & fore red
+  , filename    = \c -> c & fore green
   , match       = \c -> c & fore yellow & inverse
-  , searchHdr   = \c -> c & fore red
-  , searchValue = \c -> c & fore red & inverse & bold
-  , withinHdr   = \c -> c & fore red
-  , withinValue = \c -> c & fore red & bold
+  , searchHdr   = \c -> c & fore blue
+  , searchValue = \c -> c & fore blue & inverse & bold
+  , withinHdr   = \c -> c & fore blue
+  , withinValue = \c -> c & fore blue & bold
   }
