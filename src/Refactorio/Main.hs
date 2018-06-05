@@ -29,6 +29,8 @@ main = void $ execParser opts >>= performSearch
                     )
       <*> ( pack <$> argument str ( metavar "TRAVERSAL" )  )
       <*> pure defaultTheme
+      <*> pure NoMapFn
+      <*> pure View
 
 performSearch :: Config -> IO ()
 performSearch config@Config {..} = do
