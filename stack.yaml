@@ -13,4 +13,5 @@ extra-deps:
 - mueval-0.9.3
 - pipes-4.3.9
 - pipes-files-0.1.2
+- protolude-0.2.1
 - show-0.6

@@ -3,29 +3,29 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards   #-}
 
-module Refactorio.Lenses where
+module Refactorio.Search where
 
-import           Refactorio.Prelude                 hiding ( (<>) )
+import           Refactorio.Prelude                hiding ( (<>) )
 import qualified Streaming.Prelude            as S
 
-import           Control.Lens                       hiding ( (&)
-                                                           , pre
-                                                           )
+import           Control.Lens                 as A hiding ( (&)
+                                                          , pre
+                                                          )
 import qualified Data.List                    as L
-import           Data.Monoid                               ( (<>) )
-import           Data.Text                    as T  hiding ( span )
-import           Language.Haskell.Exts              hiding ( Style )
-import           Language.Haskell.Interpreter       hiding ( OverloadedStrings
-                                                           , RankNTypes
-                                                           )
-import           Rainbow.Extra                      hiding ( (&) )
-import           Refactorio.InterPrelude                   ( srcSpanInfoL )
-import           Refactorio.Theme
-import           Streaming.Files                           ( tree )
+import           Data.Monoid                              ( (<>) )
+import           Data.Text                    as T hiding ( span )
+import           Language.Haskell.Exts        as Y hiding ( Style )
+import           Language.Haskell.Interpreter      hiding ( OverloadedStrings
+                                                          , RankNTypes
+                                                          )
+import           Rainbow.Extra                     hiding ( (&) )
 import           Refactorio.Config
+import           Refactorio.InterPrelude                  ( srcSpanInfoL )
+import           Refactorio.Theme
+import           Streaming.Files                          ( tree )
 
-searchByLens :: Config -> IO ()
-searchByLens Config {..} = makeLens lensText >>= \case
+byLens :: Config -> IO ()
+byLens Config {..} = makeLens lensText >>= \case
   Left err -> displayError theme err
   Right trav -> S.mapM_ (showMatches trav)
     . S.chain reportFile
@@ -134,7 +134,7 @@ putColorFrom theme span src = do
 
           lx = fromMaybe (panic "unpossible!") . lastMay $ xs
 
--- TODO: unfuck
+-- TODO: finish
 parseMode :: FilePath -> ParseMode
 parseMode path = defaultParseMode
   { baseLanguage          = Haskell2010

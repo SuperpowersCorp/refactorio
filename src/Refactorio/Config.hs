@@ -6,15 +6,13 @@ import Refactorio.Prelude
 
 import Refactorio.Theme
 
-
 data Config = Config
   { projectRoot :: FilePath
   , lensText    :: Text
   , theme       :: Theme
-  , mapFn       :: MapFn
-  , save        :: SaveMode
+  , mapFnSrc    :: Text
   }
 
-data MapFn = FMapFn | NoMapFn | SMapFn
-
-data SaveMode = Backup | Overwrite | View
+-- TODO: soomething like ...
+--   , save        :: SaveMode
+-- data SaveMode = AtomicSwap | Backup | Overwrite | View

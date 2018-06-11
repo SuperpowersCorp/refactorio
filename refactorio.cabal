@@ -19,9 +19,10 @@ library
   exposed-modules:     Rainbow.Extra
                      , Refactorio.Config
                      , Refactorio.InterPrelude
-                     , Refactorio.Lenses
                      , Refactorio.Main
                      , Refactorio.Prelude
+                     , Refactorio.Replace
+                     , Refactorio.Search
                      , Refactorio.Theme
                      , Streaming.Files
   build-depends:       base >= 4.7 && < 5

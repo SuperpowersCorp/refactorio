@@ -42,11 +42,12 @@ Try these on your projects:
 - [ ] Context lines
 - [ ] Suppress printing of filename when there are no matches (tardis?)
 - [ ] Update traversals to point at `[(SrcSpan, a)]`
-  - [ ] Add `-f`/`--fmap` option for modifing `a`s
-  - [ ] Add `-s`/`--smap` option for modifing the `SrcSpan`'s as:
-    - [ ] Text ?
-    - [ ] String ?
-    - [ ] Other (ByteString)?
+  - [ ] Just `-f/fmap` and figure out which it is instead.
+    - [ ] Add `-f`/`--fmap` option for modifing `a`s
+    - [ ] Add `-s`/`--smap` option for modifing the `SrcSpan`'s as:
+  - [ ] Text ?
+  - [ ] String ?
+  - [ ] Other (ByteString)?
 - [ ] Seek guidance from the pros on
   - [ ] CT/lenses
   - [ ] Cool lens tricks that might be applicable

@@ -4,7 +4,6 @@ module Refactorio.Theme where
 
 import Rainbow.Extra
 
-
 data Theme = Theme
   { errorColor  :: StyleFn
   , filename    :: StyleFn
