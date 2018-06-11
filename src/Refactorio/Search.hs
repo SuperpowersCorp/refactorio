@@ -122,7 +122,7 @@ putColorFrom theme span src = do
 
           lx = fromMaybe (panic "unpossible!") . lastMay $ xs
 
--- TODO: finish
+-- TODO: finish/DRY up vs Replace
 parseMode :: FilePath -> ParseMode
 parseMode path = defaultParseMode
   { baseLanguage          = Haskell2010
