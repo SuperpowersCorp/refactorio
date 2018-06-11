@@ -1,3 +1,4 @@
+{-# LANGUAGE LambdaCase        #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards   #-}
@@ -12,11 +13,11 @@ import Refactorio.Prelude  as P       hiding ( (<>)
 
 import Data.Text           as Text    hiding ( replace )
 import Options.Applicative
-import Rainbow.Extra                  hiding ( (&) )
 import Refactorio.Config
 import Refactorio.Replace  as Replace
 import Refactorio.Search   as Search
 import Refactorio.Theme
+import X.Rainbow                      hiding ( (&) )
 
 main :: IO ()
 main = void $ execParser opts >>= searchOrReplace
@@ -55,13 +56,16 @@ searchOrReplace config@Config{..} = do
   newLine
   results
   where
-    within    = case mapFnSrc of
+    within = case mapFnSrc of
       "" -> "Searching within: "
       _  -> "Previewing replacement within: "
-    query     = justify "  for matches to: "
+
+    query = justify "  for matches to: "
+
     justify s = Text.replicate (Text.length within - Text.length s) " " <> s
-    results   = case mapFnSrc of
+
+    results = case mapFnSrc of
       ""  -> Search.byLens config
-      src -> case compileMapFn src of
+      src -> compileMapFn src >>= \case
         Left err -> Replace.displayError err
         Right f  -> Replace.withLens config f

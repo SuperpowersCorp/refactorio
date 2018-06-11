@@ -5,24 +5,24 @@
 
 module Refactorio.Search where
 
-import           Refactorio.Prelude                hiding ( (<>) )
-import qualified Streaming.Prelude            as S
+import           Refactorio.Prelude                  hiding ( (<>) )
+import qualified Streaming.Prelude              as S
 
-import           Control.Lens                 as A hiding ( (&)
-                                                          , pre
-                                                          )
-import qualified Data.List                    as L
-import           Data.Monoid                              ( (<>) )
-import           Data.Text                    as T hiding ( span )
-import           Language.Haskell.Exts        as Y hiding ( Style )
-import           Language.Haskell.Interpreter      hiding ( OverloadedStrings
-                                                          , RankNTypes
-                                                          )
-import           Rainbow.Extra                     hiding ( (&) )
+import           Control.Lens                   as A hiding ( (&)
+                                                            , pre
+                                                            )
+import qualified Data.List                      as L
+import           Data.Monoid                                ( (<>) )
+import           Data.Text                      as T hiding ( span )
+import           Language.Haskell.Exts          as Y hiding ( Style )
 import           Refactorio.Config
-import           Refactorio.InterPrelude                  ( srcSpanInfoL )
+import           Refactorio.InterPrelude                    ( srcSpanInfoL )
 import           Refactorio.Theme
-import           Streaming.Files                          ( tree )
+import           X.Language.Haskell.Interpreter      hiding ( OverloadedStrings
+                                                            , RankNTypes
+                                                            )
+import           X.Rainbow                           hiding ( (&) )
+import           X.Streaming.Files                          ( tree )
 
 byLens :: Config -> IO ()
 byLens Config {..} = makeLens lensText >>= \case
