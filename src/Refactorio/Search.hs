@@ -57,19 +57,7 @@ displayError theme = \case
 
 makeLens :: Text -> IO (Either InterpreterError
                         (ATraversal' (Module SrcSpanInfo) SrcSpanInfo))
-makeLens s = runInterpreter $ do
-  loadModules
-    [ "/Users/john/.refactorio/InterPrelude.hs"
-    ]
-  setImports
-    [ "Prelude"
-    , "Control.Lens"
-    , "Data.Data.Lens"
-    , "Language.Haskell.Exts"
-    , "Language.Haskell.Exts.Prisms"
-    , "Refactorio.InterPrelude"
-    ]
-  interpret (unpack s) infer
+makeLens = build
 
 findMatches :: ATraversal' (Module SrcSpanInfo) SrcSpanInfo -> FilePath -> IO [SrcSpanInfo]
 findMatches trav path = do

@@ -67,5 +67,5 @@ searchOrReplace config@Config{..} = do
     results = case mapFnSrc of
       ""  -> Search.byLens config
       src -> compileMapFn src >>= \case
-        Left err -> Replace.displayError err
+        Left err -> Replace.displayError theme err
         Right f  -> Replace.withLens config f
