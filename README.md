@@ -49,6 +49,7 @@ Try these on your projects:
   - [ ] Cool lens tricks that might be applicable
 - [ ] Allow storing of lenses in `~/.refactorio`
 - [ ] Use mueval so that shared lenses can be used safely.
+- [ ] Emacs integration
 - [ ] Brick TUI with:
   - [ ] Keep files in memory across edits
   - [ ] Preview / review / selective application
