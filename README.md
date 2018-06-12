@@ -35,24 +35,21 @@ Try these on your projects:
 
 ## TODOs
 
-- [ ] Replace examples with open source examples
+- [X] Replace examples with open source examples
 - [X] Display error messages (at least somewhat) nicely
 - [ ] Sort out issue with `Control.Lens` not being available in installed executable
 - [ ] Line Numbers
 - [ ] Context lines
+- [ ] Loading of additional modules
+- [ ] Refactor CLI into `ref view`, `ref fmap` and `ref set`
 - [ ] Suppress printing of filename when there are no matches (tardis?)
-- [ ] Update traversals to point at `[(SrcSpan, a)]`
-  - [ ] Just `-f/fmap` and figure out which it is instead.
-    - [ ] Add `-f`/`--fmap` option for modifing `a`s
-    - [ ] Add `-s`/`--smap` option for modifing the `SrcSpan`'s as:
-  - [ ] Text ?
-  - [ ] String ?
-  - [ ] Other (ByteString)?
+- [ ] `-f/fmap`
 - [ ] Seek guidance from the pros on
   - [ ] CT/lenses
   - [ ] Cool lens tricks that might be applicable
 - [ ] Allow storing of lenses in `~/.refactorio`
 - [ ] Use mueval so that shared lenses can be used safely.
+- [ ] Emacs integration
 - [ ] Brick TUI with:
   - [ ] Keep files in memory across edits
   - [ ] Preview / review / selective application
