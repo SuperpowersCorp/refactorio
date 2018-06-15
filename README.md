@@ -10,6 +10,8 @@ Lens based Haskell refactoring toolkit.
 >
 > - Fred Brooks
 
+See [examples](examples/).
+
 ## Pro-Tip
 
 For now:
