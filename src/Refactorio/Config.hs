@@ -1,3 +1,5 @@
+{-# LANGUAGE InstanceSigs #-}
+{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE DeriveDataTypeable #-}
 {-# LANGUAGE NoImplicitPrelude  #-}
 
@@ -6,20 +8,20 @@ module Refactorio.Config where
 import Refactorio.Prelude
 
 import Data.Data          ( Data )
-import Refactorio.Theme
 
-data Config
-  = ConfigExecute ReplaceConfig
-  | ConfigPreview ReplaceConfig
-  | ConfigView    SearchConfig
-  deriving (Data, Eq, Ord, Read, Show)
-
--- Not today, lexicography, not today!
-data CommonConfig = CommonConfig
+data Config = Config
   { filenameFilters :: Set FilenameFilter
+  , lensOperator    :: LensOperator
+  , lensText        :: LensText
+  , mapFnTextMay    :: Maybe MapFnText
+  , preview         :: PreviewMode
   , target          :: Target
-  , theme           :: Theme
-  }
+  } deriving (Data, Eq, Ord, Read, Show)
+
+data PreviewMode
+  = PreviewModeDisabled
+  | PreviewModeEnabled
+  deriving (Data, Eq, Ord, Read, Show)
 
 data FilenameFilter
   = DotPattern Text
@@ -35,19 +37,42 @@ newtype LensText = LensText { unLensText :: Text }
 newtype MapFnText = MapFnText { unMapFnText :: Text }
   deriving (Data, Eq, Ord, Read, Show)
 
-data ReplaceConfig = ReplaceConfig
-  { lensText     :: LensText
-  , lensOperator :: LensOperator
-  , mapFnText    :: MapFnText
-  } deriving (Data, Eq, Ord, Read, Show)
-
 data LensOperator  -- TODO: the rest
-  = Over  -- aka (%~)
-  | Plus  -- aka (+~)
-  | Set   -- aka (.~)
-  | Times -- aka (*~)
-  | View  -- aka (^.)
+  = Over
+  | Plus
+  | Set
+  | Times
+  | View
   deriving (Data, Eq, Ord, Read, Show)
+
+-- -- ehhhh?
+-- instance Monoid LensOperator where
+--   mempty  = View
+
+--   mappend :: LensOperator -> LensOperator -> LensOperator
+--   a `mappend` View = a
+--   _ `mappend` Set  = Set
+
+--   Over  `mappend` Times = Times
+--   Plus  `mappend` Times = Times
+--   Set   `mappend` Times = Times
+--   Times `mappend` Times = Times
+--   View  `mappend` Times = Times
+
+--   Over  `mappend` Plus = Times
+--   Plus  `mappend` Plus = Times
+--   Set   `mappend` Plus = Times
+--   Times `mappend` Plus = Plus   -- to be consistent?
+--   View  `mappend` Plus = Times
+
+--   _ `mappend` _ = panic " _ _ _ undefined"
+
+infixOp :: LensOperator -> Text
+infixOp Over  = "%~"
+infixOp Plus  = "+~"
+infixOp Set   = ".~"
+infixOp Times = "*~"
+infixOp View  = "^."
 
 data SearchConfig = SearchConfig -- YES data, not newtype shut up !
   { primaryLensText :: LensText

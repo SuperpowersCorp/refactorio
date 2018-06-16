@@ -1,3 +1,4 @@
+{-# LANGUAGE ApplicativeDo     #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards   #-}
@@ -6,91 +7,154 @@ module Refactorio.Main ( main ) where
 
 import Refactorio.Prelude  as P       hiding ( (<>) )
 
-
-import Data.Set as Set
-import Data.Text as Text
-import Options.Applicative
+import Data.Set            as Set
+import Data.String (String)
+import Data.Text           as Text
+import Options.Applicative hiding (prefs)
 import Refactorio.Config
-import Refactorio.Replace  as Replace
-import Refactorio.Search   as Search
-import Refactorio.Theme
-import X.Rainbow                      hiding ( (&) )
+import X.Rainbow--                      hiding ( (&) )
 
--- CURRENT TARGET:   refio . --haskell view "__Module.biplate._Int" --pre-mqp "+32"
+-- CURRENT TARGET:   refio --haskell view "__Module.biplate._Int" & "(+32)"
 
 main :: IO ()
-main = do
-  putLn "DANGER ZONE CONSTRUCTION IN PROGRESS.."
-  void $ execParser opts >>= makeTheMagicHappen
+main = void $ customExecParser prefs opts >>= apphrend
   where
+    prefs = defaultPrefs
+      { prefShowHelpOnError = True
+      , prefShowHelpOnEmpty = True
+      }
+
     opts = info (parser <**> helper) $ fullDesc
-           <> header "Refactorio - Optical Refactoring Tool"
+           <> header   "Refactorio - Optical Refactoring Tool"
            <> progDesc "Zen and the art of optical file maintenance."
 
-    makeTheMagicHappen :: (Config, CommonConfig) -> IO ()
-    makeTheMagicHappen (ConfigExecute config, commonConfig) =
-      Replace.execute commonConfig config
-    makeTheMagicHappen (ConfigPreview config, commonConfig) =
-      Replace.preview commonConfig config
-    makeTheMagicHappen (ConfigView config, commonConfig) =
-      Search.view commonConfig config
-
-parser :: Parser (Config, CommonConfig)
-parser = flip (,) <$> commonConfigParser <*> configParser
-
-commonConfigParser :: Parser CommonConfig
-commonConfigParser = CommonConfig
-  <$> ( Set.fromList <$> filenameFilterParser )
-  <*> ( Target <$> strOption
-        ( long "target"
-       <> short 't'
-       <> metavar "TARGET"
-       <> help "a file/directory to search/replace"
-       <> showDefault
-       <> value "."
-        )
-      )
-  <*> pure defaultTheme
-
-filenameFilterParser :: Parser [FilenameFilter]
-filenameFilterParser = pure [DotPattern "-hs"] -- TODO
-
-configParser :: Parser Config
-configParser = subparser
-  (  stdCmd "replace" replaceOpts                 "Optical Replace"
-  <> stdCmd "preview" previewOpts "(Preview of...) Optical Replace"
-  <> stdCmd "view"    viewOpts                    "Optical Search"
-  )
+parser :: Parser Config
+parser = prefixConfigParser
+  -- <|> infixConfigParser
   where
-    stdCmd l x d = command l ( stdInfo x d )
-    stdInfo x d  = info x    ( progDesc d  )
+    prefixConfigParser :: Parser Config
+    prefixConfigParser = Config
+      <$> filenameFilterSetParser
+      <*> lensOperatorParser
+      <*> lensTextParser
+      <*> optional mapFnMapParser
+      <*> previewParser
+      <*> targetParser
 
-    viewOpts :: Parser Config
-    viewOpts = ConfigView . SearchConfig . LensText <$> traversalArg
+    -- infixConfigParser :: Parser Config
+    -- infixConfigParser = do
+    --   filenameFilterSetParser' <- filenameFilterSetParser
+    --   lensTextParser'          <- lensTextParser
+    --   lensOperatorParser'      <- lensOperatorParser
+    --   optionalMapFnMapParser'  <- optional mapFnMapParser
+    --   previewParser'           <- previewParser
+    --   targetParser'            <- targetParser
+    --   return $ Config
+    --     filenameFilterSetParser'
+    --     lensOperatorParser'
+    --     lensTextParser'
+    --     optionalMapFnMapParser'
+    --     previewParser'
+    --     targetParser'
 
-    traversalArg :: Parser Text
-    traversalArg = pack <$> argument str
-       ( metavar "TRAVERSAL"
-      <> help    "Traversal' FileInfo SrcSpanInfo"
-       )
+    _ = Config :: Set FilenameFilter
+               -> LensOperator
+               -> LensText
+               -> Maybe MapFnText
+               -> PreviewMode
+               -> Target
+               -> Config
 
-    previewOpts :: Parser Config
-    previewOpts = ConfigPreview <$> replaceConfigParser
+    _fromInfix :: Set FilenameFilter
+               -> LensText
+               -> LensOperator
+               -> Maybe MapFnText
+               -> PreviewMode
+               -> Target
+               -> Config
+    _fromInfix filts = flip (Config filts)
 
-    replaceOpts :: Parser Config
-    replaceOpts = ConfigExecute <$> replaceConfigParser
+previewParser :: Parser PreviewMode
+previewParser = pure PreviewModeEnabled
 
-    replaceConfigParser :: Parser ReplaceConfig
-    replaceConfigParser =
-      ( ReplaceConfig
-        <$> ( LensText <$> traversalArg)
-        <*> operatorArg
-        <*> ( MapFnText
-              <$> ( pack <$> argument str
-                    ( metavar "F"
-                   <> help    "Haskell function of type ':: a -> b'"
-                    )))
-      )
+lensTextParser :: Parser LensText
+lensTextParser = LensText . pack <$> argument str
+  ( metavar "TRAVERSAL"
+ <> help    "Traversal' FileInfo SrcSpanInfo (for now)"
+  )
 
-    operatorArg :: Parser LensOperator
-    operatorArg = panic "operatorArg undefined"
+mapFnMapParser :: Parser MapFnText
+mapFnMapParser = MapFnText . pack <$> argument str
+   ( metavar "F"
+  <> help "the function to apply with the lens"
+   )
+
+targetParser :: Parser Target
+targetParser = Target <$> strOption
+  ( long        "target"
+ <> short       't'
+ <> metavar     "TARGET"
+ <> help        "a file/directory to search/replace"
+ <> showDefault
+ <> value       "/tmp/voltron ." -- TODO
+  )
+
+lensOperatorParser :: Parser LensOperator
+lensOperatorParser = -- infixOperatorParser <|>
+  prefixOperatorParser
+
+-- infixOperatorParser :: Parser LensOperator
+-- infixOperatorParser = combineInfixOps
+--   [ (Over,  "%~", "over")
+--   , (Plus,  "+~", "plus")
+--   , (Set,   ".~", "set")
+--   , (Times, "*~", "times")
+--   , (View,  "^.", "view")
+--   ]
+--   where
+--     combineInfixOps :: [(LensOperator, Text, Text)] -> Parser LensOperator
+--     combineInfixOps = P.foldl' f z
+--       where
+--         f :: Parser LensOperator -> (LensOperator, Text, Text) -> Parser LensOperator
+--         f _ _ = g <$> argument str mempty
+
+--         g :: String -> LensOperator
+--         g = panic "g undefined"
+
+--         z :: Parser LensOperator
+--         z = pure View <* argument str mempty
+
+prefixOperatorParser :: Parser LensOperator
+prefixOperatorParser = combinePrefixOps
+  [ prefixOp "%~" "over"  Over
+  , prefixOp "+~" "plus"  Plus
+  , prefixOp ".~" "set"   Set
+  , prefixOp "*~" "times" Times
+  , prefixOp "^." "view"  View
+  ]
+  where
+    combinePrefixOps :: [Parser LensOperator] -> Parser LensOperator
+    combinePrefixOps = fromMaybe (panic "combinePrefixOps Nothing undefined")
+      . headMay -- TODOx
+
+    prefixOp :: String -> String -> LensOperator -> Parser LensOperator
+    prefixOp sigil _name op = something op sigil $ argument str mempty
+
+    something :: LensOperator -> String -> Parser String -> Parser LensOperator
+    something _lo _s parser' = foo <$> parser'
+      where
+        foo :: String -> LensOperator
+        foo "over"  = Over
+        foo "plus"  = Plus
+        foo "set"   = Plus
+        foo "times" = Plus
+        foo "view"  = Plus
+        foo x       = panic $ "invalid! ==> " <> pack x
+
+filenameFilterSetParser :: Parser (Set FilenameFilter)
+filenameFilterSetParser = pure $ Set.fromList [DotPattern "hs"] -- TODO
+
+apphrend :: Config -> IO ()
+apphrend config@Config{..} = do
+  putLn "attempting apprhension..."
+  print config
