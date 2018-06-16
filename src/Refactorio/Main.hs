@@ -1,17 +1,14 @@
-{-# LANGUAGE LambdaCase        #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards   #-}
 
-module Refactorio.Main
-     ( main
-     ) where
+module Refactorio.Main ( main ) where
 
-import Refactorio.Prelude  as P       hiding ( (<>)
-                                             , replace
-                                             )
+import Refactorio.Prelude  as P       hiding ( (<>) )
 
-import Data.Text           as Text    hiding ( replace )
+
+import Data.Set as Set
+import Data.Text as Text
 import Options.Applicative
 import Refactorio.Config
 import Refactorio.Replace  as Replace
@@ -19,49 +16,77 @@ import Refactorio.Search   as Search
 import Refactorio.Theme
 import X.Rainbow                      hiding ( (&) )
 
+-- CURRENT TARGET:   refio . --haskell view "__Module.biplate._Int" --pre-mqp "+32"
+
 main :: IO ()
-main = void $ execParser opts >>= searchOrReplace
+main = do
+  putLn "DANGER ZONE CONSTRUCTION IN PROGRESS.."
+  void $ execParser opts >>= makeTheMagicHappen
   where
     opts = info (parser <**> helper) $ fullDesc
            <> header "Refactorio - Optical Refactoring Tool"
-           <> progDesc "What does this thing do?"
+           <> progDesc "Zen and the art of optical file maintenance."
 
-parser :: Parser Config
-parser = Config <$> targetOpt <*> traversalOpt <*> themeOpt <*> functionOpt
+    makeTheMagicHappen :: (Config, CommonConfig) -> IO ()
+    makeTheMagicHappen (ConfigExecute config, commonConfig) =
+      Replace.execute commonConfig config
+    makeTheMagicHappen (ConfigPreview config, commonConfig) =
+      Replace.preview commonConfig config
+    makeTheMagicHappen (ConfigView config, commonConfig) =
+      Search.view commonConfig config
+
+parser :: Parser (Config, CommonConfig)
+parser = flip (,) <$> commonConfigParser <*> configParser
+
+commonConfigParser :: Parser CommonConfig
+commonConfigParser = CommonConfig
+  <$> ( Set.fromList <$> filenameFilterParser )
+  <*> ( Target <$> strOption
+        ( long "target"
+       <> short 't'
+       <> metavar "TARGET"
+       <> help "a file/directory to search/replace"
+       <> showDefault
+       <> value "."
+        )
+      )
+  <*> pure defaultTheme
+
+filenameFilterParser :: Parser [FilenameFilter]
+filenameFilterParser = pure [DotPattern "-hs"] -- TODO
+
+configParser :: Parser Config
+configParser = subparser
+  (  stdCmd "replace" replaceOpts                 "Optical Replace"
+  <> stdCmd "preview" previewOpts "(Preview of...) Optical Replace"
+  <> stdCmd "view"    viewOpts                    "Optical Search"
+  )
   where
-    -- TODO: figure out why showDefault's aren't working
-    targetOpt    = argument str ( metavar "TARGET" )
-    traversalOpt = pack <$> argument str ( metavar "TRAVERSAL" )
-    themeOpt     = pure defaultTheme -- TODO
-    functionOpt  = pack <<$>> strOption $ long "fmap"
-                           <> short 'f'
-                           <> metavar "FUNCTION-SOURCE"
-                           <> showDefault
-                           <> value ""
+    stdCmd l x d = command l ( stdInfo x d )
+    stdInfo x d  = info x    ( progDesc d  )
 
-searchOrReplace :: Config -> IO ()
-searchOrReplace config@Config{..} = do
-  putChunksLn
-    [ chunk within & withinHdr theme
-    , chunk (pack projectRoot) & withinValue theme
-    ]
-  putChunksLn
-    [ chunk query & searchHdr theme
-    , chunk lensText & searchValue theme
-    ]
-  newLine
-  results
-  where
-    within = case mapFnSrc of
-      "" -> "Searching within: "
-      _  -> "Previewing replacement within: "
+    viewOpts :: Parser Config
+    viewOpts = ConfigView . SearchConfig . LensText <$> traversalArg
 
-    query = justify "  for matches to: "
+    traversalArg :: Parser Text
+    traversalArg = pack <$> argument str
+       ( metavar "TRAVERSAL"
+      <> help    "Traversal' FileInfo SrcSpanInfo"
+       )
 
-    justify s = Text.replicate (Text.length within - Text.length s) " " <> s
+    previewOpts :: Parser Config
+    previewOpts = ConfigPreview <$> replaceConfigParser
 
-    results = case mapFnSrc of
-      ""  -> Search.byLens config
-      src -> compileMapFn src >>= \case
-        Left err -> Replace.displayError theme err
-        Right f  -> Replace.withLens config f
+    replaceOpts :: Parser Config
+    replaceOpts = ConfigExecute <$> replaceConfigParser
+
+    replaceConfigParser :: Parser ReplaceConfig
+    replaceConfigParser =
+      ( ReplaceConfig
+        <$> ( LensText <$> traversalArg)
+        <*> ( MapFnText
+              <$> ( pack <$> argument str
+                    ( metavar "F"
+                   <> help    "Haskell function of type ':: a -> b'"
+                    )))
+      )

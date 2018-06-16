@@ -1,5 +1,4 @@
 {-# LANGUAGE NoImplicitPrelude #-}
-{-# LANGUAGE OverloadedStrings #-}
 
 module X.Rainbow
      ( module Exports

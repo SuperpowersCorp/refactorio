@@ -2,6 +2,7 @@
 
 module X.Streaming.Files
      ( FileInfo
+     , FileStatus
      , tree
      ) where
 

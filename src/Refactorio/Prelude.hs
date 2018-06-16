@@ -8,6 +8,8 @@ module Refactorio.Prelude
     ) where
 
 import Control.Arrow as Exports ( (&&&) )
+import Control.Lens  as Exports ( makeClassy )
+import Data.Data     as Exports ( Data )
 import Data.Text     as Exports ( unpack )
 import Protolude     as Exports
 

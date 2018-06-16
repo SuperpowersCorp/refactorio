@@ -24,13 +24,16 @@ import           X.Language.Haskell.Interpreter      hiding ( OverloadedStrings
 import           X.Rainbow                           hiding ( (&) )
 import           X.Streaming.Files                          ( tree )
 
-byLens :: Config -> IO ()
-byLens Config {..} = makeLens lensText >>= \case
+-- CURRENT TARGET:   refio . --haskell view "__Module.biplate._Int" --pre-mqp "+32"
+
+byLens :: CommonConfig -> SearchConfig -> IO ()
+byLens CommonConfig {..} SearchConfig {..} = makeLens (unLensText primaryLensText) >>= \case
   Left err -> displayError theme err
   Right trav -> S.mapM_ (showMatches trav)
     . S.chain reportFile
     . S.filter (\(p, _) -> ".hs" `L.isSuffixOf` p && not (".stack-work" `L.isInfixOf` p))
     . tree
+    . unTarget
     $ target
     where
       showMatches t (p, _) = findMatches t p
@@ -53,7 +56,7 @@ displayError theme = \case
     putChunkLn
       $ chunk ("Encountered " <> show (L.length errors) <> " errors in the definition of your lens:")
       & errorColor theme
-    mapM_ (\e -> putChunkLn . errorColor theme . chunk . pack . errMsg $ e) errors
+    mapM_ (putChunkLn . errorColor theme . chunk . pack . errMsg) errors
 
 makeLens :: Text -> IO (Either InterpreterError
                         (ATraversal' (Module SrcSpanInfo) SrcSpanInfo))
@@ -136,3 +139,6 @@ parseMode path = defaultParseMode
       [ OverloadedStrings
       , RankNTypes
       ]
+
+view :: CommonConfig -> SearchConfig -> IO ()
+view = byLens

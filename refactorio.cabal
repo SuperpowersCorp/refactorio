@@ -15,7 +15,7 @@ cabal-version:       >=1.10
 
 library
   hs-source-dirs:      src
-  ghc-options:         -Wall
+  ghc-options:         -Wall 
   exposed-modules:     Refactorio.Config
                      , Refactorio.InterPrelude
                      , Refactorio.Main
@@ -28,6 +28,7 @@ library
                      , X.Streaming.Files
   build-depends:       base >= 4.7 && < 5
                      , bytestring
+                     , containers
                      , directory
                      , exceptions
                      , haskell-src-exts
@@ -49,6 +50,7 @@ executable refactorio
   ghc-options:         -Wall -threaded -rtsopts -with-rtsopts=-N
   build-depends:       base
                      , bytestring
+                     , containers
                      , directory
                      , exceptions
                      , hint
@@ -67,6 +69,7 @@ test-suite refactorio-test
   build-depends:       QuickCheck
                      , base
                      , bytestring
+                     , containers
                      , directory
                      , exceptions
                      , hint
