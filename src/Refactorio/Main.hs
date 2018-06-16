@@ -93,4 +93,4 @@ configParser = subparser
       )
 
     operatorArg :: Parser LensOperator
-    operatorArg = undefined
+    operatorArg = panic "operatorArg undefined"
