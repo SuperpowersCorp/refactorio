@@ -27,14 +27,10 @@ main = void $ execParser opts >>= searchOrReplace
            <> progDesc "What does this thing do?"
 
 parser :: Parser Config
-parser = Config <$> directoryOpt <*> traversalOpt <*> themeOpt <*> functionOpt
+parser = Config <$> targetOpt <*> traversalOpt <*> themeOpt <*> functionOpt
   where
     -- TODO: figure out why showDefault's aren't working
-    directoryOpt = strOption $ long "directory"
-                            <> short 'd'
-                            <> metavar "PROJECT-ROOT"
-                            <> value "."
-                            <> showDefault
+    targetOpt    = argument str ( metavar "TARGET" )
     traversalOpt = pack <$> argument str ( metavar "TRAVERSAL" )
     themeOpt     = pure defaultTheme -- TODO
     functionOpt  = pack <<$>> strOption $ long "fmap"

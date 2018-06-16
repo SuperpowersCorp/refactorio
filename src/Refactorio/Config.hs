@@ -7,10 +7,10 @@ import Refactorio.Prelude
 import Refactorio.Theme
 
 data Config = Config
-  { projectRoot :: FilePath
-  , lensText    :: Text
-  , theme       :: Theme
-  , mapFnSrc    :: Text
+  { target   :: FilePath
+  , lensText :: Text
+  , theme    :: Theme
+  , mapFnSrc :: Text
   }
 
 -- TODO: soomething like ...

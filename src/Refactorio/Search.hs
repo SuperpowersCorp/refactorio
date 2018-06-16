@@ -31,7 +31,7 @@ byLens Config {..} = makeLens lensText >>= \case
     . S.chain reportFile
     . S.filter (\(p, _) -> ".hs" `L.isSuffixOf` p && not (".stack-work" `L.isInfixOf` p))
     . tree
-    $ projectRoot
+    $ target
     where
       showMatches t (p, _) = findMatches t p
                                >>= mapM_ (\x -> printPrettily theme x >> newLine)
