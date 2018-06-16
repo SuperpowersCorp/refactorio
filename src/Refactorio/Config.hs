@@ -36,9 +36,18 @@ newtype MapFnText = MapFnText { unMapFnText :: Text }
   deriving (Data, Eq, Ord, Read, Show)
 
 data ReplaceConfig = ReplaceConfig
-  { lensText  :: LensText
-  , mapFnText :: MapFnText
+  { lensText     :: LensText
+  , lensOperator :: LensOperator
+  , mapFnText    :: MapFnText
   } deriving (Data, Eq, Ord, Read, Show)
+
+data LensOperator  -- TODO: the rest
+  = Over  -- aka (%~)
+  | Plus  -- aka (+~)
+  | Set   -- aka (.~)
+  | Times -- aka (*~)
+  | View  -- aka (^.)
+  deriving (Data, Eq, Ord, Read, Show)
 
 data SearchConfig = SearchConfig -- YES data, not newtype shut up !
   { primaryLensText :: LensText

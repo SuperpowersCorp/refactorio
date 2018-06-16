@@ -84,9 +84,13 @@ configParser = subparser
     replaceConfigParser =
       ( ReplaceConfig
         <$> ( LensText <$> traversalArg)
+        <*> operatorArg
         <*> ( MapFnText
               <$> ( pack <$> argument str
                     ( metavar "F"
                    <> help    "Haskell function of type ':: a -> b'"
                     )))
       )
+
+    operatorArg :: Parser LensOperator
+    operatorArg = undefined
