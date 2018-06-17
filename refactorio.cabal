@@ -21,6 +21,7 @@ library
                      , Refactorio.Lens
                      , Refactorio.Main
                      , Refactorio.Prelude
+                     , Refactorio.StartingPoint
                      , Refactorio.Theme
                      , X.Language.Haskell.Interpreter
                      , X.Rainbow

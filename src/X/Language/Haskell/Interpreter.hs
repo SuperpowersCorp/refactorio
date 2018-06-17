@@ -7,24 +7,24 @@ module X.Language.Haskell.Interpreter
 
 import Refactorio.Prelude
 
+import System.Directory
 import Language.Haskell.Interpreter
 
 build :: Typeable a => Text -> IO (Either InterpreterError a)
-build src = runInterpreter $ do
-  set [ languageExtensions := [ FlexibleContexts
-                              , FlexibleInstances
-                              , FunctionalDependencies
-                              , MultiParamTypeClasses
-                              , LambdaCase
-                              , OverloadedStrings
---                              , RankNTypes
-                              , RecordWildCards
---                              , ScopedTypeVariables
-                              ]
+build src = getHomeDirectory >>= \home -> runInterpreter $ do
+  set [ languageExtensions
+        := [ FlexibleContexts
+           , FlexibleInstances
+           , FunctionalDependencies
+           , MultiParamTypeClasses
+           , LambdaCase
+           , OverloadedStrings
+           -- , RankNTypes
+           , RecordWildCards
+           -- , ScopedTypeVariables
+           ]
       ]
-  loadModules
-    [ "/Users/john/.refactorio/InterPrelude.hs"
-    ]
+  loadModules [ home <> "/.refactorio/InterPrelude.hs" ]
   setImports
     [ "Protolude"
     , "Control.Lens"

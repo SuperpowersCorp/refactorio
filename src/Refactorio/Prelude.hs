@@ -9,10 +9,10 @@ module Refactorio.Prelude
 
 import Control.Arrow  as Exports ( (&&&) )
 import Control.Lens   as Exports ( (.~)
-                                , makeClassy
-                                )
-import Data.Data.Lens as Exports ( upon )
+                                 , makeClassy
+                                 )
 import Data.Data      as Exports ( Data )
+import Data.Data.Lens as Exports ( upon )
 import Data.Text      as Exports ( unpack )
 import Protolude      as Exports
 

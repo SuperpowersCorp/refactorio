@@ -1,7 +1,7 @@
-{-# LANGUAGE InstanceSigs #-}
-{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE InstanceSigs       #-}
 {-# LANGUAGE NoImplicitPrelude  #-}
+{-# LANGUAGE OverloadedStrings  #-}
 
 module Refactorio.Config where
 
@@ -32,7 +32,7 @@ data FilenameFilter
   deriving (Data, Eq, Ord, Read, Show)
 
 newtype LensText = LensText { unLensText :: Text }
-  deriving (Data, Eq, Ord, Read, Show)
+  deriving (Data, Eq, Ord, Read, Show, Typeable)
 
 newtype MapFnText = MapFnText { unMapFnText :: Text }
   deriving (Data, Eq, Ord, Read, Show)
