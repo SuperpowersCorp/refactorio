@@ -9,6 +9,7 @@ module Refactorio.InterPrelude
      , initBS
      , hack
      , hackable
+     , key
      , moduleNameL
      , reverseBS
      , srcSpanInfoL
@@ -20,6 +21,9 @@ import           Control.Lens                 as Exports hiding ( Context
                                                                 , _Cons
                                                                 , op
                                                                 )
+import           Data.Aeson
+import           Data.Aeson.Lens as Exports ( _Number )
+import qualified Data.Aeson.Lens as DAL
 import qualified Data.ByteString              as BS
 import           Data.ByteString.Lens         as Exports
 import           Data.Data.Lens               as Exports
@@ -35,6 +39,13 @@ initBS = BS.init
 
 reverseBS :: ByteString -> ByteString
 reverseBS = BS.reverse
+
+key :: (Applicative f, DAL.AsValue t)
+    => Text
+    -> (Value -> f Value)
+    -> t
+    -> f t
+key = DAL.key
 
 -- end :: (Functor f, Field1 s t a b) => (a -> f b) -> s -> f t
 -- end = _1

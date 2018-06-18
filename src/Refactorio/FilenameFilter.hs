@@ -4,10 +4,11 @@
 
 module Refactorio.FilenameFilter where
 
-import Refactorio.Prelude
+import Refactorio.Prelude hiding ( null )
 
-import Data.Char          ( toLower )
-import Data.Data          ( Data )
+import Data.Char                 ( toLower )
+import Data.Data                 ( Data )
+import Data.Set                  ( null )
 
 data FilenameFilter
   = DotPattern String
@@ -22,3 +23,8 @@ matches Haskell        path = matches (DotPattern "hs")   path
 matches JSON           path = matches (DotPattern "json") path
 matches YAML           path = matches (DotPattern "yaml") path
                            || matches (DotPattern "yml")  path
+
+matchesSet :: Set FilenameFilter -> FilePath -> Bool
+matchesSet filters path
+  | null filters = True
+  | otherwise    = any (flip matches path) filters

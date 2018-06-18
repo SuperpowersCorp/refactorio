@@ -12,7 +12,6 @@ import           Data.Algorithm.DiffContext
 import qualified Data.ByteString                as BS
 import qualified Data.ByteString.Char8          as C8
 import qualified Data.List                      as List
-import qualified Data.Set                       as Set
 import           Data.Text                                     ( pack )
 import           Refactorio.FilenameFilter
 import           Refactorio.Types
@@ -30,18 +29,13 @@ process Config{..} = build (unExpression expr) >>= either (panic . show) process
     process' f = do
       putLn $ "Seeking " <> show (unExpression expr)
       S.mapM_ ( processWith f )
-        . S.filter ( matchesFilters filenameFilters )
+        . S.filter ( matchesSet filenameFilters )
         . S.filter ( not . ignored )
         . S.map fst
         . S.filter ( not . isDirectory . snd )
         . tree
         . unTarget
         $ target
-
-matchesFilters :: Set FilenameFilter -> FilePath -> Bool
-matchesFilters filters path
-  | Set.null filters = True
-  | otherwise        = any (flip matches path) filters
 
 -- TODO: read .*ignore files from the target dir down to the current file, caching
 --       along the way, etc. but for now...
@@ -50,33 +44,37 @@ ignored = (".stack-work" `List.isInfixOf`)
 
 processWith :: (ByteString -> ByteString) -> FilePath -> IO ()
 processWith f path = do
-  bytes :: ByteString <- BS.readFile path
-  let bytes' :: ByteString = f bytes
-  if (bytes == bytes')
-    then putLn $ "** Unchanged: " <> show path
+  (beforeBytes, afterBytes) <- (identity &&& f) <$> BS.readFile path
+  if beforeBytes == afterBytes
+    then putLn $ "** Unchanged: " <> pack path
     else do
-      let xs  :: [ByteString] = C8.lines bytes
-          xs' :: [ByteString] = C8.lines bytes'
-          diff'               = getContextDiff ctxLines xs xs'
-          doc                 = prettyContextDiff d1name d2name elpp diff'
+      let beforeLines = C8.lines beforeBytes
+          afterLines  = C8.lines afterBytes
+          diff'       = getContextDiff ctxLines beforeLines afterLines
+          doc         = prettyContextDiff beforeName afterName elPrint diff'
       putLn $ "** Changed: " <> show path
       putLn "================================================================"
-      putLn . render' $ doc
+      display doc
   where
-    d1name :: Doc
-    d1name = PP.text "BEFORE"
+    beforeName :: Doc
+    beforeName = PP.text $ path <> " BEFORE"
 
-    d2name :: Doc
-    d2name = PP.text "AFTER"
+    afterName :: Doc
+    afterName = PP.text $ path <> " AFTER"
 
     ctxLines :: Int
     ctxLines = 2
 
-    elpp :: ByteString -> Doc
-    elpp = PP.text . unpack . decodeUtf8
+    elPrint :: ByteString -> Doc
+    elPrint = PP.text . unpack . decodeUtf8
 
     render' :: Doc -> Text
     render' = pack . PP.render
+
+    display :: Doc -> IO ()
+    display = putLn . render'
+
+    -- TODO: altDisplay that putChunkLn's according to - or + in front
 
 _test1 :: IO ()
 _test1 = do

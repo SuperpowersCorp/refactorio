@@ -41,19 +41,26 @@ parser = prefixConfigParser
 
     _ = Config :: Set FilenameFilter
                -> Expression
-               -> PreviewMode
+               -> UpdateMode
                -> Target
                -> Config
 
     _fromInfix :: Set FilenameFilter
-               -> PreviewMode
+               -> UpdateMode
                -> Expression
                -> Target
                -> Config
     _fromInfix filts = flip (Config filts)
 
-previewParser :: Parser PreviewMode
-previewParser = pure PreviewModeEnabled
+previewParser :: Parser UpdateMode
+previewParser = f <$> switch
+  ( long "replace"
+ <> short 'r'
+ <> help "update files in place"
+  )
+  where
+    f True  = LiveUpdateMove
+    f False = PreviewMode
 
 expressionParser :: Parser Expression
 expressionParser = Expression . Text.pack <$> argument str
@@ -76,11 +83,11 @@ filenameFilterSetParser = unite
   <$> many ( strOption ( long    "ext"
                       <> short   'e'
                       <> metavar "EXT"
-                      <> help    "file extension to include (eg 'txt', 'c')"
+                      <> help    "File extension to include (eg 'txt', 'c')"
                        )
            )
   <*> switch ( long "haskell"
-            <> help "Include .hs files and activate Haskell module mapping."
+            <> help "Include .hs files and activate Haskell module parsing mode."
              )
   <*> switch ( long "json"
             <> help "Include .json files."

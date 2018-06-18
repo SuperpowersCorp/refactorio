@@ -13,7 +13,7 @@ import Refactorio.FilenameFilter
 data Config = Config
   { filenameFilters :: Set FilenameFilter
   , expr            :: Expression
-  , preview         :: PreviewMode
+  , updateMode      :: UpdateMode
   , target          :: Target
   } deriving (Data, Eq, Ord, Read, Show)
 
@@ -41,9 +41,9 @@ newtype LensText = LensText { unLensText :: Text }
 newtype MapFnText = MapFnText { unMapFnText :: Text }
   deriving (Data, Eq, Ord, Read, Show)
 
-data PreviewMode
-  = PreviewModeDisabled
-  | PreviewModeEnabled
+data UpdateMode
+  = PreviewMode
+  | LiveUpdateMove
   deriving (Data, Eq, Ord, Read, Show)
 
 data SearchConfig = SearchConfig -- YES data, not newtype shut up !
