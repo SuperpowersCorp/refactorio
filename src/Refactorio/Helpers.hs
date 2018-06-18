@@ -24,6 +24,7 @@ import qualified Data.Aeson              as Json
 import qualified Data.ByteString.Lazy    as LBS
 import qualified Data.Yaml               as Yaml
 import           X.Language.Haskell.Exts         ( hs )
+import qualified Data.Text.Lazy          as LT
 
 class Lazyboy s l where
   strictify :: l -> s
@@ -32,6 +33,10 @@ class Lazyboy s l where
 instance Lazyboy ByteString LByteString where
   strictify = LBS.toStrict
   lazify    = LBS.fromStrict
+
+instance Lazyboy Text LText where
+  strictify = LT.toStrict
+  lazify    = LT.fromStrict
 
 lazy :: Lazyboy s l => Iso' s l
 lazy = iso lazify strictify

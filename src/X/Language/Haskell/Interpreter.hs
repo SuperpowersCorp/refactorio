@@ -21,6 +21,7 @@ build preludePathMay src = runInterpreter $ do
            , LambdaCase
            , OverloadedStrings
            -- , RankNTypes
+           , QuasiQuotes
            , RecordWildCards
            , ScopedTypeVariables
            ]
@@ -42,8 +43,10 @@ build preludePathMay src = runInterpreter $ do
     , ("Language.Haskell.Exts.Prisms", Just "HS")
     , ("Protolude"                   , Nothing)
     , ("Refactorio.Helpers"          , Just "H")
+    , ("Refactorio.Prelude"          , Just "RP")
     , ("Text.Pandoc.Lens"            , Just "P")
     , ("Text.Regex.Lens"             , Just "R")
+    , ("Text.Regex.Quote"            , Nothing)
     , ("Text.Xml.Lens"               , Just "X")
     , ("Codec.Compression.Zlib.Lens" , Nothing)
     ]
