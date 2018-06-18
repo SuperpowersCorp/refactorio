@@ -18,12 +18,33 @@ For now:
 
 and run it from the project root to get an experience something like:
 
-    refio --json    '& key "foo" . key "bar" . _Number *~ 15' -t ../voltron/test/fixtures
-    refio --haskell _Module.biplate._ModuleName.end           -t ../voltron/src
+    refio --json '& key "foo" . key "bar" . _Number *~ 15' -t ../voltron/test/fixtures
+
+or
+
+    refio --haskell _Module.biplate._ModuleName.end -t ../voltron/src
 
 ## Examples
 
-TODO: Re-do since re-design.
+Here are a few examples to whet your appetite.  For more see [examples](examples/).
+
+JSON (via [lens-aeson](https://hackage.haskell.org/package/lens-aeson)):
+
+"Increment the value at key 'baz' by 1962."
+
+[JSON Example](examples/json.png)
+
+YAML (same operators):
+
+"Multiply the value of the key 'baz' by 10."
+
+[YAML Example](examples/yaml.png)
+
+HTML (via `Text.Xml.Lens`) TODO: taggy
+
+    Coming soon.
+
+Haskell:
 
 Try these on your projects:
 
@@ -49,6 +70,9 @@ See [examples](examples/).
 - [X] Refactor CLI into `ref view`, `ref fmap` and `ref set`
 - [X] Suppress printing of filename when there are no matches (tardis?)
 - [X] `-f/fmap`
+- [ ] Eliminate unnecessary serialization round trips
+  - [ ] eg when processing YAML via JSON
+  - [ ] don't changes files when all that changed was formatting.
 - [ ] Handle '-' as filename for stdin->stdout
 - [ ] Seek guidance from the pros on
   - [ ] CT/lenses
