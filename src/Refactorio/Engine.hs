@@ -33,7 +33,7 @@ import           X.Streaming.Files                            ( tree )
 
 process :: Config -> IO ()
 process Config{..} = do
-  home <- getHomeDirectory
+  _home <- getHomeDirectory
   putLn $ "Target: "  <> show (unTarget target)
   putLn $ "Filters: " <> show (map unFilenameFilter . Set.toList $ allFilters)
   case specialMode of
@@ -42,12 +42,12 @@ process Config{..} = do
   putLn $ "Expression: " <> show (unExpression expr)
   putLn $ "UpdateMode: " <> show updateMode
   hFlush stdout
-  let prelude :: FilePath = fromMaybe (defaultPrelude home)
-                            . fmap (prepend home)
-                            . join
-                            . fmap specialPrelude
-                            $ specialMode
-  build prelude (unExpression expr) >>= either (panic . show) process'
+  -- let interlude :: FilePath = fromMaybe (defaultInterlude home)
+  --                           . fmap (prepend home)
+  --                           . join
+  --                           . fmap specialInterlude
+  --                           $ specialMode
+  build Nothing (unExpression expr) >>= either (panic . show) process'
   where
     process' f = S.mapM_ ( processWith updateMode f )
       . S.filter ( matchesAny compiledFilters )
@@ -58,24 +58,24 @@ process Config{..} = do
       . unTarget
       $ target
 
-    prepend :: FilePath -> FilePath -> FilePath
-    prepend home = ((home <> "/") <>)
+    _prepend :: FilePath -> FilePath -> FilePath
+    _prepend home = ((home <> "/.refactorio/") <>)
 
     allFilters = expandExtraFilters filenameFilters
 
     compiledFilters = map compileFilter . Set.toList $ allFilters
 
-    defaultPrelude home = home <> "./refactorio"
+    -- defaultInterlude home = prepend home "Interlude.hs"
 
     expandExtraFilters :: Set FilenameFilter -> Set FilenameFilter
     expandExtraFilters existing
       | not . null $ existing = existing
-      | otherwise = fromMaybe Set.empty . fmap filtersForSpecialMode $ specialMode
+      | otherwise = maybe Set.empty filtersForSpecialMode specialMode
 
-specialPrelude :: SpecialMode -> Maybe FilePath
-specialPrelude Haskell = Just "HaskellPrelude.hs"
-specialPrelude Json    = Just "JsonPrelude.hs"
-specialPrelude Yaml    = Just "YamlPrelude.hs"
+-- specialInterlude :: SpecialMode -> Maybe FilePath
+-- specialInterlude Haskell = Just "HaskellInterlude.hs"
+-- specialInterlude Json    = Just "JsonInterlude.hs"
+-- specialInterlude Yaml    = Just "YamlInterlude.hs"
 
 filtersForSpecialMode :: SpecialMode -> Set FilenameFilter
 filtersForSpecialMode m = Set.fromList . map FilenameFilter $ case m of
@@ -88,10 +88,12 @@ filtersForSpecialMode m = Set.fromList . map FilenameFilter $ case m of
 -- TODO: read .*ignore files from the target dir down to the current file, caching
 --       along the way, etc. but for now...
 ignored :: FilePath -> Bool
-ignored path = False
+ignored path = ocd
   || path `contains`   ".stack-work"
   || path `startsWith` ".git/"
   || path `contains`   "/.git/"
+  where
+    ocd = False
 
 data ChangeChoice = AcceptChange | RejectChange | QuitChanges
   deriving (Data, Eq, Ord, Read, Show, Typeable)

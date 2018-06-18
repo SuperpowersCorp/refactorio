@@ -9,8 +9,8 @@ import Refactorio.Prelude
 
 import Language.Haskell.Interpreter
 
-build :: Typeable a => FilePath -> Text -> IO (Either InterpreterError a)
-build preludePath src = runInterpreter $ do
+build :: Typeable a => Maybe FilePath -> Text -> IO (Either InterpreterError a)
+build preludePathMay src = runInterpreter $ do
   set [ languageExtensions
         := [ FlexibleContexts
            , FlexibleInstances
@@ -23,13 +23,15 @@ build preludePath src = runInterpreter $ do
            -- , ScopedTypeVariables
            ]
       ]
-  loadModules [ preludePath ]
-  setImports
-    [ "Protolude"
-    , "Control.Lens"
-    , "Data.Data.Lens"
-    , "Language.Haskell.Exts"
-    , "Language.Haskell.Exts.Prisms"
-    , "Refactorio.InterPrelude"
+  case preludePathMay of
+    Just preludePath -> loadModules [ preludePath ]
+    Nothing          -> return ()
+  setImportsQ
+    [ ("Protolude"                   , Nothing)
+    , ("Control.Lens"                , Just "L")
+    , ("Data.Data.Lens"              , Just "L")
+    , ("Text.Pandoc.Lens"            , Just "DOC")
+    , ("Language.Haskell.Exts "      , Just "HS")
+    , ("Language.Haskell.Exts.Prisms", Just "HS")
     ]
   interpret (unpack src) infer

@@ -48,13 +48,15 @@ parser = prefixConfigParser
     reorder ex ta ff pr up sp = Config ff ex pr sp up ta
 
 preludeParser :: Parser FilePath
-preludeParser = strOption ( long "prelude"
-                         <> help "Use a specific Prelude"
+preludeParser = strOption ( long    "prelude"
+                         <> help    "Use a specific Prelude"
+                         <> metavar "PRELUDE"
                           )
 
 specialModeParser :: Parser SpecialMode
 specialModeParser =
   Haskell <$ switch ( long "haskell"
+                   <> long "hs"
                    <> help "Include .hs files and activate Haskell module parsing mode."
                     )
   <|> Json <$ switch ( long "json"
@@ -96,13 +98,13 @@ targetParser = Target <$> strOption
  <> short       't'
  <> metavar     "TARGET"
  <> help        "A file/directory to search/replace"
+ <> value       "."
  <> showDefault
- <> value       "/tmp/voltron" -- TODO
   )
 
 filenameFilterSetParser :: Parser (Set FilenameFilter)
 filenameFilterSetParser = Set.fromList . map (FilenameFilter . Text.pack) <$>
-  many ( strOption ( long    "glob"
+  many ( strOption (    long    "glob"
                      <> short   'g'
                      <> metavar "GLOB"
                      <> help    "Glob matches to include (eg '*.ini', 'f??b?r.c')"

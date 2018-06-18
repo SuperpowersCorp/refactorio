@@ -18,7 +18,6 @@ library
   ghc-options:         -Wall
   exposed-modules:     Refactorio.Engine
                      , Refactorio.FilenameFilter
-                     , Refactorio.InterPrelude
                      , Refactorio.Main
                      , Refactorio.Prelude
                      , Refactorio.Theme

@@ -19,7 +19,7 @@ import System.FilePath.Glob        ( Pattern
                                    , match
                                    )
 
-data FilenameFilter = FilenameFilter { unFilenameFilter :: Text }
+newtype FilenameFilter = FilenameFilter { unFilenameFilter :: Text }
   deriving (Data, Eq, Ord, Read, Show, Typeable)
 
 type CompiledFilter = Pattern
