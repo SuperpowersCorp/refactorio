@@ -5,6 +5,7 @@ module Refactorio.InterPrelude
      ( module Exports
      , Hackable
      , anyModuleNameL
+     , emptyBS
      , hack
      , hackable
      , moduleNameL
@@ -22,7 +23,11 @@ import Control.Lens                 as Exports hiding ( Context
 import Data.Data.Lens               as Exports
 import Language.Haskell.Exts        as Exports
 import Language.Haskell.Exts.Prisms as Exports
-import Refactorio.StartingPoint     as Exports
+
+import qualified Data.ByteString as BS -- for loaded module use... stand by
+
+emptyBS :: ByteString
+emptyBS = BS.empty
 
 -- end :: (Functor f, Field1 s t a b) => (a -> f b) -> s -> f t
 -- end = _1
