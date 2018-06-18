@@ -5,50 +5,24 @@ module Refactorio.InterPrelude
      ( module Exports
      , Hackable
      , anyModuleNameL
-     , emptyBS
-     , initBS
      , hack
      , hackable
-     , key
      , moduleNameL
-     , reverseBS
      , srcSpanInfoL
      , target
      ) where
 
-import           Control.Lens                 as Exports hiding ( Context
-                                                                , List
-                                                                , _Cons
-                                                                , op
-                                                                )
-import           Data.Aeson
-import           Data.Aeson.Lens              as Exports        ( _Number )
-import qualified Data.Aeson.Lens              as DAL
-import qualified Data.ByteString              as BS
-import           Data.ByteString.Lens         as Exports
-import           Data.Data.Lens               as Exports
-import           Language.Haskell.Exts        as Exports
-import           Language.Haskell.Exts.Prisms as Exports
-import           Protolude
-
-emptyBS :: ByteString
-emptyBS = BS.empty
-
-initBS :: ByteString -> ByteString
-initBS = BS.init
-
-reverseBS :: ByteString -> ByteString
-reverseBS = BS.reverse
-
-key :: (Applicative f, DAL.AsValue t)
-    => Text
-    -> (Value -> f Value)
-    -> t
-    -> f t
-key = DAL.key
-
--- end :: (Functor f, Field1 s t a b) => (a -> f b) -> s -> f t
--- end = _1
+import Control.Lens                 as Exports hiding ( Context
+                                                      , List
+                                                      , _Cons
+                                                      , op
+                                                      )
+import Data.Aeson.Lens              as Exports        ( _Number )
+import Data.ByteString.Lens         as Exports
+import Data.Data.Lens               as Exports
+import Language.Haskell.Exts        as Exports
+import Language.Haskell.Exts.Prisms as Exports
+import Protolude
 
 anyModuleNameL :: Applicative f
                => LensLike f (Module SrcSpanInfo) (Module SrcSpanInfo) SrcSpan SrcSpan

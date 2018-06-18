@@ -3,9 +3,11 @@
 
 module Refactorio.Prelude
     ( module Exports
-    , Ended
-    , endsWith
-    , newLine
+    , Container(..)
+    , Ended(..)
+    , Started(..)
+    , getLn
+    , nl
     , putLn
     ) where
 
@@ -20,14 +22,29 @@ import Data.String    as Exports ( String )
 import Data.Text      as Exports ( unpack )
 import Protolude      as Exports
 
+class Container a where
+  contains :: a -> a -> Bool
+
 class Ended a where
   endsWith :: a -> a -> Bool
+
+class Started a where
+  startsWith :: a -> a -> Bool
+
+instance Eq a => Container [a] where
+  contains = flip List.isInfixOf
 
 instance Eq a => Ended [a] where
   endsWith = flip List.isSuffixOf
 
+instance Eq a => Started [a] where
+  startsWith = flip List.isPrefixOf
+
+getLn :: MonadIO m => m Text
+getLn = liftIO getLine
+
 putLn :: MonadIO m => Text -> m ()
 putLn = putStrLn
 
-newLine :: MonadIO m => m ()
-newLine = putLn ""
+nl :: MonadIO m => m ()
+nl = putLn ""

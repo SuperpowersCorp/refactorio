@@ -1,6 +1,6 @@
-{-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE NoImplicitPrelude   #-}
 {-# LANGUAGE OverloadedStrings   #-}
+{-# LANGUAGE RecordWildCards     #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
 module Refactorio.Main ( main ) where
@@ -40,29 +40,40 @@ parser = prefixConfigParser
       <$> filenameFilterSetParser
       <*> expressionParser
       <*> optional specialModeParser
-      <*> previewParser
+      <*> updateModeParser
       <*> targetParser
 
 specialModeParser :: Parser SpecialMode
-specialModeParser = Haskell <$ switch ( long "haskell"
-                                     <> help "Include .hs files and activate Haskell module parsing mode."
-                                      )
-                    <|> JSON <$ switch ( long "json"
-                                      <> help "Include .json files."
-                                       )
-                    <|> YAML <$ switch ( long "yaml"
-                                      <> help "Include .yaml or .yml files."
-                                       )
+specialModeParser =
+  Haskell <$ switch ( long "haskell"
+                   <> help "Include .hs files and activate Haskell module parsing mode."
+                    )
+  <|> JSON <$ switch ( long "json"
+                    <> help "Include .json files."
+                     )
+  <|> YAML <$ switch ( long "yaml"
+                    <> help "Include .yaml or .yml files."
+                     )
 
-previewParser :: Parser UpdateMode
-previewParser = f <$> switch
-  ( long "replace"
- <> short 'r'
- <> help "update files in place"
-  )
-  where
-    f True  = LiveUpdateMove
-    f False = PreviewMode
+updateModeParser :: Parser UpdateMode
+updateModeParser =
+  AskMode <$ switch ( long "ask"
+                   <> short 'a'
+                   <> help "Ask before changing files (default)"
+                    )
+  <|> PreviewMode <$ switch ( long "preview"
+                           <> short 'p'
+                           <> help "Only show what changes would be made"
+                            )
+  <|> ReviewMode <$ switch ( long "review"
+                          <> short 'r'
+                          <> help "Make the changes and show what was changed"
+                           )
+  <|> JustDoItMode <$ switch ( long "just-do-it"
+                            <> short 'j'
+                            <> help "Make the changes and only report changed filenames"
+                             )
+  <|> pure AskMode
 
 expressionParser :: Parser Expression
 expressionParser = Expression . Text.pack <$> argument str
@@ -75,7 +86,7 @@ targetParser = Target <$> strOption
   ( long        "target"
  <> short       't'
  <> metavar     "TARGET"
- <> help        "a file/directory to search/replace"
+ <> help        "A file/directory to search/replace"
  <> showDefault
  <> value       "/tmp/voltron" -- TODO
   )

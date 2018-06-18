@@ -40,6 +40,7 @@ library
                      , lens
                      , lens-aeson
                      , optparse-applicative
+                     , pandoc-lens
                      , pretty
                      , protolude
                      , rainbow
@@ -64,6 +65,8 @@ executable refactorio
                      , hint
                      , lens
                      , lens-aeson
+                     , optparse-applicative
+                     , pandoc-lens
                      , pretty
                      , protolude
                      , refactorio
@@ -89,6 +92,7 @@ test-suite refactorio-test
                      , hspec
                      , lens
                      , lens-aeson
+                     , pandoc-lens
                      , pretty
                      , protolude
                      , refactorio
