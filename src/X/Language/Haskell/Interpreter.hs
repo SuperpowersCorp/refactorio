@@ -17,11 +17,12 @@ build preludePathMay src = (putLn ("...compiling... '" <> show src <> "'") >>) .
            , FlexibleInstances
            , FunctionalDependencies
            , MultiParamTypeClasses
+           , NoImplicitPrelude
            , LambdaCase
            , OverloadedStrings
            -- , RankNTypes
            , RecordWildCards
-           -- , ScopedTypeVariables
+           , ScopedTypeVariables
            ]
       ]
   case preludePathMay of
@@ -30,6 +31,9 @@ build preludePathMay src = (putLn ("...compiling... '" <> show src <> "'") >>) .
   setImportsQ
     [ ("Control.Lens"                , Nothing)
     , ("Control.Lens"                , Just "L")
+    , ("Data.Char"                   , Just "Char")
+    , ("Data.String"                 , Just "String")
+    , ("Data.Text"                   , Just "Text")
     , ("Data.Aeson.Lens"             , Just "A")
     , ("Data.ByteString.Lens"        , Nothing)
     , ("Data.Data.Lens"              , Just "L")

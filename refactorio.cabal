@@ -23,6 +23,7 @@ library
                      , Refactorio.Prelude
                      , Refactorio.Theme
                      , Refactorio.Types
+                     , X.Language.Haskell.Exts
                      , X.Language.Haskell.Interpreter
                      , X.Rainbow
                      , X.Streaming.Files

@@ -34,7 +34,7 @@ import           X.Streaming.Files                            ( tree )
 process :: Config -> IO ()
 process Config{..} = do
   _home <- getHomeDirectory
-  putLn $ "Target: "  <> show (unTarget target)
+  putLn $ "Targets: " <> show (unTarget target)
   putLn $ "Filters: " <> show (map unFilenameFilter . Set.toList $ allFilters)
   case specialModeMay of
     Nothing   -> return ()
@@ -114,8 +114,6 @@ changePrompt = do
 processWith :: UpdateMode -> (ByteString -> ByteString) -> FilePath -> IO ()
 processWith updateMode f path = do
   (beforeBytes, afterBytes) <- (identity &&& f) <$> BS.readFile path
-  putLn $ "Read bytes: " <> show (BS.length beforeBytes)
-  putLn $ "Processed bytes: " <> show (BS.length afterBytes)
   if beforeBytes == afterBytes
     then putLn $ "** Unchanged: " <> pack path
     else handleChange (beforeBytes, afterBytes)
