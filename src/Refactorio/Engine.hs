@@ -41,7 +41,7 @@ process Config{..} = do
   putLn $ "Targets: " <> show (unTarget target)
   unless (null allFilters) $
     putLn $ "Filters: " <> show (map unFilenameFilter . Set.toList $ allFilters)
-  putLn $ "Expression: " <> show (unExpression expr)
+  putLn $ "Expression: " <> unExpression expr
   hFlush stdout
   -- let interlude :: FilePath = fromMaybe (defaultInterlude home)
   --                           . fmap (prepend home)
