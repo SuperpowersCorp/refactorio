@@ -78,7 +78,7 @@ previewParser = pure PreviewModeEnabled
 lensTextParser :: Parser LensText
 lensTextParser = LensText . Text.pack <$> argument str
   ( metavar "TRAVERSAL"
- <> help    "Traversal' FileInfo SrcSpanInfo (for now)"
+ <> help    "ATraversal' StartingPoint (SrcSpanInfo, a)"
   )
 
 mapFnMapParser :: Parser MapFnText
@@ -113,13 +113,10 @@ apprehend :: Config -> IO ()
 apprehend config@Config{..} = do
   putLn "attempting apprehension..."
   print config
-  let lensText' :: Text
-      lensText' = unLensText lensText
-  build lensText' >>= \case
+  build (unLensText lensText) >>= \case
     Left  err  -> panic . show $ err
-    Right trav -> do
-      let _ = trav :: ATraversal' StartingPoint (SrcSpanInfo, Int)
-      S.mapM_ ((viewOrApply trav compiledF =<<) . start)
+    Right f ->
+      S.mapM_ ( processWith f )
       . S.take 1 -- TODO
       . S.chain (putLn . ("DEBUG FILENAME: " <>) . show . fst)
       . S.filter ((".hs" `List.isSuffixOf`) . fst)
@@ -128,56 +125,72 @@ apprehend config@Config{..} = do
       . tree
       . unTarget
       $ target
-  where
-    start :: FileInfo -> IO StartingPoint
-    start _fileInfo@(path, _) = StartingPoint
-      <$> ( (,)
-            <$> pure path
-            <*> (encodeUtf8 <$> readFile path)
-          )
 
-    -- _contents :: StartingPoint
-    -- _contents = panic "apprehension... contents undefined"
+processWith :: (ByteString -> ByteString) -> FileInfo -> IO ()
+processWith f (path, stat) = putLn $ "would process file here: " <> show path
 
-    -- _compiledLens :: Traversal' StartingPoint (SrcSpanInfo, a)
-    -- _compiledLens = panic "apprehension... compiledLens undefined"
+-- apprehend :: Config -> IO ()
+-- apprehend config@Config{..} = do
+--   putLn "attempting apprehension..."
+--   print config
+--   let lensText' :: Text
+--       lensText' = unLensText lensText
+--   build lensText' >>= \case
+--     Left  err  -> panic . show $ err
+--     Right trav -> do
+--       let _ = trav :: ATraversal' StartingPoint (SrcSpanInfo, Int)
+--       S.print
+--       . S.mapM ( (viewOrApply trav compiledF =<<) . start )
+--       . S.take 1 -- TODO
+--       . S.chain (putLn . ("DEBUG FILENAME: " <>) . show . fst)
+--       . S.filter ((".hs" `List.isSuffixOf`) . fst)
+--       . S.filter (not . (".stack-work" `List.isInfixOf`) . fst)
+--       . S.filter (not . isDirectory . snd)
+--       . tree
+--       . unTarget
+--       $ target
+--   where
+--     start :: FileInfo -> IO StartingPoint
+--     start _fileInfo@(path, _) = StartingPoint
+--       <$> ( (,)
+--             <$> pure path
+--             <*> (encodeUtf8 <$> readFile path)
+--           )
 
-    compiledF :: Maybe (a -> b)
-    compiledF = Just $ panic "compiledF undefined"
+--     compiledF :: Maybe (a -> b)
+--     compiledF = Just $ panic "compiledF undefined"
 
--- type Soon = ()
+-- viewOrApply :: Typeable a
+--             => ATraversal' StartingPoint (SrcSpanInfo, a)
+--             -> Maybe (a -> b)
+--             -> StartingPoint
+--             -> IO ([(FilePath, [SrcSpanInfo])])
+-- viewOrApply _trav _fMay _start = panic "viewOrApply undefined"
 
-viewOrApply :: Typeable a
-            => ATraversal' StartingPoint (SrcSpanInfo, a)
-            -> Maybe (a -> b)
-            -> StartingPoint
-            -> IO ([(FilePath, [SrcSpanInfo])])
-viewOrApply _trav _fMay _start = panic "viewOrApply undefined"
+-- -- applyTraversal :: ATraversal' StartingPoint b
+-- --                -> StartingPoint
+-- --                -> StartingPoint
+-- -- applyTraversal = panic "applyTraversal undefined"
 
--- applyTraversal :: ATraversal' StartingPoint b
---                -> StartingPoint
---                -> StartingPoint
--- applyTraversal = panic "applyTraversal undefined"
+-- -- saveResultsWhenAppropriate :: StartingPoint -> IO ()
+-- -- saveResultsWhenAppropriate = panic "saveResultsWhenAppropriate undefined"
 
--- saveResultsWhenAppropriate :: StartingPoint -> IO ()
--- saveResultsWhenAppropriate = panic "saveResultsWhenAppropriate undefined"
-
--- -withLens :: CommonConfig -> ReplaceConfig -> IO ()
--- -withLens CommonConfig {..} ReplaceConfig {..} = do
--- -  f <- either (panic . show) identity
--- -       <$> compileMapFn (unMapFnText mapFnText) -- TODO: before now, cache, etc.
--- -  let previewReplacements :: ATraversal' (Module SrcSpanInfo) SrcSpanInfo
--- -                          -> (FilePath, FileStatus)
--- -                          -> IO ()
--- -      previewReplacements t (p, _) = findMatches f t p
--- -        >>= mapM_ (\x -> TempSearch.printPrettily theme x >> newLine)
--- -  makeLens (unLensText lensText) >>= \case
--- -    Left err -> displayError theme err
--- -    Right trav -> S.mapM_ (previewReplacements trav)
--- -      . S.chain reportFile
--- -      . S.filter (\(p, _) -> ".hs" `L.isSuffixOf` p && not (".stack-work" `L.isInfixOf` p))
--- -      . tree
--- -      . unTarget
--- -      $ target
--- -  where
--- -    reportFile (p, _) = putChunkLn (chunk (pack p) & filename theme)
+-- -- -withLens :: CommonConfig -> ReplaceConfig -> IO ()
+-- -- -withLens CommonConfig {..} ReplaceConfig {..} = do
+-- -- -  f <- either (panic . show) identity
+-- -- -       <$> compileMapFn (unMapFnText mapFnText) -- TODO: before now, cache, etc.
+-- -- -  let previewReplacements :: ATraversal' (Module SrcSpanInfo) SrcSpanInfo
+-- -- -                          -> (FilePath, FileStatus)
+-- -- -                          -> IO ()
+-- -- -      previewReplacements t (p, _) = findMatches f t p
+-- -- -        >>= mapM_ (\x -> TempSearch.printPrettily theme x >> newLine)
+-- -- -  makeLens (unLensText lensText) >>= \case
+-- -- -    Left err -> displayError theme err
+-- -- -    Right trav -> S.mapM_ (previewReplacements trav)
+-- -- -      . S.chain reportFile
+-- -- -      . S.filter (\(p, _) -> ".hs" `L.isSuffixOf` p && not (".stack-work" `L.isInfixOf` p))
+-- -- -      . tree
+-- -- -      . unTarget
+-- -- -      $ target
+-- -- -  where
+-- -- -    reportFile (p, _) = putChunkLn (chunk (pack p) & filename theme)

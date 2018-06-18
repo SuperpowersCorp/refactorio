@@ -12,7 +12,7 @@ module Refactorio.InterPrelude
      , target
      ) where
 
-import Refactorio.Prelude
+import Protolude -- Refactorio.Prelude
 
 import Control.Lens                 as Exports hiding ( Context
                                                       , List
