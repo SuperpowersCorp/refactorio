@@ -32,13 +32,13 @@ JSON (via [lens-aeson](https://hackage.haskell.org/package/lens-aeson)):
 
 "Increment the value at key 'baz' by 1962."
 
-[JSON Example](examples/json.png)
+![JSON Example](examples/json.png)
 
 YAML (same operators):
 
 "Multiply the value of the key 'baz' by 10."
 
-[YAML Example](examples/yaml.png)
+![YAML Example](examples/yaml.png)
 
 HTML (via `Text.Xml.Lens`) TODO: taggy
 
