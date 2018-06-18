@@ -1,8 +1,12 @@
-{-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE NoImplicitPrelude     #-}
+{-# LANGUAGE MultiParamTypeClasses     #-}
+{-# LANGUAGE NoImplicitPrelude         #-}
+{-# LANGUAGE OverloadedStrings         #-}
+{-# LANGUAGE RankNTypes                #-}
+{-# OPTIONS_GHC -fno-warn-deprecations #-}
 
 module Refactorio.Helpers
      ( Lazyboy(..)
+     , debugL
      , lazy
      , text
      ) where
@@ -19,3 +23,16 @@ lazy = iso lazify strictify
 
 text :: Iso' ByteString Text
 text = iso decodeUtf8 encodeUtf8
+
+debugL :: Show a => Text -> Iso' a a
+debugL label = iso g s
+  where
+    g :: Show a => a -> a
+    g x = trace msg x
+      where
+        msg = label <> " " <> show x
+
+    s :: Show a => a -> a
+    s x = trace msg x
+      where
+        msg = label <> " " <> show x

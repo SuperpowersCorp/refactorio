@@ -38,11 +38,12 @@ parser = prefixConfigParser
       <*> targetParser
       <*> filenameFilterSetParser
       <*> optional preludeParser
+      <*> optional unqualifiedPreludeParser
       <*> updateModeParser
       <*> specialModeParser
 
     -- So Optparse Applicative will generate the options in the right order
-    reorder ex ta ff pr up sp = Config ff ex pr sp up ta
+    reorder ex ta ff pr up um sp = Config ff ex pr up sp um ta
 
 expressionParser :: Parser Expression
 expressionParser = Expression . Text.pack <$> argument str
@@ -74,6 +75,13 @@ preludeParser = strOption
   ( long    "prelude"
  <> help    "Use a specific Prelude"
  <> metavar "PRELUDE"
+  )
+
+unqualifiedPreludeParser :: Parser FilePath
+unqualifiedPreludeParser = strOption
+  ( long    "unqualified-prelude"
+ <> help    "Use a specific unqualified Prelude"
+ <> metavar "UNQUALIFIED-PRELUDE"
   )
 
 updateModeParser :: Parser UpdateMode

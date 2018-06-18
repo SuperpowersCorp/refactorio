@@ -26,7 +26,7 @@ and run it from the project root to get an experience something like:
 
 ### TARGET RIGHT NOW
 
-    refio --haskell view "__Module.biplate._Int" --pre-mqp "+32"
+    refio --haskell view "__Module.biplate._Int" --pre-map "(+32)"
 
 ## FUTURE ETC
 

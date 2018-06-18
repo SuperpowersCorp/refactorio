@@ -14,7 +14,7 @@ import           Data.Algorithm.DiffContext
 import qualified Data.ByteString                as BS
 import qualified Data.ByteString.Char8          as C8
 import qualified Data.Set                       as Set
-import           Data.Text                                    ( pack
+import           Data.Text                                    ( pack, lines
                                                               , toLower
                                                               )
 import           Refactorio.FilenameFilter
@@ -146,11 +146,14 @@ processWith updateMode f path = do
         PreviewMode ->
           showChanges "Preview" doc
 
+    showChanges :: Text -> Doc -> IO ()
     showChanges label doc = do
       nl
-      putLn $ label <> " of changes to: " <> show path
-      putLn "================================================================"
-      display doc
+      putChunkLn $ (chunk . unpack $ label <> " of changes to: " <> show path) & fore yellow
+      putChunkLn $ chunk divider & fore yellow
+      colorDisplay doc
+      where
+        divider = pack . replicate 64 $ '='
 
     saveChanges :: ByteString -> IO ()
     saveChanges = BS.writeFile path
@@ -170,6 +173,14 @@ processWith updateMode f path = do
     render' :: Doc -> Text
     render' = pack . PP.render
 
-    -- TODO: altDisplay that putChunkLn's according to - or + in front
-    display :: Doc -> IO ()
-    display = putLn . render'
+    -- display :: Doc -> IO ()
+    -- display = putLn . render'
+
+    colorDisplay :: Doc -> IO ()
+    colorDisplay = mapM_ colorLn . lines . render'
+      where
+        colorLn :: Text -> IO ()
+        colorLn s
+          | s `startsWith` "-" = putChunkLn $ chunk s & fore red
+          | s `startsWith` "+" = putChunkLn $ chunk s & fore green
+          | otherwise          = putChunkLn $ chunk s & fore grey

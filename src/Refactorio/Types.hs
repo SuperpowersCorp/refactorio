@@ -10,12 +10,13 @@ import Data.Data                 ( Data )
 import Refactorio.FilenameFilter
 
 data Config = Config
-  { filenameFilters :: Set FilenameFilter
-  , expr            :: Expression
-  , preludeMay      :: Maybe FilePath
-  , specialMode     :: Maybe SpecialMode
-  , updateMode      :: UpdateMode
-  , target          :: Target
+  { filenameFilters       :: Set FilenameFilter
+  , expr                  :: Expression
+  , preludeMay            :: Maybe FilePath
+  , unqualifiedPreludeMay :: Maybe FilePath
+  , specialMode           :: Maybe SpecialMode
+  , updateMode            :: UpdateMode
+  , target                :: Target
   } deriving (Data, Eq, Ord, Read, Show)
 
 newtype Expression = Expression { unExpression :: Text }
