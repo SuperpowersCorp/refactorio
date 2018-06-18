@@ -74,12 +74,14 @@ process Config{..} = do
       | otherwise = maybe Set.empty filtersForSpecialMode specialModeMay
 
 -- specialInterlude :: SpecialMode -> Maybe FilePath
+-- specialInterlude Docx    = Just "DocxInterlude.hs"
 -- specialInterlude Haskell = Just "HaskellInterlude.hs"
 -- specialInterlude Json    = Just "JsonInterlude.hs"
 -- specialInterlude Yaml    = Just "YamlInterlude.hs"
 
 filtersForSpecialMode :: SpecialMode -> Set FilenameFilter
 filtersForSpecialMode m = Set.fromList . map FilenameFilter $ case m of
+  Docx    -> [ "**/*.docx" ]
   Haskell -> [ "**/*.hs" ]
   Json    -> [ "**/*.json" ]
   Yaml    -> [ "**/*.yaml"

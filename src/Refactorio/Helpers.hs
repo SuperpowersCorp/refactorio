@@ -8,6 +8,7 @@
 module Refactorio.Helpers
      ( Lazyboy(..)
      , debugL
+     , docx
      , hs
      , lazy
      , text
@@ -15,7 +16,7 @@ module Refactorio.Helpers
      ) where
 
 import           Refactorio.Prelude
-
+import System.IO.Unsafe (unsafePerformIO)
 import           Control.Lens            as L    ( Iso'
                                                  , from
                                                  , iso
@@ -23,8 +24,12 @@ import           Control.Lens            as L    ( Iso'
 import qualified Data.Aeson              as Json
 import qualified Data.ByteString.Lazy    as LBS
 import qualified Data.Yaml               as Yaml
+import           Text.Pandoc                     ( Pandoc
+                                                 , readDocx
+                                                 , writeDocx
+                                                 )
+import           Text.Pandoc.Options
 import           X.Language.Haskell.Exts         ( hs )
-
 class Lazyboy s l where
   strictify :: l -> s
   lazify    :: s -> l
@@ -32,6 +37,22 @@ class Lazyboy s l where
 instance Lazyboy ByteString LByteString where
   strictify = LBS.toStrict
   lazify    = LBS.fromStrict
+
+docx :: Iso' ByteString Pandoc
+docx = iso g s
+  where
+    g :: ByteString -> Pandoc
+    g = either (panic . show) fst . readDocx readerOpts . view lazy
+
+    -- TODO: eliminate unsafePerformIO by moving it outside the lens
+    s :: Pandoc -> ByteString
+    s = LBS.toStrict . unsafePerformIO . writeDocx writerOpts
+
+    readerOpts :: ReaderOptions
+    readerOpts = def
+
+    writerOpts :: WriterOptions
+    writerOpts = def
 
 lazy :: Lazyboy s l => Iso' s l
 lazy = iso lazify strictify

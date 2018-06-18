@@ -6,6 +6,9 @@ module Refactorio.Main ( main ) where
 
 import           Refactorio.Prelude        as P    hiding ( (<>) )
 
+import           Control.Lens                             ( each
+                                                          , partsOf
+                                                          )
 import qualified Data.Set                  as Set
 import qualified Data.Text                 as Text
 import           Options.Applicative               hiding ( prefs )
@@ -115,8 +118,12 @@ updateModeParser =
   <|> pure AskMode
 
 specialModeParser :: Parser (Maybe SpecialMode)
-specialModeParser = resolve <$> ( (,,)
-  <$> langSwitch Haskell
+specialModeParser = resolve <$> ( (,,,)
+  <$> langSwitch Docx
+               ( long "docx"
+              <> help "Include .docx files and activate pandoc parsing mode."
+               )
+  <*> langSwitch Haskell
                ( long "haskell"
               <> long "hs"
               <> help "Include .hs files and activate Haskell module parsing mode."
@@ -137,9 +144,5 @@ specialModeParser = resolve <$> ( (,,)
     mmap sm True  = Just sm
     mmap _  False = Nothing
 
-    resolve :: ( Maybe SpecialMode
-               , Maybe SpecialMode
-               , Maybe SpecialMode
-               )
-            -> Maybe SpecialMode
-    resolve (am, bm, cm) = am <|> bm <|> cm
+    -- allows us to size tuple arbitrarily
+    resolve = head . catMaybes . view (partsOf each)

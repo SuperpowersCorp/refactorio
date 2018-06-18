@@ -23,7 +23,8 @@ newtype Expression = Expression { unExpression :: Text }
   deriving (Data, Eq, Ord, Read, Show)
 
 data SpecialMode
-  = Haskell
+  = Docx
+  | Haskell
   | Json
   | Yaml
   deriving (Data, Eq, Ord, Read, Show, Typeable)
