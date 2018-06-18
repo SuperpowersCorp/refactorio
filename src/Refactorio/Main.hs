@@ -137,9 +137,5 @@ specialModeParser = resolve <$> ( (,,)
     mmap sm True  = Just sm
     mmap _  False = Nothing
 
-    resolve :: ( Maybe SpecialMode
-               , Maybe SpecialMode
-               , Maybe SpecialMode
-               )
-            -> Maybe SpecialMode
-    resolve (am, bm, cm) = am <|> bm <|> cm
+    -- allows us to size the tuple arbitrarily
+    resolve = head . catMaybes . view (partsOf each)

@@ -14,6 +14,8 @@ module Refactorio.Prelude
 import Control.Arrow  as Exports ( (&&&) )
 import Control.Lens   as Exports ( (%~)
                                  , (.~)
+                                 , each
+                                 , partsOf
                                  , makeClassy
                                  , view
                                  )
