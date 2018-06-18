@@ -6,9 +6,9 @@
 module Refactorio.Types where
 
 import Refactorio.Prelude
-import Refactorio.FilenameFilter
 
-import Data.Data          ( Data )
+import Data.Data                 ( Data )
+import Refactorio.FilenameFilter
 
 data Config = Config
   { filenameFilters :: Set FilenameFilter

@@ -6,8 +6,8 @@ module Refactorio.FilenameFilter where
 
 import Refactorio.Prelude
 
-import Data.Data ( Data )
-import Data.Char ( toLower )
+import Data.Char          ( toLower )
+import Data.Data          ( Data )
 
 data FilenameFilter
   = DotPattern String

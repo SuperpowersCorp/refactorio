@@ -16,7 +16,8 @@ cabal-version:       >=1.10
 library
   hs-source-dirs:      src
   ghc-options:         -Wall
-  exposed-modules:     Refactorio.FilenameFilter
+  exposed-modules:     Refactorio.Engine
+                     , Refactorio.FilenameFilter
                      , Refactorio.InterPrelude
                      , Refactorio.Main
                      , Refactorio.Prelude
@@ -25,7 +26,8 @@ library
                      , X.Language.Haskell.Interpreter
                      , X.Rainbow
                      , X.Streaming.Files
-  build-depends:       base >= 4.7 && < 5
+  build-depends:       Diff
+                     , base >= 4.7 && < 5
                      , bytestring
                      , containers
                      , directory
@@ -35,6 +37,7 @@ library
                      , hint
                      , lens
                      , optparse-applicative
+                     , pretty
                      , protolude
                      , rainbow
                      , streaming
@@ -47,13 +50,15 @@ executable refactorio
   hs-source-dirs:      app
   main-is:             Main.hs
   ghc-options:         -Wall -threaded -rtsopts -with-rtsopts=-N
-  build-depends:       base
+  build-depends:       Diff
+                     , base
                      , bytestring
                      , containers
                      , directory
                      , exceptions
                      , hint
                      , lens
+                     , pretty
                      , protolude
                      , refactorio
                      , text
@@ -65,7 +70,8 @@ test-suite refactorio-test
   type:                exitcode-stdio-1.0
   hs-source-dirs:      test
   main-is:             Spec.hs
-  build-depends:       QuickCheck
+  build-depends:       Diff
+                     , QuickCheck
                      , base
                      , bytestring
                      , containers
@@ -74,6 +80,7 @@ test-suite refactorio-test
                      , hint
                      , hspec
                      , lens
+                     , pretty
                      , protolude
                      , refactorio
                      , text

@@ -31,4 +31,3 @@ putLn = putStrLn
 
 newLine :: MonadIO m => m ()
 newLine = putLn ""
-

@@ -6,28 +6,35 @@ module Refactorio.InterPrelude
      , Hackable
      , anyModuleNameL
      , emptyBS
+     , initBS
      , hack
      , hackable
      , moduleNameL
+     , reverseBS
      , srcSpanInfoL
      , target
      ) where
 
-import Protolude -- Refactorio.Prelude
-
-import Control.Lens                 as Exports hiding ( Context
-                                                      , List
-                                                      , _Cons
-                                                      , op
-                                                      )
-import Data.Data.Lens               as Exports
-import Language.Haskell.Exts        as Exports
-import Language.Haskell.Exts.Prisms as Exports
-
-import qualified Data.ByteString as BS -- for loaded module use... stand by
+import           Control.Lens                 as Exports hiding ( Context
+                                                                , List
+                                                                , _Cons
+                                                                , op
+                                                                )
+import qualified Data.ByteString              as BS
+import           Data.ByteString.Lens         as Exports
+import           Data.Data.Lens               as Exports
+import           Language.Haskell.Exts        as Exports
+import           Language.Haskell.Exts.Prisms as Exports
+import           Protolude
 
 emptyBS :: ByteString
 emptyBS = BS.empty
+
+initBS :: ByteString -> ByteString
+initBS = BS.init
+
+reverseBS :: ByteString -> ByteString
+reverseBS = BS.reverse
 
 -- end :: (Functor f, Field1 s t a b) => (a -> f b) -> s -> f t
 -- end = _1

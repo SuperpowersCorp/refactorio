@@ -5,27 +5,20 @@
 
 module Refactorio.Main ( main ) where
 
-import           Refactorio.Prelude    as P    hiding ( (<>) )
-import qualified Streaming.Prelude     as S
+import           Refactorio.Prelude        as P    hiding ( (<>) )
 
-import qualified Data.ByteString       as BS
-import qualified Data.List             as List
-import qualified Data.Set              as Set
-import qualified Data.Text             as Text
-import           Options.Applicative           hiding ( prefs )
+import qualified Data.Set                  as Set
+import qualified Data.Text                 as Text
+import           Options.Applicative               hiding ( prefs )
+import           Refactorio.Engine                        ( process )
 import           Refactorio.FilenameFilter
 import           Refactorio.Types
-import           System.Posix.Files
-import           X.Language.Haskell.Interpreter       ( build )
 import           X.Rainbow
-import           X.Streaming.Files                    ( FileInfo
-                                                      , tree
-                                                      )
 
 -- CURRENT TARGET:   refio --haskell view "__Module.biplate._Int" & "(+32)"
 
 main :: IO ()
-main = void $ customExecParser prefs opts >>= apprehend
+main = void $ customExecParser prefs opts >>= process
   where
     prefs = defaultPrefs
       { prefShowHelpOnError = True
@@ -79,34 +72,25 @@ targetParser = Target <$> strOption
   )
 
 filenameFilterSetParser :: Parser (Set FilenameFilter)
-filenameFilterSetParser = pure $ Set.fromList [DotPattern "hs"] -- TODO
-
-apprehend :: Config -> IO ()
-apprehend Config{..} = build (unExpression expr) >>= either (panic . show) process
+filenameFilterSetParser = unite
+  <$> many ( strOption ( long    "ext"
+                      <> short   'e'
+                      <> metavar "EXT"
+                      <> help    "file extension to include (eg 'txt', 'c')"
+                       )
+           )
+  <*> switch ( long "haskell"
+            <> help "Include .hs files and activate Haskell module mapping."
+             )
+  <*> switch ( long "json"
+            <> help "Include .json files."
+             )
+  <*> switch ( long "yaml"
+            <> help "Include .yaml or .yml files."
+             )
   where
-    process f = S.mapM_ ( processWith f )
-                . S.chain (putLn . ("DEBUG FILENAME: " <>) . show . fst)
-                . S.filter (matchesFilters filenameFilters)
-                . S.filter (not . ignored)
-                . S.filter (not . isDirectory . snd)
-                . tree
-                . unTarget
-                $ target
-
-matchesFilters :: Set FilenameFilter -> FileInfo -> Bool
-matchesFilters filters fileInfo
-  | Set.null filters = True
-  | otherwise        = any (flip matches . fst $ fileInfo) filters
-
--- TODO: read .*ignore files from the target dir down to the current file, caching
--- along the way, etc. but for now...
-ignored :: FileInfo -> Bool
-ignored = (".stack-work" `List.isInfixOf`) . fst
-
-processWith :: (ByteString -> ByteString) -> FileInfo -> IO ()
-processWith f (path, stat) = when (not . isDirectory $ stat) $ do
-  bytes :: ByteString <- BS.readFile path
-  let bytes' :: ByteString = f bytes
-  if (bytes /= bytes')
-    then putLn $ "Changes in " <> show path
-    else putLn $ "NO Changes in " <> show path
+    unite ffs hs json yaml = Set.fromList
+      $ map DotPattern ffs
+      ++ [Haskell | hs]
+      ++ [JSON    | json]
+      ++ [YAML    | yaml]

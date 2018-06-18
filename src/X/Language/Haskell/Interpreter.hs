@@ -7,8 +7,8 @@ module X.Language.Haskell.Interpreter
 
 import Refactorio.Prelude
 
-import System.Directory
 import Language.Haskell.Interpreter
+import System.Directory
 
 build :: Typeable a => Text -> IO (Either InterpreterError a)
 build src = getHomeDirectory >>= \home -> runInterpreter $ do
