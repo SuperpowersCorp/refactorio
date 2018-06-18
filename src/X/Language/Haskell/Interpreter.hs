@@ -8,10 +8,9 @@ module X.Language.Haskell.Interpreter
 import Refactorio.Prelude
 
 import Language.Haskell.Interpreter
-import System.Directory
 
-build :: Typeable a => Text -> IO (Either InterpreterError a)
-build src = getHomeDirectory >>= \home -> runInterpreter $ do
+build :: Typeable a => FilePath -> Text -> IO (Either InterpreterError a)
+build preludePath src = runInterpreter $ do
   set [ languageExtensions
         := [ FlexibleContexts
            , FlexibleInstances
@@ -24,7 +23,7 @@ build src = getHomeDirectory >>= \home -> runInterpreter $ do
            -- , ScopedTypeVariables
            ]
       ]
-  loadModules [ home <> "/.refactorio/InterPrelude.hs" ]
+  loadModules [ preludePath ]
   setImports
     [ "Protolude"
     , "Control.Lens"

@@ -36,22 +36,31 @@ parser :: Parser Config
 parser = prefixConfigParser
   where
     prefixConfigParser :: Parser Config
-    prefixConfigParser = Config
-      <$> filenameFilterSetParser
-      <*> expressionParser
-      <*> optional specialModeParser
-      <*> updateModeParser
+    prefixConfigParser = reorder
+      <$> expressionParser
       <*> targetParser
+      <*> filenameFilterSetParser
+      <*> optional preludeParser
+      <*> updateModeParser
+      <*> optional specialModeParser
+
+    -- So Optparse Applicative will generate the options in the right order
+    reorder ex ta ff pr up sp = Config ff ex pr sp up ta
+
+preludeParser :: Parser FilePath
+preludeParser = strOption ( long "prelude"
+                         <> help "Use a specific Prelude"
+                          )
 
 specialModeParser :: Parser SpecialMode
 specialModeParser =
   Haskell <$ switch ( long "haskell"
                    <> help "Include .hs files and activate Haskell module parsing mode."
                     )
-  <|> JSON <$ switch ( long "json"
+  <|> Json <$ switch ( long "json"
                     <> help "Include .json files."
                      )
-  <|> YAML <$ switch ( long "yaml"
+  <|> Yaml <$ switch ( long "yaml"
                     <> help "Include .yaml or .yml files."
                      )
 
@@ -63,7 +72,7 @@ updateModeParser =
                     )
   <|> PreviewMode <$ switch ( long "preview"
                            <> short 'p'
-                           <> help "Only show what changes would be made"
+                           <> help "Only show the changes that would be made"
                             )
   <|> ReviewMode <$ switch ( long "review"
                           <> short 'r'
@@ -71,7 +80,7 @@ updateModeParser =
                            )
   <|> JustDoItMode <$ switch ( long "just-do-it"
                             <> short 'j'
-                            <> help "Make the changes and only report changed filenames"
+                            <> help "Make the changes but only report changed filenames"
                              )
   <|> pure AskMode
 

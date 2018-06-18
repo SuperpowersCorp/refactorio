@@ -19,6 +19,7 @@ import           Data.Text                                    ( pack
                                                               )
 import           Refactorio.FilenameFilter
 import           Refactorio.Types
+import           System.Directory
 import           System.IO                                    ( hFlush
                                                               , stdout
                                                               )
@@ -32,6 +33,7 @@ import           X.Streaming.Files                            ( tree )
 
 process :: Config -> IO ()
 process Config{..} = do
+  home <- getHomeDirectory
   putLn $ "Target: "  <> show (unTarget target)
   putLn $ "Filters: " <> show (map unFilenameFilter . Set.toList $ allFilters)
   case specialMode of
@@ -40,7 +42,12 @@ process Config{..} = do
   putLn $ "Expression: " <> show (unExpression expr)
   putLn $ "UpdateMode: " <> show updateMode
   hFlush stdout
-  build (unExpression expr) >>= either (panic . show) process'
+  let prelude :: FilePath = fromMaybe (defaultPrelude home)
+                            . fmap (prepend home)
+                            . join
+                            . fmap specialPrelude
+                            $ specialMode
+  build prelude (unExpression expr) >>= either (panic . show) process'
   where
     process' f = S.mapM_ ( processWith updateMode f )
       . S.filter ( matchesAny compiledFilters )
@@ -51,20 +58,30 @@ process Config{..} = do
       . unTarget
       $ target
 
+    prepend :: FilePath -> FilePath -> FilePath
+    prepend home = ((home <> "/") <>)
+
     allFilters = expandExtraFilters filenameFilters
 
     compiledFilters = map compileFilter . Set.toList $ allFilters
+
+    defaultPrelude home = home <> "./refactorio"
 
     expandExtraFilters :: Set FilenameFilter -> Set FilenameFilter
     expandExtraFilters existing
       | not . null $ existing = existing
       | otherwise = fromMaybe Set.empty . fmap filtersForSpecialMode $ specialMode
 
+specialPrelude :: SpecialMode -> Maybe FilePath
+specialPrelude Haskell = Just "HaskellPrelude.hs"
+specialPrelude Json    = Just "JsonPrelude.hs"
+specialPrelude Yaml    = Just "YamlPrelude.hs"
+
 filtersForSpecialMode :: SpecialMode -> Set FilenameFilter
 filtersForSpecialMode m = Set.fromList . map FilenameFilter $ case m of
   Haskell -> [ "**/*.hs" ]
-  JSON    -> [ "**/*.json" ]
-  YAML    -> [ "**/*.yaml"
+  Json    -> [ "**/*.json" ]
+  Yaml    -> [ "**/*.yaml"
              , "**/*.yml"
              ]
 

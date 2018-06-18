@@ -24,7 +24,7 @@ hs = iso get set
     set = panic "set' undefined"
 
     mode' :: ParseMode
-    mode' = ParseMode "refactrio-live" Haskell2010 defaultExtensions
+    mode' = ParseMode "refactorio-live" Haskell2010 defaultExtensions
       False False Nothing False
       where
         defaultExtensions = []
