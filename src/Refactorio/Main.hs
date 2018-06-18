@@ -14,7 +14,7 @@ import           Refactorio.FilenameFilter
 import           Refactorio.Types
 import           X.Rainbow
 
--- CURRENT TARGET: refio --haskell view "__Module.biplate._Int" & "(+32)"
+-- CURRENT TARGET: refio --haskell '& __Module.biplate._Int +~ 32'
 
 main :: IO ()
 main = void $ customExecParser prefs opts >>= process . wrapSrc

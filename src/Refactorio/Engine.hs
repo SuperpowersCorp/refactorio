@@ -30,7 +30,7 @@ import           X.Language.Haskell.Interpreter               ( build )
 import           X.Rainbow
 import           X.Streaming.Files                            ( tree )
 
--- CURRENT TARGET:   refio --haskell view "__Module.biplate._Int" & "(+32)"
+-- CURRENT TARGET: refio --haskell '& __Module.biplate._Int +~ 32'
 
 process :: Config -> IO ()
 process Config{..} = do
