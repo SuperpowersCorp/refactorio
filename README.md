@@ -76,6 +76,7 @@ Try these on your projects:
 - [ ] Refactor CLI into `ref view`, `ref fmap` and `ref set`
 - [ ] Suppress printing of filename when there are no matches (tardis?)
 - [ ] `-f/fmap`
+- [ ] Handle '-' as filename for stdin->stdout
 - [ ] Seek guidance from the pros on
   - [ ] CT/lenses
   - [ ] Cool lens tricks that might be applicable
