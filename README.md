@@ -75,9 +75,9 @@ Try these on your projects:
 - [ ] Line Numbers
 - [ ] Context lines
 - [ ] Loading of additional modules
-- [ ] Refactor CLI into `ref view`, `ref fmap` and `ref set`
-- [ ] Suppress printing of filename when there are no matches (tardis?)
-- [ ] `-f/fmap`
+- [X] Refactor CLI into `ref view`, `ref fmap` and `ref set`
+- [X] Suppress printing of filename when there are no matches (tardis?)
+- [X] `-f/fmap`
 - [ ] Handle '-' as filename for stdin->stdout
 - [ ] Seek guidance from the pros on
   - [ ] CT/lenses
