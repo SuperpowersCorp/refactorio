@@ -173,9 +173,6 @@ processWith updateMode f path = do
     render' :: Doc -> Text
     render' = pack . PP.render
 
-    -- display :: Doc -> IO ()
-    -- display = putLn . render'
-
     colorDisplay :: Doc -> IO ()
     colorDisplay = mapM_ colorLn . lines . render'
       where
