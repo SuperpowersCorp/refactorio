@@ -12,8 +12,8 @@ module Refactorio.Prelude
     ) where
 
 import Control.Arrow  as Exports ( (&&&) )
-import Control.Lens   as Exports ( (.~)
-                                 , (%~)
+import Control.Lens   as Exports ( (%~)
+                                 , (.~)
                                  , makeClassy
                                  , view
                                  )

@@ -14,7 +14,8 @@ import           Data.Algorithm.DiffContext
 import qualified Data.ByteString                as BS
 import qualified Data.ByteString.Char8          as C8
 import qualified Data.Set                       as Set
-import           Data.Text                                    ( pack, lines
+import           Data.Text                                    ( lines
+                                                              , pack
                                                               , toLower
                                                               )
 import           Refactorio.FilenameFilter
@@ -34,13 +35,12 @@ import           X.Streaming.Files                            ( tree )
 process :: Config -> IO ()
 process Config{..} = do
   _home <- getHomeDirectory
-  putLn $ "Targets: " <> show (unTarget target)
-  putLn $ "Filters: " <> show (map unFilenameFilter . Set.toList $ allFilters)
   case specialModeMay of
     Nothing   -> return ()
-    Just mode -> putLn $ "Special mode activated: " <> show mode
+    Just mode -> putLn $ "Special processing activated: " <> show mode
+  putLn $ "Targets: " <> show (unTarget target)
+  putLn $ "Filters: " <> show (map unFilenameFilter . Set.toList $ allFilters)
   putLn $ "Expression: " <> show (unExpression expr)
-  putLn $ "UpdateMode: " <> show updateMode
   hFlush stdout
   -- let interlude :: FilePath = fromMaybe (defaultInterlude home)
   --                           . fmap (prepend home)
