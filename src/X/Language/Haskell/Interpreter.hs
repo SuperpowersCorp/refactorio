@@ -11,7 +11,7 @@ import Refactorio.Prelude
 import Language.Haskell.Interpreter
 
 build :: Typeable a => Maybe FilePath -> Text -> IO (Either InterpreterError a)
-build preludePathMay src = (putLn ("...compiling... '" <> show src <> "'") >>) . runInterpreter $ do
+build preludePathMay src = runInterpreter $ do
   set [ languageExtensions
         := [ FlexibleContexts
            , FlexibleInstances
