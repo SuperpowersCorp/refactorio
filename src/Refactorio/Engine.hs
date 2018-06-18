@@ -39,7 +39,8 @@ process Config{..} = do
     Nothing   -> return ()
     Just mode -> putLn $ "Special processing activated: " <> show mode
   putLn $ "Targets: " <> show (unTarget target)
-  putLn $ "Filters: " <> show (map unFilenameFilter . Set.toList $ allFilters)
+  when (not . null $ allFilters) $
+    putLn $ "Filters: " <> show (map unFilenameFilter . Set.toList $ allFilters)
   putLn $ "Expression: " <> show (unExpression expr)
   hFlush stdout
   -- let interlude :: FilePath = fromMaybe (defaultInterlude home)
@@ -119,13 +120,10 @@ processWith updateMode f path = do
     else handleChange (beforeBytes, afterBytes)
   where
     handleChange (beforeBytes, afterBytes) = do
-      putLn "Handling change..."
       let beforeLines = C8.lines beforeBytes
           afterLines  = C8.lines afterBytes
           diff'       = getContextDiff ctxLines beforeLines afterLines
           doc         = prettyContextDiff beforeName afterName elPrint diff'
-      putLn "here we go..."
-      hFlush stdout
       case updateMode of
         AskMode -> do
           showChanges "Review" doc
@@ -154,7 +152,9 @@ processWith updateMode f path = do
         divider = pack . replicate 64 $ '='
 
     saveChanges :: ByteString -> IO ()
-    saveChanges = BS.writeFile path
+    saveChanges bs = do
+      putLn $ "Saving changes to " <> pack path
+      BS.writeFile path bs
 
     beforeName :: Doc
     beforeName = PP.text $ path <> " BEFORE"
