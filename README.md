@@ -99,3 +99,4 @@ Try these on your projects:
 - [ ] Approach Factorio people about permission to use a (better version of) the logo
 - [ ] I think I could eliminate the `LensOperator` and always be able to auto
       detect the operator to use by type correctly ...right?
+- [ ] Allow Traversals for extraction arbitrary info.

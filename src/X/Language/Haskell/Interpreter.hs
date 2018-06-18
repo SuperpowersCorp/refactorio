@@ -43,6 +43,7 @@ build preludePathMay src = runInterpreter $ do
     , ("Protolude"                   , Nothing)
     , ("Refactorio.Helpers"          , Just "H")
     , ("Text.Pandoc.Lens"            , Just "P")
+    , ("Text.Regex.Lens"             , Just "R")
     , ("Text.Xml.Lens"               , Just "X")
     , ("Codec.Compression.Zlib.Lens" , Nothing)
     ]
