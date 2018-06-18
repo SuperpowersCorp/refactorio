@@ -27,12 +27,14 @@ build preludePathMay src = runInterpreter $ do
     Just preludePath -> loadModules [ preludePath ]
     Nothing          -> return ()
   setImportsQ
-    [ ("Control.Lens"                , Just "L")
+    [ ("Control.Lens"                , Nothing)
+    , ("Control.Lens"                , Just "L")
     , ("Data.Aeson.Lens"             , Just "A")
     , ("Data.Data.Lens"              , Just "L")
     , ("Language.Haskell.Exts"       , Just "HS")
     , ("Language.Haskell.Exts.Prisms", Just "HS")
     , ("Protolude"                   , Nothing)
-    , ("Text.Pandoc.Lens"            , Just "DOC")
+    , ("Text.Pandoc.Lens"            , Just "P")
+    , ("Codec.Compression.Zlib.Lens" , Nothing)
     ]
   interpret (unpack src) infer
