@@ -15,72 +15,95 @@ cabal-version:       >=1.10
 
 library
   hs-source-dirs:      src
-  ghc-options:         -Wall 
-  exposed-modules:     Refactorio.Config
-                     , Refactorio.InterPrelude
+  ghc-options:         -Wall
+  exposed-modules:     Refactorio.Engine
+                     , Refactorio.FilenameFilter
+                     , Refactorio.Helpers
                      , Refactorio.Main
                      , Refactorio.Prelude
-                     , Refactorio.Replace
-                     , Refactorio.Search
                      , Refactorio.Theme
+                     , Refactorio.Types
                      , X.Language.Haskell.Interpreter
                      , X.Rainbow
                      , X.Streaming.Files
-  build-depends:       base >= 4.7 && < 5
+  build-depends:       Diff
+                     , aeson
+                     , base >= 4.7 && < 5
                      , bytestring
                      , containers
                      , directory
                      , exceptions
+                     , Glob
                      , haskell-src-exts
                      , haskell-src-exts-prisms
                      , hint
                      , lens
+                     , lens-aeson
                      , optparse-applicative
+                     , pandoc-lens
+                     , pretty
                      , protolude
                      , rainbow
                      , streaming
+                     , string-conv
                      , text
                      , unix
                      , vty
+                     , zlib-lens
   default-language:    Haskell2010
 
 executable refactorio
   hs-source-dirs:      app
   main-is:             Main.hs
   ghc-options:         -Wall -threaded -rtsopts -with-rtsopts=-N
-  build-depends:       base
+  build-depends:       Diff
+                     , aeson
+                     , base
                      , bytestring
                      , containers
                      , directory
                      , exceptions
+                     , Glob
                      , hint
                      , lens
+                     , lens-aeson
+                     , optparse-applicative
+                     , pandoc-lens
+                     , pretty
                      , protolude
                      , refactorio
                      , text
                      , unix
                      , vty
+                     , zlib-lens
   default-language:    Haskell2010
 
 test-suite refactorio-test
   type:                exitcode-stdio-1.0
   hs-source-dirs:      test
   main-is:             Spec.hs
-  build-depends:       QuickCheck
+  ghc-options:         -Wall -threaded -rtsopts -with-rtsopts=-N
+  build-depends:       Diff
+                     , QuickCheck
+                     , aeson
                      , base
                      , bytestring
                      , containers
                      , directory
                      , exceptions
+                     , Glob
                      , hint
                      , hspec
                      , lens
+                     , lens-aeson
+                     , pandoc-lens
+                     , pretty
                      , protolude
                      , refactorio
                      , text
                      , unix
                      , vty
-  ghc-options:         -Wall -threaded -rtsopts -with-rtsopts=-N
+                     , zlib-lens
   default-language:    Haskell2010
 
 source-repository head

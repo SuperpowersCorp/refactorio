@@ -1,92 +1,127 @@
-{-# LANGUAGE NoImplicitPrelude #-}
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE RecordWildCards   #-}
+{-# LANGUAGE NoImplicitPrelude   #-}
+{-# LANGUAGE OverloadedStrings   #-}
+{-# LANGUAGE RecordWildCards     #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 
 module Refactorio.Main ( main ) where
 
-import Refactorio.Prelude  as P       hiding ( (<>) )
+import           Refactorio.Prelude        as P    hiding ( (<>) )
 
+import qualified Data.Set                  as Set
+import qualified Data.Text                 as Text
+import           Options.Applicative               hiding ( prefs )
+import           Refactorio.Engine                        ( process )
+import           Refactorio.FilenameFilter
+import           Refactorio.Types
+import           X.Rainbow
 
-import Data.Set as Set
-import Data.Text as Text
-import Options.Applicative
-import Refactorio.Config
-import Refactorio.Replace  as Replace
-import Refactorio.Search   as Search
-import Refactorio.Theme
-import X.Rainbow                      hiding ( (&) )
-
--- CURRENT TARGET:   refio . --haskell view "__Module.biplate._Int" --pre-mqp "+32"
+-- CURRENT TARGET:   refio --haskell view "__Module.biplate._Int" & "(+32)"
 
 main :: IO ()
-main = do
-  putLn "DANGER ZONE CONSTRUCTION IN PROGRESS.."
-  void $ execParser opts >>= makeTheMagicHappen
+main = void $ customExecParser prefs opts >>= process
   where
+    prefs = defaultPrefs
+      { prefShowHelpOnError = True
+      , prefShowHelpOnEmpty = True
+      }
+
     opts = info (parser <**> helper) $ fullDesc
-           <> header "Refactorio - Optical Refactoring Tool"
+           <> header   "Refactorio - Optical Refactoring Tool"
            <> progDesc "Zen and the art of optical file maintenance."
 
-    makeTheMagicHappen :: (Config, CommonConfig) -> IO ()
-    makeTheMagicHappen (ConfigExecute config, commonConfig) =
-      Replace.execute commonConfig config
-    makeTheMagicHappen (ConfigPreview config, commonConfig) =
-      Replace.preview commonConfig config
-    makeTheMagicHappen (ConfigView config, commonConfig) =
-      Search.view commonConfig config
-
-parser :: Parser (Config, CommonConfig)
-parser = flip (,) <$> commonConfigParser <*> configParser
-
-commonConfigParser :: Parser CommonConfig
-commonConfigParser = CommonConfig
-  <$> ( Set.fromList <$> filenameFilterParser )
-  <*> ( Target <$> strOption
-        ( long "target"
-       <> short 't'
-       <> metavar "TARGET"
-       <> help "a file/directory to search/replace"
-       <> showDefault
-       <> value "."
-        )
-      )
-  <*> pure defaultTheme
-
-filenameFilterParser :: Parser [FilenameFilter]
-filenameFilterParser = pure [DotPattern "-hs"] -- TODO
-
-configParser :: Parser Config
-configParser = subparser
-  (  stdCmd "replace" replaceOpts                 "Optical Replace"
-  <> stdCmd "preview" previewOpts "(Preview of...) Optical Replace"
-  <> stdCmd "view"    viewOpts                    "Optical Search"
-  )
+parser :: Parser Config
+parser = prefixConfigParser
   where
-    stdCmd l x d = command l ( stdInfo x d )
-    stdInfo x d  = info x    ( progDesc d  )
+    prefixConfigParser :: Parser Config
+    prefixConfigParser = reorder
+      <$> expressionParser
+      <*> targetParser
+      <*> filenameFilterSetParser
+      <*> optional preludeParser
+      <*> updateModeParser
+      <*> specialModeParser
 
-    viewOpts :: Parser Config
-    viewOpts = ConfigView . SearchConfig . LensText <$> traversalArg
+    -- So Optparse Applicative will generate the options in the right order
+    reorder ex ta ff pr up sp = Config ff ex pr sp up ta
 
-    traversalArg :: Parser Text
-    traversalArg = pack <$> argument str
-       ( metavar "TRAVERSAL"
-      <> help    "Traversal' FileInfo SrcSpanInfo"
-       )
+expressionParser :: Parser Expression
+expressionParser = Expression . Text.pack <$> argument str
+  ( metavar "EXPR"
+ <> help    "ByteString -> ByteString"
+  )
 
-    previewOpts :: Parser Config
-    previewOpts = ConfigPreview <$> replaceConfigParser
+targetParser :: Parser Target
+targetParser = Target <$> strOption
+  ( long        "target"
+ <> short       't'
+ <> metavar     "TARGET"
+ <> help        "A file/directory to search/replace"
+ <> value       "."
+ <> showDefault
+  )
 
-    replaceOpts :: Parser Config
-    replaceOpts = ConfigExecute <$> replaceConfigParser
+filenameFilterSetParser :: Parser (Set FilenameFilter)
+filenameFilterSetParser = Set.fromList . map (FilenameFilter . Text.pack) <$> many
+  ( strOption ( long    "glob"
+             <> short   'g'
+             <> metavar "GLOB"
+             <> help    "Glob matches to include (eg '*.ini', 'f??b?r.c')"
+              )
+  )
 
-    replaceConfigParser :: Parser ReplaceConfig
-    replaceConfigParser =
-      ( ReplaceConfig
-        <$> ( LensText <$> traversalArg)
-        <*> ( MapFnText
-              <$> ( pack <$> argument str
-                    ( metavar "F"
-                   <> help    "Haskell function of type ':: a -> b'"
-                    )))
-      )
+preludeParser :: Parser FilePath
+preludeParser = strOption
+  ( long    "prelude"
+ <> help    "Use a specific Prelude"
+ <> metavar "PRELUDE"
+  )
+
+updateModeParser :: Parser UpdateMode
+updateModeParser =
+  AskMode <$ switch ( long "ask"
+                   <> short 'a'
+                   <> help "Ask before changing files (default)"
+                    )
+  <|> PreviewMode <$ switch ( long "preview"
+                           <> short 'p'
+                           <> help "Only show the changes that would be made"
+                            )
+  <|> ReviewMode <$ switch ( long "review"
+                          <> short 'r'
+                          <> help "Make the changes and show details of changes"
+                           )
+  <|> ModifyMode <$ switch ( long "modify"
+                          <> short 'm'
+                          <> help "Make the changes and summarize changed filenames"
+                           )
+  <|> pure AskMode
+
+specialModeParser :: Parser (Maybe SpecialMode)
+specialModeParser = resolve <$> ( (,,)
+  <$> langSwitch Haskell
+               ( long "haskell"
+              <> long "hs"
+              <> help "Include .hs files and activate Haskell module parsing mode."
+               )
+  <*> langSwitch Json
+               ( long "json"
+              <> help "Include .json files."
+               )
+  <*> langSwitch Yaml
+               ( long "yaml"
+              <> help "Include .yaml or .yml files."
+               )
+                                )
+  where
+    langSwitch m = (mmap m <$>) . switch
+
+    mmap :: SpecialMode -> Bool -> Maybe SpecialMode
+    mmap sm True  = Just sm
+    mmap _  False = Nothing
+
+    resolve :: ( Maybe SpecialMode
+               , Maybe SpecialMode
+               , Maybe SpecialMode
+               )
+            -> Maybe SpecialMode
+    resolve (am, bm, cm) = am <|> bm <|> cm

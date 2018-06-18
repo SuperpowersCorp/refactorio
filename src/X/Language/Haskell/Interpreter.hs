@@ -1,3 +1,4 @@
+{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 
 module X.Language.Haskell.Interpreter
@@ -9,28 +10,40 @@ import Refactorio.Prelude
 
 import Language.Haskell.Interpreter
 
-build :: Typeable a => Text -> IO (Either InterpreterError a)
-build src = runInterpreter $ do
-  set [ languageExtensions := [ FlexibleContexts
-                              , FlexibleInstances
-                              , FunctionalDependencies
-                              , MultiParamTypeClasses
-                              , LambdaCase
-                              , OverloadedStrings
---                              , RankNTypes
-                              , RecordWildCards
---                              , ScopedTypeVariables
-                              ]
+build :: Typeable a => Maybe FilePath -> Text -> IO (Either InterpreterError a)
+build preludePathMay src = runInterpreter $ do
+  set [ languageExtensions
+        := [ FlexibleContexts
+           , FlexibleInstances
+           , FunctionalDependencies
+           , MultiParamTypeClasses
+           , LambdaCase
+           , OverloadedStrings
+           -- , RankNTypes
+           , RecordWildCards
+           -- , ScopedTypeVariables
+           ]
       ]
-  loadModules
-    [ "/Users/john/.refactorio/InterPrelude.hs"
+  case preludePathMay of
+    Just preludePath -> loadModules [ preludePath ]
+    Nothing          -> return ()
+  setImportsQ
+    [ ("Control.Lens"                , Nothing)
+    , ("Control.Lens"                , Just "L")
+    , ("Data.Aeson.Lens"             , Just "A")
+    , ("Data.ByteString.Lens"        , Nothing)
+    , ("Data.Data.Lens"              , Just "L")
+    , ("Data.String.Conv"            , Just "S")
+    , ("Language.Haskell.Exts"       , Just "HS")
+    , ("Language.Haskell.Exts.Prisms", Just "HS")
+    , ("Protolude"                   , Nothing)
+    , ("Refactorio.Helpers"          , Just "H")
+    , ("Text.Pandoc.Lens"            , Just "P")
+    , ("Codec.Compression.Zlib.Lens" , Nothing)
     ]
-  setImports
-    [ "Protolude"
-    , "Control.Lens"
-    , "Data.Data.Lens"
-    , "Language.Haskell.Exts"
-    , "Language.Haskell.Exts.Prisms"
-    , "Refactorio.InterPrelude"
-    ]
-  interpret (unpack src) infer
+  interpret (unpack (autoLens src)) infer
+
+autoLens :: Text -> Text
+autoLens s
+  | s `startsWith` "&" = "\\item -> item " <> s
+  | otherwise          = s
