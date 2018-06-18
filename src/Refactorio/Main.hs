@@ -114,11 +114,15 @@ updateModeParser =
   <|> pure AskMode
 
 specialModeParser :: Parser (Maybe SpecialMode)
-specialModeParser = resolve <$> ( (,,,)
+specialModeParser = resolve <$> ( (,,,,)
   <$> langSwitch Haskell
                ( long "haskell"
               <> long "hs"
               <> help "Include .hs files and activate Haskell module parsing mode"
+               )
+  <*> langSwitch Html
+               ( long "html"
+              <> help "Include .htm* files"
                )
   <*> langSwitch Json
                ( long "json"

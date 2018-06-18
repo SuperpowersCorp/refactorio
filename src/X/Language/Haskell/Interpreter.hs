@@ -43,11 +43,17 @@ build preludePathMay src = runInterpreter $ do
     , ("Language.Haskell.Exts.Prisms", Just "HS")
     , ("Protolude"                   , Nothing)
     , ("Refactorio.Helpers"          , Just "H")
+    , ("Refactorio.Helpers"          , Just "Helpers")
     , ("Refactorio.Prelude"          , Just "RP")
     , ("Text.Pandoc.Lens"            , Just "P")
+    , ("Text.Pandoc.Lens"            , Just "Pandoc")
     , ("Text.Regex.Lens"             , Just "R")
+    , ("Text.Regex.Lens"             , Just "Regex")
     , ("Text.Regex.Quote"            , Nothing)
     , ("Text.Xml.Lens"               , Just "X")
+    , ("Text.Xml.Lens"               , Just "Xml")
+    , ("Text.Xml.Lens"               , Just "H")
+    , ("Text.Xml.Lens"               , Just "Html")
     , ("Codec.Compression.Zlib.Lens" , Nothing)
     ]
   interpret (unpack ("(" <> src <> ")")) infer

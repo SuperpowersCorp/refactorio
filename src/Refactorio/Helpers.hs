@@ -1,9 +1,11 @@
+{-# LANGUAGE InstanceSigs #-}
 {-# LANGUAGE MultiParamTypeClasses     #-}
 {-# LANGUAGE NoImplicitPrelude         #-}
 {-# LANGUAGE OverloadedStrings         #-}
 {-# LANGUAGE RankNTypes                #-}
 {-# LANGUAGE TypeSynonymInstances      #-}
 {-# OPTIONS_GHC -fno-warn-deprecations #-}
+{-# OPTIONS_GHC -fno-warn-orphans      #-}
 
 module Refactorio.Helpers
      ( Lazyboy(..)
@@ -16,7 +18,8 @@ module Refactorio.Helpers
 
 import           Refactorio.Prelude
 
-import           Control.Lens            as L    ( Iso'
+import           Control.Lens            as L    ( Fold
+                                                 , Iso'
                                                  , from
                                                  , iso
                                                  )
@@ -25,6 +28,10 @@ import qualified Data.ByteString.Lazy    as LBS
 import qualified Data.Yaml               as Yaml
 import           X.Language.Haskell.Exts         ( hs )
 import qualified Data.Text.Lazy          as LT
+import           Text.Xml.Lens                   ( Document
+                                                 , AsHtmlDocument
+                                                 , _HtmlDocument
+                                                 )
 
 class Lazyboy s l where
   strictify :: l -> s
@@ -37,6 +44,10 @@ instance Lazyboy ByteString LByteString where
 instance Lazyboy Text LText where
   strictify = LT.toStrict
   lazify    = LT.fromStrict
+
+instance AsHtmlDocument ByteString where
+  _HtmlDocument :: Fold ByteString Document
+  _HtmlDocument = (lazy :: Iso' ByteString LByteString) . _HtmlDocument
 
 lazy :: Lazyboy s l => Iso' s l
 lazy = iso lazify strictify

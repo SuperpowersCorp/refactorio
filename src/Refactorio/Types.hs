@@ -24,6 +24,7 @@ newtype Expression = Expression { unExpression :: Text }
 
 data SpecialMode
   = Haskell
+  | Html
   | Json
   | Xml
   | Yaml
