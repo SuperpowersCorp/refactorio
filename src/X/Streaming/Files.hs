@@ -1,7 +1,8 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 
-module Streaming.Files
+module X.Streaming.Files
      ( FileInfo
+     , FileStatus
      , tree
      ) where
 

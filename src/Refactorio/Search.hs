@@ -3,35 +3,38 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards   #-}
 
-module Refactorio.Lenses where
+module Refactorio.Search where
 
-import           Refactorio.Prelude                 hiding ( (<>) )
-import qualified Streaming.Prelude            as S
+import           Refactorio.Prelude                  hiding ( (<>) )
+import qualified Streaming.Prelude              as S
 
-import           Control.Lens                       hiding ( (&)
-                                                           , pre
-                                                           )
-import qualified Data.List                    as L
-import           Data.Monoid                               ( (<>) )
-import           Data.Text                    as T  hiding ( span )
-import           Language.Haskell.Exts              hiding ( Style )
-import           Language.Haskell.Interpreter       hiding ( OverloadedStrings
-                                                           , RankNTypes
-                                                           )
-import           Rainbow.Extra                      hiding ( (&) )
-import           Refactorio.InterPrelude                   ( srcSpanInfoL )
-import           Refactorio.Theme
-import           Streaming.Files                           ( tree )
+import           Control.Lens                   as A hiding ( (&)
+                                                            , pre
+                                                            )
+import qualified Data.List                      as L
+import           Data.Monoid                                ( (<>) )
+import           Data.Text                      as T hiding ( span )
+import           Language.Haskell.Exts          as Y hiding ( Style )
 import           Refactorio.Config
+import           Refactorio.InterPrelude                    ( srcSpanInfoL )
+import           Refactorio.Theme
+import           X.Language.Haskell.Interpreter      hiding ( OverloadedStrings
+                                                            , RankNTypes
+                                                            )
+import           X.Rainbow                           hiding ( (&) )
+import           X.Streaming.Files                          ( tree )
 
-searchByLens :: Config -> IO ()
-searchByLens Config {..} = makeLens lensText >>= \case
+-- CURRENT TARGET:   refio . --haskell view "__Module.biplate._Int" --pre-mqp "+32"
+
+byLens :: CommonConfig -> SearchConfig -> IO ()
+byLens CommonConfig {..} SearchConfig {..} = makeLens (unLensText primaryLensText) >>= \case
   Left err -> displayError theme err
   Right trav -> S.mapM_ (showMatches trav)
     . S.chain reportFile
     . S.filter (\(p, _) -> ".hs" `L.isSuffixOf` p && not (".stack-work" `L.isInfixOf` p))
     . tree
-    $ projectRoot
+    . unTarget
+    $ target
     where
       showMatches t (p, _) = findMatches t p
                                >>= mapM_ (\x -> printPrettily theme x >> newLine)
@@ -53,23 +56,11 @@ displayError theme = \case
     putChunkLn
       $ chunk ("Encountered " <> show (L.length errors) <> " errors in the definition of your lens:")
       & errorColor theme
-    mapM_ (\e -> putChunkLn . errorColor theme . chunk . pack . errMsg $ e) errors
+    mapM_ (putChunkLn . errorColor theme . chunk . pack . errMsg) errors
 
 makeLens :: Text -> IO (Either InterpreterError
                         (ATraversal' (Module SrcSpanInfo) SrcSpanInfo))
-makeLens s = runInterpreter $ do
-  loadModules
-    [ "/Users/john/.refactorio/InterPrelude.hs"
-    ]
-  setImports
-    [ "Prelude"
-    , "Control.Lens"
-    , "Data.Data.Lens"
-    , "Language.Haskell.Exts"
-    , "Language.Haskell.Exts.Prisms"
-    , "Refactorio.InterPrelude"
-    ]
-  interpret (unpack s) infer
+makeLens = build
 
 findMatches :: ATraversal' (Module SrcSpanInfo) SrcSpanInfo -> FilePath -> IO [SrcSpanInfo]
 findMatches trav path = do
@@ -134,7 +125,7 @@ putColorFrom theme span src = do
 
           lx = fromMaybe (panic "unpossible!") . lastMay $ xs
 
--- TODO: unfuck
+-- TODO: finish/DRY up vs Replace
 parseMode :: FilePath -> ParseMode
 parseMode path = defaultParseMode
   { baseLanguage          = Haskell2010
@@ -148,3 +139,6 @@ parseMode path = defaultParseMode
       [ OverloadedStrings
       , RankNTypes
       ]
+
+view :: CommonConfig -> SearchConfig -> IO ()
+view = byLens

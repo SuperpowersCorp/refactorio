@@ -22,6 +22,38 @@ and run it from the project root to get an experience something like:
 
     refio _Module.biplate._ModuleName.end -d ../voltron/src
 
+## WISHFUL THINKING for FUTURE OF Replace
+
+### TARGET RIGHT NOW
+
+    refio --haskell view "__Module.biplate._Int" --pre-mqp "+32"
+
+## FUTURE ETC
+
+    refio -d ../voltron/src  --haskell _Module.biplate._ModuleName
+
+    the .end is not longer necessary because it just needs anything from which it can somehow get both a unique SrcSpanInfo and an `a` yadda
+
+    but also replace like:
+
+    refio -d ../voltron/src  --haskell _Module.biplate._ModuleName toUpper
+    ...etc...
+    ...(13 Changes)....
+
+    refio -d ../voltron/src --haskell _Module.biplate._Int '(+5)'
+    ...etc...
+    ...(6 Changes)....
+
+    refio -d ../voltron/src --json 'key "user" . biplate . _String yadda..
+    ...grep output...
+    ....
+
+    same on YAML
+
+    changing the time in a json file just by pattern match etc
+
+
+
 ## Examples
 
 Try these on your projects:
@@ -63,3 +95,4 @@ Try these on your projects:
 - [ ] Can we cache generated lenses somehow?
 - [ ] Better Themes
 - [ ] Better Banner Image
+- [ ] Approach Factorio people about permission to use a (better version of) the logo

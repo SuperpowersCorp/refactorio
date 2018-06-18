@@ -1,7 +1,6 @@
 {-# LANGUAGE NoImplicitPrelude #-}
-{-# LANGUAGE OverloadedStrings #-}
 
-module Rainbow.Extra
+module X.Rainbow
      ( module Exports
      , Chunk'
      , putChunks

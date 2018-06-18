@@ -2,8 +2,7 @@
 
 module Refactorio.Theme where
 
-import Rainbow.Extra
-
+import X.Rainbow
 
 data Theme = Theme
   { errorColor  :: StyleFn
