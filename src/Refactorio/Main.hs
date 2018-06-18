@@ -1,3 +1,4 @@
+{-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE NoImplicitPrelude   #-}
 {-# LANGUAGE OverloadedStrings   #-}
 {-# LANGUAGE ScopedTypeVariables #-}
@@ -17,7 +18,7 @@ import           X.Rainbow
 -- CURRENT TARGET:   refio --haskell view "__Module.biplate._Int" & "(+32)"
 
 main :: IO ()
-main = void $ customExecParser prefs opts >>= process
+main = void $ customExecParser prefs opts >>= process . expandExtraFilters
   where
     prefs = defaultPrefs
       { prefShowHelpOnError = True
@@ -27,6 +28,9 @@ main = void $ customExecParser prefs opts >>= process
     opts = info (parser <**> helper) $ fullDesc
            <> header   "Refactorio - Optical Refactoring Tool"
            <> progDesc "Zen and the art of optical file maintenance."
+
+expandExtraFilters :: Config -> Config
+expandExtraFilters config@Config{..} = config
 
 parser :: Parser Config
 parser = prefixConfigParser
@@ -39,37 +43,16 @@ parser = prefixConfigParser
       <*> previewParser
       <*> targetParser
 
-    _ = Config :: Set FilenameFilter
-               -> Expression
-               -> Maybe SpecialMode
-               -> UpdateMode
-               -> Target
-               -> Config
-
-    _fromInfix :: Set FilenameFilter
-               -> Maybe SpecialMode
-               -> Expression
-               -> UpdateMode
-               -> Target
-               -> Config
-    _fromInfix filts = flip (Config filts)
-
 specialModeParser :: Parser SpecialMode
-specialModeParser =
-  ( Haskell <$ switch ( long "haskell"
-                     <> help "Include .hs files and activate Haskell module parsing mode."
-                      )
-  )
-  <|>
-  ( JSON <$ switch ( long "json"
-                  <> help "Include .json files."
-                   )
-  )
-  <|>
-  ( YAML <$ switch ( long "yaml"
-                  <> help "Include .yaml or .yml files."
-                   )
-  )
+specialModeParser = Haskell <$ switch ( long "haskell"
+                                     <> help "Include .hs files and activate Haskell module parsing mode."
+                                      )
+                    <|> JSON <$ switch ( long "json"
+                                      <> help "Include .json files."
+                                       )
+                    <|> YAML <$ switch ( long "yaml"
+                                      <> help "Include .yaml or .yml files."
+                                       )
 
 previewParser :: Parser UpdateMode
 previewParser = f <$> switch

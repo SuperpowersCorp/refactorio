@@ -27,7 +27,8 @@ data SpecialMode
   deriving (Data, Eq, Ord, Read, Show, Typeable)
 
 data UpdateMode
-  = PreviewMode
+  = AskMode
+  | PreviewMode
   | LiveUpdateMove
   deriving (Data, Eq, Ord, Read, Show)
 

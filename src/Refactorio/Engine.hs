@@ -27,30 +27,40 @@ import System.IO
 
 process :: Config -> IO ()
 process Config{..} = do
-  putLn $ "Target: " <> show (unTarget target)
-  putLn $ "Filters: " <> show (map unFilenameFilter . Set.toList $ filenameFilters)
+  putLn $ "Target: "  <> show (unTarget target)
+  putLn $ "Filters: " <> show (map unFilenameFilter . Set.toList $ allFilters)
   case specialMode of
     Nothing -> return ()
     Just mode -> putLn $ "Special mode activated: " <> show mode
   putLn $ "Expression: " <> show (unExpression expr)
+  hFlush stdout
   build (unExpression expr) >>= either (panic . show) process'
   where
-    process' f = do
-      -- TODO: flush
-      hFlush stdout
-      S.mapM_ ( processWith f )
-        . S.chain (putLn . ("DEBUG 2: " <>) . show)
-        -- . S.filter ( matchesAny compiledFilters )
-        . S.filter ( matchesAnyString . map (unpack . unFilenameFilter) . Set.toList $ filenameFilters )
-        . S.chain (putLn . ("DEBUG 1: " <>) . show)
-        . S.filter ( not . ignored )
-        . S.map fst
-        . S.filter ( not . isDirectory . snd )
-        . tree
-        . unTarget
-        $ target
+    process' f = S.mapM_ ( processWith f )
+      . S.filter ( matchesAny compiledFilters )
+      . S.filter ( not . ignored )
+      . S.map fst
+      . S.filter ( not . isDirectory . snd )
+      . tree
+      . unTarget
+      $ target
 
-    compiledFilters = map compileFilter . Set.toList $ filenameFilters
+    allFilters = expandExtraFilters filenameFilters
+
+    compiledFilters = map compileFilter . Set.toList $ allFilters
+
+    expandExtraFilters :: Set FilenameFilter -> Set FilenameFilter
+    expandExtraFilters existing
+      | not . null $ existing = existing
+      | otherwise = fromMaybe Set.empty . fmap filtersForSpecialMode $ specialMode
+
+filtersForSpecialMode :: SpecialMode -> Set FilenameFilter
+filtersForSpecialMode m = Set.fromList . map FilenameFilter $ case m of
+  Haskell -> [ "**/*.hs" ]
+  JSON    -> [ "**/*.json" ]
+  YAML    -> [ "**/*.yaml"
+             , "**/*.yml"
+             ]
 
 -- TODO: read .*ignore files from the target dir down to the current file, caching
 --       along the way, etc. but for now...
