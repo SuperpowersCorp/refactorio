@@ -18,6 +18,7 @@ library
   ghc-options:         -Wall
   exposed-modules:     Refactorio.Engine
                      , Refactorio.FilenameFilter
+                     , Refactorio.Helpers
                      , Refactorio.Main
                      , Refactorio.Prelude
                      , Refactorio.Theme
@@ -44,6 +45,7 @@ library
                      , protolude
                      , rainbow
                      , streaming
+                     , string-conv
                      , text
                      , unix
                      , vty

@@ -20,6 +20,7 @@ import Data.Data.Lens as Exports ( upon )
 import Data.List      as List
 import Data.String    as Exports ( String )
 import Data.Text      as Exports ( unpack )
+import Data.Text      as Text    ( isPrefixOf )
 import Protolude      as Exports
 
 class Container a where
@@ -39,6 +40,9 @@ instance Eq a => Ended [a] where
 
 instance Eq a => Started [a] where
   startsWith = flip List.isPrefixOf
+
+instance Started Text where
+  startsWith = flip Text.isPrefixOf
 
 getLn :: MonadIO m => m Text
 getLn = liftIO getLine

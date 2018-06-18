@@ -18,7 +18,7 @@ import           X.Rainbow
 -- CURRENT TARGET:   refio --haskell view "__Module.biplate._Int" & "(+32)"
 
 main :: IO ()
-main = void $ customExecParser prefs opts >>= process . expandExtraFilters
+main = void $ customExecParser prefs opts >>= process
   where
     prefs = defaultPrefs
       { prefShowHelpOnError = True
@@ -28,9 +28,6 @@ main = void $ customExecParser prefs opts >>= process . expandExtraFilters
     opts = info (parser <**> helper) $ fullDesc
            <> header   "Refactorio - Optical Refactoring Tool"
            <> progDesc "Zen and the art of optical file maintenance."
-
-expandExtraFilters :: Config -> Config
-expandExtraFilters config@Config{..} = config
 
 parser :: Parser Config
 parser = prefixConfigParser
@@ -42,29 +39,42 @@ parser = prefixConfigParser
       <*> filenameFilterSetParser
       <*> optional preludeParser
       <*> updateModeParser
-      <*> optional specialModeParser
+      <*> specialModeParser
 
     -- So Optparse Applicative will generate the options in the right order
     reorder ex ta ff pr up sp = Config ff ex pr sp up ta
 
-preludeParser :: Parser FilePath
-preludeParser = strOption ( long    "prelude"
-                         <> help    "Use a specific Prelude"
-                         <> metavar "PRELUDE"
-                          )
+expressionParser :: Parser Expression
+expressionParser = Expression . Text.pack <$> argument str
+  ( metavar "EXPR"
+ <> help    "ByteString -> ByteString"
+  )
 
-specialModeParser :: Parser SpecialMode
-specialModeParser =
-  Haskell <$ switch ( long "haskell"
-                   <> long "hs"
-                   <> help "Include .hs files and activate Haskell module parsing mode."
-                    )
-  <|> Json <$ switch ( long "json"
-                    <> help "Include .json files."
-                     )
-  <|> Yaml <$ switch ( long "yaml"
-                    <> help "Include .yaml or .yml files."
-                     )
+targetParser :: Parser Target
+targetParser = Target <$> strOption
+  ( long        "target"
+ <> short       't'
+ <> metavar     "TARGET"
+ <> help        "A file/directory to search/replace"
+ <> value       "."
+ <> showDefault
+  )
+
+filenameFilterSetParser :: Parser (Set FilenameFilter)
+filenameFilterSetParser = Set.fromList . map (FilenameFilter . Text.pack) <$> many
+  ( strOption ( long    "glob"
+             <> short   'g'
+             <> metavar "GLOB"
+             <> help    "Glob matches to include (eg '*.ini', 'f??b?r.c')"
+              )
+  )
+
+preludeParser :: Parser FilePath
+preludeParser = strOption
+  ( long    "prelude"
+ <> help    "Use a specific Prelude"
+ <> metavar "PRELUDE"
+  )
 
 updateModeParser :: Parser UpdateMode
 updateModeParser =
@@ -86,27 +96,32 @@ updateModeParser =
                            )
   <|> pure AskMode
 
-expressionParser :: Parser Expression
-expressionParser = Expression . Text.pack <$> argument str
-  ( metavar "EXPR"
- <> help    "ByteString -> ByteString"
-  )
+specialModeParser :: Parser (Maybe SpecialMode)
+specialModeParser = resolve <$> ( (,,)
+  <$> langSwitch Haskell
+               ( long "haskell"
+              <> long "hs"
+              <> help "Include .hs files and activate Haskell module parsing mode."
+               )
+  <*> langSwitch Json
+               ( long "json"
+              <> help "Include .json files."
+               )
+  <*> langSwitch Yaml
+               ( long "yaml"
+              <> help "Include .yaml or .yml files."
+               )
+                                )
+  where
+    langSwitch m = (mmap m <$>) . switch
 
-targetParser :: Parser Target
-targetParser = Target <$> strOption
-  ( long        "target"
- <> short       't'
- <> metavar     "TARGET"
- <> help        "A file/directory to search/replace"
- <> value       "."
- <> showDefault
-  )
+    mmap :: SpecialMode -> Bool -> Maybe SpecialMode
+    mmap sm True  = Just sm
+    mmap _  False = Nothing
 
-filenameFilterSetParser :: Parser (Set FilenameFilter)
-filenameFilterSetParser = Set.fromList . map (FilenameFilter . Text.pack) <$>
-  many ( strOption (    long    "glob"
-                     <> short   'g'
-                     <> metavar "GLOB"
-                     <> help    "Glob matches to include (eg '*.ini', 'f??b?r.c')"
-                   )
-       )
+    resolve :: ( Maybe SpecialMode
+               , Maybe SpecialMode
+               , Maybe SpecialMode
+               )
+            -> Maybe SpecialMode
+    resolve (am, bm, cm) = am <|> bm <|> cm

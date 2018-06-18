@@ -1,3 +1,4 @@
+{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 
 module X.Language.Haskell.Interpreter
@@ -30,11 +31,19 @@ build preludePathMay src = runInterpreter $ do
     [ ("Control.Lens"                , Nothing)
     , ("Control.Lens"                , Just "L")
     , ("Data.Aeson.Lens"             , Just "A")
+    , ("Data.ByteString.Lens"        , Nothing)
     , ("Data.Data.Lens"              , Just "L")
+    , ("Data.String.Conv"            , Just "S")
     , ("Language.Haskell.Exts"       , Just "HS")
     , ("Language.Haskell.Exts.Prisms", Just "HS")
     , ("Protolude"                   , Nothing)
+    , ("Refactorio.Helpers"          , Just "H")
     , ("Text.Pandoc.Lens"            , Just "P")
     , ("Codec.Compression.Zlib.Lens" , Nothing)
     ]
-  interpret (unpack src) infer
+  interpret (unpack (autoLens src)) infer
+
+autoLens :: Text -> Text
+autoLens s
+  | s `startsWith` "&" = "\\item -> item " <> s
+  | otherwise          = s
