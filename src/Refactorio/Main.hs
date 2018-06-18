@@ -78,12 +78,12 @@ updateModeParser =
                             )
   <|> ReviewMode <$ switch ( long "review"
                           <> short 'r'
-                          <> help "Make the changes and show what was changed"
+                          <> help "Make the changes and show details of changes"
                            )
-  <|> JustDoItMode <$ switch ( long "just-do-it"
-                            <> short 'j'
-                            <> help "Make the changes but only report changed filenames"
-                             )
+  <|> ModifyMode <$ switch ( long "modify"
+                          <> short 'm'
+                          <> help "Make the changes and summarize changed filenames"
+                           )
   <|> pure AskMode
 
 expressionParser :: Parser Expression

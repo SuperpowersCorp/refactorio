@@ -140,7 +140,7 @@ processWith updateMode f path = do
         ReviewMode -> do
           saveChanges afterBytes
           showChanges "Review" doc
-        JustDoItMode -> do
+        ModifyMode -> do
           saveChanges afterBytes
           putLn $ "Changed: " <> show path
         PreviewMode ->
@@ -153,7 +153,7 @@ processWith updateMode f path = do
       display doc
 
     saveChanges :: ByteString -> IO ()
-    saveChanges = panic "saveChanges!" -- BS.writeFile path
+    saveChanges = BS.writeFile path
 
     beforeName :: Doc
     beforeName = PP.text $ path <> " BEFORE"
