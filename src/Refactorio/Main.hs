@@ -1,5 +1,6 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE RecordWildCards   #-}
 
 module Refactorio.Main ( main ) where
 
@@ -16,7 +17,7 @@ import           X.Rainbow
 -- CURRENT TARGET: refio --haskell view "__Module.biplate._Int" & "(+32)"
 
 main :: IO ()
-main = void $ customExecParser prefs opts >>= process
+main = void $ customExecParser prefs opts >>= process . wrapSrc
   where
     prefs = defaultPrefs
       { prefShowHelpOnError = True
@@ -27,7 +28,8 @@ main = void $ customExecParser prefs opts >>= process
            <> header   "Refactorio - Optical Refactoring Tool"
            <> progDesc "Zen and the art of optical file maintenance."
 
--- wrapSrc :: Config -> Config
+wrapSrc :: Config -> Config
+wrapSrc = identity
 -- wrapSrc config@Config{..} = case specialModeMay of
 --   Nothing -> config
 --   Just m  -> case m of
