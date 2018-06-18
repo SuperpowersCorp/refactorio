@@ -39,7 +39,7 @@ process Config{..} = do
     Nothing   -> return ()
     Just mode -> putLn $ "Special processing activated: " <> show mode
   putLn $ "Targets: " <> show (unTarget target)
-  when (not . null $ allFilters) $
+  unless (null allFilters) $
     putLn $ "Filters: " <> show (map unFilenameFilter . Set.toList $ allFilters)
   putLn $ "Expression: " <> show (unExpression expr)
   hFlush stdout
@@ -82,6 +82,7 @@ filtersForSpecialMode :: SpecialMode -> Set FilenameFilter
 filtersForSpecialMode m = Set.fromList . map FilenameFilter $ case m of
   Haskell -> [ "**/*.hs" ]
   Json    -> [ "**/*.json" ]
+  Xml     -> [ "**/*.xml" ]
   Yaml    -> [ "**/*.yaml"
              , "**/*.yml"
              ]

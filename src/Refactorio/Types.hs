@@ -25,6 +25,7 @@ newtype Expression = Expression { unExpression :: Text }
 data SpecialMode
   = Haskell
   | Json
+  | Xml
   | Yaml
   deriving (Data, Eq, Ord, Read, Show, Typeable)
 

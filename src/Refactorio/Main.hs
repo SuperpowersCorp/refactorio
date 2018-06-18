@@ -1,6 +1,5 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE RecordWildCards   #-}
 
 module Refactorio.Main ( main ) where
 
@@ -115,19 +114,23 @@ updateModeParser =
   <|> pure AskMode
 
 specialModeParser :: Parser (Maybe SpecialMode)
-specialModeParser = resolve <$> ( (,,)
+specialModeParser = resolve <$> ( (,,,)
   <$> langSwitch Haskell
                ( long "haskell"
               <> long "hs"
-              <> help "Include .hs files and activate Haskell module parsing mode."
+              <> help "Include .hs files and activate Haskell module parsing mode"
                )
   <*> langSwitch Json
                ( long "json"
-              <> help "Include .json files."
+              <> help "Include .json files"
+               )
+  <*> langSwitch Xml
+               ( long "xml"
+              <> help "Include .xml files"
                )
   <*> langSwitch Yaml
                ( long "yaml"
-              <> help "Include .yaml or .yml files."
+              <> help "Include .yaml or .yml files"
                )
                                 )
   where
