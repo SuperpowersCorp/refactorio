@@ -1,30 +1,39 @@
 {-# LANGUAGE DeriveDataTypeable #-}
 {-# LANGUAGE NoImplicitPrelude  #-}
-{-# LANGUAGE OverloadedStrings  #-}
 
-module Refactorio.FilenameFilter where
+module Refactorio.FilenameFilter
+     ( FilenameFilter(..)
+     , compileFilter
+     , matches
+     , matchesAny
+     , matchesAnyString -- For dev
+     ) where
 
-import Refactorio.Prelude hiding ( null )
+import Refactorio.Prelude   hiding ( null )
 
-import Data.Char                 ( toLower )
-import Data.Data                 ( Data )
-import Data.Set                  ( null )
+import Data.Data                   ( Data )
+import Data.List                   ( null )
+import Data.Text                   ( pack )
+import System.FilePath.Glob        ( Pattern
+                                   , compile
+                                   , match
+                                   )
 
-data FilenameFilter
-  = DotPattern String
-  | Haskell
-  | JSON
-  | YAML
-  deriving (Data, Eq, Ord, Read, Show)
+data FilenameFilter = FilenameFilter { unFilenameFilter :: Text }
+  deriving (Data, Eq, Ord, Read, Show, Typeable)
 
-matches :: FilenameFilter -> FilePath -> Bool
-matches (DotPattern p) path = map toLower path `endsWith` ('.':map toLower p)
-matches Haskell        path = matches (DotPattern "hs")   path
-matches JSON           path = matches (DotPattern "json") path
-matches YAML           path = matches (DotPattern "yaml") path
-                           || matches (DotPattern "yml")  path
+type CompiledFilter = Pattern
 
-matchesSet :: Set FilenameFilter -> FilePath -> Bool
-matchesSet filters path
+compileFilter :: FilenameFilter -> CompiledFilter
+compileFilter = compile . unpack . unFilenameFilter
+
+matches :: CompiledFilter -> FilePath -> Bool
+matches = match
+
+matchesAny :: [CompiledFilter] -> FilePath -> Bool
+matchesAny filters path
   | null filters = True
-  | otherwise    = any (flip matches path) filters
+  | otherwise    = any (`matches` path) filters
+
+matchesAnyString :: [String] -> FilePath -> Bool
+matchesAnyString = matchesAny . map (compileFilter . FilenameFilter . pack)

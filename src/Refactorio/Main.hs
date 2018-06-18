@@ -1,6 +1,5 @@
 {-# LANGUAGE NoImplicitPrelude   #-}
 {-# LANGUAGE OverloadedStrings   #-}
-{-# LANGUAGE RecordWildCards     #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
 module Refactorio.Main ( main ) where
@@ -36,21 +35,41 @@ parser = prefixConfigParser
     prefixConfigParser = Config
       <$> filenameFilterSetParser
       <*> expressionParser
+      <*> optional specialModeParser
       <*> previewParser
       <*> targetParser
 
     _ = Config :: Set FilenameFilter
                -> Expression
+               -> Maybe SpecialMode
                -> UpdateMode
                -> Target
                -> Config
 
     _fromInfix :: Set FilenameFilter
-               -> UpdateMode
+               -> Maybe SpecialMode
                -> Expression
+               -> UpdateMode
                -> Target
                -> Config
     _fromInfix filts = flip (Config filts)
+
+specialModeParser :: Parser SpecialMode
+specialModeParser =
+  ( Haskell <$ switch ( long "haskell"
+                     <> help "Include .hs files and activate Haskell module parsing mode."
+                      )
+  )
+  <|>
+  ( JSON <$ switch ( long "json"
+                  <> help "Include .json files."
+                   )
+  )
+  <|>
+  ( YAML <$ switch ( long "yaml"
+                  <> help "Include .yaml or .yml files."
+                   )
+  )
 
 previewParser :: Parser UpdateMode
 previewParser = f <$> switch
@@ -79,25 +98,10 @@ targetParser = Target <$> strOption
   )
 
 filenameFilterSetParser :: Parser (Set FilenameFilter)
-filenameFilterSetParser = unite
-  <$> many ( strOption ( long    "ext"
-                      <> short   'e'
-                      <> metavar "EXT"
-                      <> help    "File extension to include (eg 'txt', 'c')"
-                       )
-           )
-  <*> switch ( long "haskell"
-            <> help "Include .hs files and activate Haskell module parsing mode."
-             )
-  <*> switch ( long "json"
-            <> help "Include .json files."
-             )
-  <*> switch ( long "yaml"
-            <> help "Include .yaml or .yml files."
-             )
-  where
-    unite ffs hs json yaml = Set.fromList
-      $ map DotPattern ffs
-      ++ [Haskell | hs]
-      ++ [JSON    | json]
-      ++ [YAML    | yaml]
+filenameFilterSetParser = Set.fromList . map (FilenameFilter . Text.pack) <$>
+  many ( strOption ( long    "glob"
+                     <> short   'g'
+                     <> metavar "GLOB"
+                     <> help    "Glob matches to include (eg '*.ini', 'f??b?r.c')"
+                   )
+       )

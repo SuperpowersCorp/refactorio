@@ -12,6 +12,7 @@ import           Data.Algorithm.DiffContext
 import qualified Data.ByteString                as BS
 import qualified Data.ByteString.Char8          as C8
 import qualified Data.List                      as List
+import qualified Data.Set                       as Set
 import           Data.Text                                     ( pack )
 import           Refactorio.FilenameFilter
 import           Refactorio.Types
@@ -20,22 +21,36 @@ import           Text.PrettyPrint               as PP   hiding ( (<>) )
 import           X.Language.Haskell.Interpreter                ( build )
 import           X.Rainbow
 import           X.Streaming.Files                             ( tree )
+import System.IO
 
 -- CURRENT TARGET:   refio --haskell view "__Module.biplate._Int" & "(+32)"
 
 process :: Config -> IO ()
-process Config{..} = build (unExpression expr) >>= either (panic . show) process'
+process Config{..} = do
+  putLn $ "Target: " <> show (unTarget target)
+  putLn $ "Filters: " <> show (map unFilenameFilter . Set.toList $ filenameFilters)
+  case specialMode of
+    Nothing -> return ()
+    Just mode -> putLn $ "Special mode activated: " <> show mode
+  putLn $ "Expression: " <> show (unExpression expr)
+  build (unExpression expr) >>= either (panic . show) process'
   where
     process' f = do
-      putLn $ "Seeking " <> show (unExpression expr)
+      -- TODO: flush
+      hFlush stdout
       S.mapM_ ( processWith f )
-        . S.filter ( matchesSet filenameFilters )
+        . S.chain (putLn . ("DEBUG 2: " <>) . show)
+        -- . S.filter ( matchesAny compiledFilters )
+        . S.filter ( matchesAnyString . map (unpack . unFilenameFilter) . Set.toList $ filenameFilters )
+        . S.chain (putLn . ("DEBUG 1: " <>) . show)
         . S.filter ( not . ignored )
         . S.map fst
         . S.filter ( not . isDirectory . snd )
         . tree
         . unTarget
         $ target
+
+    compiledFilters = map compileFilter . Set.toList $ filenameFilters
 
 -- TODO: read .*ignore files from the target dir down to the current file, caching
 --       along the way, etc. but for now...

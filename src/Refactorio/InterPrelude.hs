@@ -22,8 +22,8 @@ import           Control.Lens                 as Exports hiding ( Context
                                                                 , op
                                                                 )
 import           Data.Aeson
-import           Data.Aeson.Lens as Exports ( _Number )
-import qualified Data.Aeson.Lens as DAL
+import           Data.Aeson.Lens              as Exports        ( _Number )
+import qualified Data.Aeson.Lens              as DAL
 import qualified Data.ByteString              as BS
 import           Data.ByteString.Lens         as Exports
 import           Data.Data.Lens               as Exports
