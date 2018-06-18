@@ -36,8 +36,8 @@ process Config{..} = do
   _home <- getHomeDirectory
   putLn $ "Target: "  <> show (unTarget target)
   putLn $ "Filters: " <> show (map unFilenameFilter . Set.toList $ allFilters)
-  case specialMode of
-    Nothing -> return ()
+  case specialModeMay of
+    Nothing   -> return ()
     Just mode -> putLn $ "Special mode activated: " <> show mode
   putLn $ "Expression: " <> show (unExpression expr)
   putLn $ "UpdateMode: " <> show updateMode
@@ -70,7 +70,7 @@ process Config{..} = do
     expandExtraFilters :: Set FilenameFilter -> Set FilenameFilter
     expandExtraFilters existing
       | not . null $ existing = existing
-      | otherwise = maybe Set.empty filtersForSpecialMode specialMode
+      | otherwise = maybe Set.empty filtersForSpecialMode specialModeMay
 
 -- specialInterlude :: SpecialMode -> Maybe FilePath
 -- specialInterlude Haskell = Just "HaskellInterlude.hs"

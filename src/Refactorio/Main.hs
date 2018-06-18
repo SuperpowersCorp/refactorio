@@ -15,7 +15,7 @@ import           Refactorio.FilenameFilter
 import           Refactorio.Types
 import           X.Rainbow
 
--- CURRENT TARGET:   refio --haskell view "__Module.biplate._Int" & "(+32)"
+-- CURRENT TARGET: refio --haskell view "__Module.biplate._Int" & "(+32)"
 
 main :: IO ()
 main = void $ customExecParser prefs opts >>= process
@@ -28,6 +28,16 @@ main = void $ customExecParser prefs opts >>= process
     opts = info (parser <**> helper) $ fullDesc
            <> header   "Refactorio - Optical Refactoring Tool"
            <> progDesc "Zen and the art of optical file maintenance."
+
+-- wrapSrc :: Config -> Config
+-- wrapSrc config@Config{..} = case specialModeMay of
+--   Nothing -> config
+--   Just m  -> case m of
+--     Haskell -> config { expr = expr & upon unExpression %~ pre "H.hs" }
+--     Json    -> config -- already lens-aeson'able
+--     Yaml    -> config { expr = expr & upon unExpression %~ pre "H.yaml" }
+--   where
+--     pre x y = x <> " . (" <> y <> ")"
 
 parser :: Parser Config
 parser = prefixConfigParser

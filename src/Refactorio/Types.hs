@@ -14,7 +14,7 @@ data Config = Config
   , expr                  :: Expression
   , preludeMay            :: Maybe FilePath
   , unqualifiedPreludeMay :: Maybe FilePath
-  , specialMode           :: Maybe SpecialMode
+  , specialModeMay        :: Maybe SpecialMode
   , updateMode            :: UpdateMode
   , target                :: Target
   } deriving (Data, Eq, Ord, Read, Show)

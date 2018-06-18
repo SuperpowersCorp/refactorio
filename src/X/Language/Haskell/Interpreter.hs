@@ -11,7 +11,7 @@ import Refactorio.Prelude
 import Language.Haskell.Interpreter
 
 build :: Typeable a => Maybe FilePath -> Text -> IO (Either InterpreterError a)
-build preludePathMay src = runInterpreter $ do
+build preludePathMay src = (putLn ("...compiling... '" <> show src <> "'") >>) . runInterpreter $ do
   set [ languageExtensions
         := [ FlexibleContexts
            , FlexibleInstances
@@ -41,9 +41,4 @@ build preludePathMay src = runInterpreter $ do
     , ("Text.Pandoc.Lens"            , Just "P")
     , ("Codec.Compression.Zlib.Lens" , Nothing)
     ]
-  interpret (unpack (autoLens src)) infer
-
-autoLens :: Text -> Text
-autoLens s
-  | s `startsWith` "&" = "\\item -> item " <> s
-  | otherwise          = s
+  interpret (unpack ("(" <> src <> ")")) infer
