@@ -20,16 +20,17 @@ import Control.Lens as L            ( Iso'
                                , from
                                )
 import X.Language.Haskell.Exts ( hs )
-import Data.Aeson as Json
--- import Data.Yaml  as Yaml
+import qualified Data.Aeson as Json
+import qualified Data.Yaml  as Yaml
+import qualified Data.ByteString.Lazy as LBS
 
 class Lazyboy s l where
   strictify :: l -> s
   lazify    :: s -> l
 
 instance Lazyboy ByteString LByteString where
-  strictify = undefined
-  lazify    = undefined
+  strictify = LBS.toStrict
+  lazify    = LBS.fromStrict
 
 lazy :: Lazyboy s l => Iso' s l
 lazy = iso lazify strictify
@@ -62,9 +63,11 @@ yaml = iso g s
     g :: ByteString -> ByteString
     g = view (L.from lazy) . Json.encode . yamlBsToValue
 
-    yamlBsToValue :: ByteString -> Value
-    yamlBsToValue = panic "yamlBsToValue undefined"
-    -- xJson.encode . toS . (fromMaybe (panic "OH NO!") . Yaml.decode)
+    yamlBsToValue :: ByteString -> Json.Value
+    yamlBsToValue = either (panic "yamlBsToValue decode failed") identity
+      . Yaml.decodeEither
 
     s :: ByteString -> ByteString
-    s = panic "yaml s undefined"
+    s = (Yaml.encode :: Maybe Json.Value -> ByteString)
+      . (Json.decode :: LByteString -> Maybe Json.Value)
+      . view lazy

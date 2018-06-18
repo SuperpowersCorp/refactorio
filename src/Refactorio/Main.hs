@@ -96,21 +96,21 @@ unqualifiedPreludeParser = strOption
 
 updateModeParser :: Parser UpdateMode
 updateModeParser =
-  AskMode <$ switch ( long "ask"
+  AskMode <$ switch ( long  "ask"
                    <> short 'a'
-                   <> help "Ask before changing files (default)"
+                   <> help  "Ask before changing files (default)"
                     )
-  <|> PreviewMode <$ switch ( long "preview"
+  <|> PreviewMode <$ switch ( long  "preview"
                            <> short 'p'
-                           <> help "Only show the changes that would be made"
+                           <> help  "Only show the changes that would be made"
                             )
-  <|> ReviewMode <$ switch ( long "review"
+  <|> ReviewMode <$ switch ( long  "review"
                           <> short 'r'
-                          <> help "Make the changes and show details of changes"
+                          <> help  "Make the changes and show details of changes"
                            )
-  <|> ModifyMode <$ switch ( long "modify"
+  <|> ModifyMode <$ switch ( long  "modify"
                           <> short 'm'
-                          <> help "Make the changes and summarize changed filenames"
+                          <> help  "Make the changes and summarize changed filenames"
                            )
   <|> pure AskMode
 
