@@ -136,7 +136,7 @@ of the refactorio project root).
 
 ## TODOs
 
-- [ ] Finish custom prelude implementation
+- [X] Finish custom prelude implementation
 - [ ] Fully restore haskell-src-exts functionality.
 - [ ] Special mode pre/post adapter fns
 - [ ] Pandoc lens support for:
