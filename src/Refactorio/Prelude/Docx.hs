@@ -25,3 +25,10 @@ docxL = prism g s
 
     writerOpts :: WriterOptions
     writerOpts = def
+
+
+testBS :: IO ByteString
+testBS = BS.readFile "/tmp/voltron/src/demo.docx"
+
+test :: IO ()
+test = print testBS

@@ -3,6 +3,9 @@ resolver: lts-9.21
 packages:
 - .
 
+docker:
+  enabled: true
+
 allow-newer: true
 
 extra-deps:
@@ -12,15 +15,11 @@ extra-deps:
 - hierarchy-0.3.1.4
 - hslua-module-text-0.1.2.1
 - io-capture-1.0.0
-- lens-4.15.4
-- mueval-0.9.3
-- pandoc-2.2.1
+#- lens-4.15.4
+- lens-4.14
 - pandoc-lens-0.6.3
 - pipes-4.3.9
 - pipes-files-0.1.2
 - protolude-0.2.1
 - show-0.6
 - xml-html-conduit-lens-0.3.2.3
-
-
-- hslua-0.9.5.2

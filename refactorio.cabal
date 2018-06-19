@@ -38,7 +38,7 @@ library
   build-depends:       Diff
                      , Glob
                      , aeson
-                     , base >= 4.7 && < 5
+                     , base                               >= 4.7 && < 5
                      , bytestring
                      , containers
                      , directory
@@ -50,7 +50,7 @@ library
                      , lens-aeson
                      , lens-regex
                      , optparse-applicative
-                     , pandoc >= 2.2.1
+                     , pandoc
                      , pandoc-lens
                      , pretty
                      , protolude
