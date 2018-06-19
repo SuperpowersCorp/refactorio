@@ -12,7 +12,7 @@ import Refactorio.FilenameFilter
 data Config = Config
   { filenameFilters       :: Set FilenameFilter
   , expr                  :: Expression
-  , preludeMay            :: Maybe FilePath
+  , preludeModuleMay      :: Maybe String
   , specialModeMay        :: Maybe SpecialMode
   , updateMode            :: UpdateMode
   , target                :: Target

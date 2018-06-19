@@ -81,8 +81,8 @@ filenameFilterSetParser = Set.fromList . map (FilenameFilter . Text.pack) <$> ma
 preludeParser :: Parser FilePath
 preludeParser = strOption
   ( long    "prelude"
- <> help    "Use a specific Prelude"
- <> metavar "PRELUDE"
+ <> help    "Use a specific Prelude module"
+ <> metavar "MODULE"
   )
 
 updateModeParser :: Parser UpdateMode
