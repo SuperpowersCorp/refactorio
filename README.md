@@ -102,7 +102,15 @@ the value of the JSON object at this key that match this regular expression":
 
 ![Regex Example](examples/regex.png)
 
-### Haskell:
+### Compressed Files (via [zlib-lens](https://hackage.haskell.org/package/zlib-lens)):
+
+Reach inside eg. gzipped files and do what you gotta do:
+
+![gzipped Example](examples/gzipped.png)
+
+### Haskell (via [haskell-src-exts](https://hackage.haskell.org/package/haskell-src-exts) and [haskell-src-exts-prisms](https://hackage.haskell.org/package/haskell-src-exts-prisms)):
+
+TODO: revamp after re-wiring
 
 Try these on your projects:
 
@@ -155,7 +163,8 @@ of the refactorio project root).
 - [ ] Eliminate unnecessary serialization round trips
   - [ ] eg when processing YAML via JSON
   - [ ] don't changes files when all that changed was formatting.
-- [ ] Handle '-' as filename for stdin->stdout
+- [X] Handle '-' as filename for stdin->stdout
+- [ ] Bail if modes are provided with stdin ('-') processing
 - [ ] Seek guidance from the pros on
   - [ ] CT/lenses
   - [ ] Cool lens tricks that might be applicable

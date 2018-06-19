@@ -35,29 +35,37 @@ process :: Config -> IO ()
 process Config{..} = do
   case specialModeMay of
     Nothing   -> return ()
-    Just mode -> putLn $ "Special processing activated: " <> show mode
-  putLn $ "Targets: " <> show (unTarget target)
+    Just mode -> putLnMay $ "Special processing activated: " <> show mode
+  putLnMay $ "Targets: " <> show (unTarget target)
   unless (null allFilters) $
-    putLn $ "Filters: " <> show (map unFilenameFilter . Set.toList $ allFilters)
+    putLnMay $ "Filters: " <> show (map unFilenameFilter . Set.toList $ allFilters)
   let preferedPreludes :: [String]
       preferedPreludes = catMaybes
         [ preludeModuleMay
         , join $ customPrelude <$> specialModeMay
         , defaultPrelude
         ]
-  putLn $ "Prelude preferences: " <>  show preferedPreludes
-  putLn $ "Expression: " <> unExpression expr
+  putLnMay $ "Prelude preferences: " <>  show preferedPreludes
+  putLnMay $ "Expression: " <> unExpression expr
   hFlush stdout
-  build preferedPreludes (unExpression expr) >>= either (panic . show) process'
+  -- ================================================================ --
+  build preferedPreludes (unExpression expr) >>= either (panic . show) treeOrStdin
   where
-    process' f = S.mapM_ ( processWith updateMode f )
-      . S.filter ( matchesAny compiledFilters )
-      . S.filter ( not . ignored )
-      . S.map fst
-      . S.filter ( not . isDirectory . snd )
-      . tree
-      . unTarget
-      $ target
+    putLnMay s
+      | target == Target "-" = return ()
+      | otherwise = putLn s
+
+    treeOrStdin f = case target of
+      Target "-" -> processStdin f
+      other      -> processTree other
+      where
+        processTree = S.mapM_ ( processWith updateMode f )
+          . S.filter ( matchesAny compiledFilters )
+          . S.filter ( not . ignored )
+          . S.map fst
+          . S.filter ( not . isDirectory . snd )
+          . tree
+          . unTarget
 
     defaultPrelude = Just "Refactorio.Prelude.Basic"
 
@@ -110,9 +118,15 @@ changePrompt = do
     "quit" -> return QuitChanges
     _      -> changePrompt
 
+-- TODO: eliminate newline hack
+processStdin :: (ByteString -> ByteString) -> IO ()
+processStdin f = BS.interact ( (<> "\n") . f )
+
 processWith :: UpdateMode -> (ByteString -> ByteString) -> FilePath -> IO ()
 processWith updateMode f path = do
-  (beforeBytes, afterBytes) <- (identity &&& f) <$> BS.readFile path
+  (beforeBytes, afterBytes) <- (identity &&& f) <$> case path of
+    "-" -> BS.getContents
+    p   -> BS.readFile p
   if beforeBytes == afterBytes
     then putLn $ "** Unchanged: " <> pack path
     else handleChange (beforeBytes, afterBytes)

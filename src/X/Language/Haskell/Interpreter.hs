@@ -28,9 +28,9 @@ build possiblePreludes src = runInterpreter $ do
       ]
   -- TODO: catch errors and try the rest.
   let preludeImport = maybe [] importPrelude . head $ possiblePreludes
-  putLn $ "DEBUG: preludeImport: " <> show preludeImport
   setImportsQ $
-    [ ("Control.Lens"                , Just "L")
+    [ ("Codec.Compression.Zlib.Lens" , Just "Z")
+    , ("Control.Lens"                , Just "L")
     , ("Data.Char"                   , Just "Char")
     , ("Data.String"                 , Just "String")
     , ("Data.Text"                   , Just "Text")
@@ -38,12 +38,16 @@ build possiblePreludes src = runInterpreter $ do
     , ("Data.Text.Lens"              , Just "Text")
     , ("Data.Text.Lens"              , Just "T")
     , ("Data.Aeson.Lens"             , Just "J")
+    , ("Data.ByteString"             , Just "BS")
+    , ("Data.ByteString.Lazy"        , Just "LBS")
     , ("Data.String.Conv"            , Just "S")
     , ("Language.Haskell.Exts"       , Just "HS")
     , ("Language.Haskell.Exts.Prisms", Just "HS")
+    , ("Prelude"                     , Just "Prelude")
     , ("Refactorio.Helpers"          , Just "H")
     , ("Refactorio.Helpers"          , Just "Helpers")
     , ("Refactorio.Prelude"          , Just "RP")
+    , ("Safe"                        , Just "Safe")
     , ("Text.Pandoc.Lens"            , Just "P")
     , ("Text.Pandoc.Lens"            , Just "Pandoc")
     , ("Text.Regex.Lens"             , Just "R")
