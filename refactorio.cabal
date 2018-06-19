@@ -53,6 +53,7 @@ library
                      , protolude
                      , rainbow
                      , regex-pcre-builtin
+                     , safe
                      , streaming
                      , string-conv
                      , text

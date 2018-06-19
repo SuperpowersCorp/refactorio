@@ -157,7 +157,8 @@ of the refactorio project root).
 - [ ] Eliminate unnecessary serialization round trips
   - [ ] eg when processing YAML via JSON
   - [ ] don't changes files when all that changed was formatting.
-- [ ] Handle '-' as filename for stdin->stdout
+- [X] Handle '-' as filename for stdin->stdout
+- [ ] Bail if modes are provided with stdin ('-') processing
 - [ ] Seek guidance from the pros on
   - [ ] CT/lenses
   - [ ] Cool lens tricks that might be applicable

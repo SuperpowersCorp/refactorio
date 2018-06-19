@@ -51,15 +51,14 @@ process Config{..} = do
   -- ================================================================ --
   build preferedPreludes (unExpression expr) >>= either (panic . show) treeOrStdin
   where
-    putLnMay
-      | target == Target "-" = const $ return ()
-      | otherwise            = putLn
+    putLnMay s
+      | target == Target "-" = return ()
+      | otherwise = putLn s
+
     treeOrStdin f = case target of
-      Target "-" -> processStdin
+      Target "-" -> processStdin f
       other      -> processTree other
       where
-        processStdin = processWith updateMode f "-"
-
         processTree = S.mapM_ ( processWith updateMode f )
           . S.filter ( matchesAny compiledFilters )
           . S.filter ( not . ignored )
@@ -117,6 +116,9 @@ changePrompt = do
     "q"    -> return QuitChanges
     "quit" -> return QuitChanges
     _      -> changePrompt
+
+processStdin :: (ByteString -> ByteString) -> IO ()
+processStdin f = BS.interact f
 
 processWith :: UpdateMode -> (ByteString -> ByteString) -> FilePath -> IO ()
 processWith updateMode f path = do
