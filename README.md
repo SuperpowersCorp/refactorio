@@ -54,13 +54,17 @@ Here are a few examples to whet your appetite.  For more see [examples](examples
 
 ![YAML Example](examples/yaml.png)
 
-### HTML (via [xml-html-conduit-lens](https://hackage.haskell.org/package/xml-html-conduit-lens-0.3.2.4))
+### HTML (via [xml-html-conduit-lens](https://hackage.haskell.org/package/xml-html-conduit-lens))
 
     HTML example coming soon.
 
-### XML (via same):
+### XML (also via [xml-html-conduit-lens](https://hackage.haskell.org/package/xml-html-conduit-lens))
 
-    XML example coming soon.
+C'mon, you've never needed to "find all the authors with names longer than 15
+characters and then sort all of the letters in their name that are above 'm' in
+place?" Pshaw.
+
+![XML Example](examples/xml.png)
 
 ### Regex (via TODO):
 
