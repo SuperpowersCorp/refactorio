@@ -1,4 +1,4 @@
-{-# LANGUAGE InstanceSigs #-}
+{-# LANGUAGE InstanceSigs              #-}
 {-# LANGUAGE MultiParamTypeClasses     #-}
 {-# LANGUAGE NoImplicitPrelude         #-}
 {-# LANGUAGE OverloadedStrings         #-}
@@ -27,11 +27,11 @@ import qualified Data.Aeson              as Json
 import qualified Data.ByteString.Lazy    as LBS
 import qualified Data.Text.Lazy          as LT
 import qualified Data.Yaml               as Yaml
-import           X.Language.Haskell.Exts         ( hs )
-import           Text.Xml.Lens                   ( Document
-                                                 , AsHtmlDocument
+import           Text.Xml.Lens                   ( AsHtmlDocument
+                                                 , Document
                                                  , _HtmlDocument
                                                  )
+import           X.Language.Haskell.Exts         ( hs )
 
 class Lazyboy s l where
   strictify :: l -> s
