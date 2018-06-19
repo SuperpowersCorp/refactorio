@@ -81,8 +81,8 @@ filenameFilterSetParser = Set.fromList . map (FilenameFilter . Text.pack) <$> ma
 preludeParser :: Parser FilePath
 preludeParser = strOption
   ( long    "prelude"
- <> help    "Use a specific Prelude"
- <> metavar "PRELUDE"
+ <> help    "Use a specific Prelude module"
+ <> metavar "MODULE"
   )
 
 updateModeParser :: Parser UpdateMode
@@ -114,7 +114,7 @@ specialModeParser = resolve <$> ( (,,,,)
                )
   <*> langSwitch Html
                ( long "html"
-              <> help "Include .htm* files"
+              <> help "Include .htm(l) files and make XML ops available"
                )
   <*> langSwitch Json
                ( long "json"
@@ -126,7 +126,7 @@ specialModeParser = resolve <$> ( (,,,,)
                )
   <*> langSwitch Yaml
                ( long "yaml"
-              <> help "Include .yaml or .yml files and make YAML ops available"
+              <> help "Include .y(a)ml files and make YAML ops available"
                )
                                 )
   where

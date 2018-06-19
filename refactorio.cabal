@@ -21,6 +21,12 @@ library
                      , Refactorio.Helpers
                      , Refactorio.Main
                      , Refactorio.Prelude
+                     , Refactorio.Prelude.Basic
+                     , Refactorio.Prelude.Haskell
+                     , Refactorio.Prelude.Html
+                     , Refactorio.Prelude.Json
+                     , Refactorio.Prelude.Xml
+                     , Refactorio.Prelude.Yaml
                      , Refactorio.Theme
                      , Refactorio.Types
                      , X.Language.Haskell.Exts
@@ -46,6 +52,7 @@ library
                      , pretty
                      , protolude
                      , rainbow
+                     , regex-pcre-builtin
                      , streaming
                      , string-conv
                      , text
@@ -77,6 +84,7 @@ executable refactorio
                      , pretty
                      , protolude
                      , refactorio
+                     , regex-pcre-builtin
                      , text
                      , unix
                      , vty
@@ -108,6 +116,7 @@ test-suite refactorio-test
                      , pretty
                      , protolude
                      , refactorio
+                     , regex-pcre-builtin
                      , text
                      , unix
                      , vty

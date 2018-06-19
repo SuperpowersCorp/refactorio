@@ -25,9 +25,9 @@ import           Control.Lens            as L    ( Fold
                                                  )
 import qualified Data.Aeson              as Json
 import qualified Data.ByteString.Lazy    as LBS
+import qualified Data.Text.Lazy          as LT
 import qualified Data.Yaml               as Yaml
 import           X.Language.Haskell.Exts         ( hs )
-import qualified Data.Text.Lazy          as LT
 import           Text.Xml.Lens                   ( Document
                                                  , AsHtmlDocument
                                                  , _HtmlDocument

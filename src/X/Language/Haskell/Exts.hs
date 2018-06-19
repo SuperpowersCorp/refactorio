@@ -28,5 +28,3 @@ hs = iso get set
       False False Nothing False
       where
         defaultExtensions = []
-
--- parseFileContentsWithMode (parseMode path) sourceString
