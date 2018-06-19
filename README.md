@@ -54,7 +54,7 @@ Here are a few examples to whet your appetite.  For more see [examples](examples
 
 ![YAML Example](examples/yaml.png)
 
-### HTML (via `Text.Xml.Lens`) TODO: taggy
+### HTML (via [xml-html-conduit-lens](https://hackage.haskell.org/package/xml-html-conduit-lens-0.3.2.4))
 
     HTML example coming soon.
 

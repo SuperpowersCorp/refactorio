@@ -1,4 +1,3 @@
-{-# LANGUAGE TupleSections #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 
@@ -29,33 +28,36 @@ build possiblePreludes src = runInterpreter $ do
            ]
       ]
   -- TODO: catch errors and try the rest.
-  case head possiblePreludes of
-    Just prelude -> loadModules [ prelude ]
-    Nothing      -> return ()
-  setImportsQ
-    [ ("Control.Lens"                , Nothing)
-    , ("Control.Lens"                , Just "L")
+  let preludeImport = maybe [] importPrelude . head $ possiblePreludes
+  putLn $ "DEBUG: preludeImport: " <> show preludeImport
+  setImportsQ $
+    [ -- ("Control.Lens"                , Nothing)
+    -- ,
+      ("Control.Lens"                , Just "L")
     , ("Data.Char"                   , Just "Char")
     , ("Data.String"                 , Just "String")
     , ("Data.Text"                   , Just "Text")
     , ("Data.Aeson.Lens"             , Just "J")
-    , ("Data.ByteString.Lens"        , Nothing)
-    , ("Data.Data.Lens"              , Nothing)
+    -- , ("Data.ByteString.Lens"        , Nothing)
+    -- , ("Data.Data.Lens"              , Nothing)
     , ("Data.String.Conv"            , Just "S")
     , ("Language.Haskell.Exts"       , Just "HS")
     , ("Language.Haskell.Exts.Prisms", Just "HS")
     , ("Refactorio.Helpers"          , Just "H")
-    , ("Refactorio.Prelude"          , Nothing)
+    -- , ("Refactorio.Prelude"          , Nothing)
     , ("Text.Pandoc.Lens"            , Just "P")
     , ("Text.Pandoc.Lens"            , Just "Pandoc")
     , ("Text.Regex.Lens"             , Just "R")
     , ("Text.Regex.Lens"             , Just "Regex")
-    , ("Text.Regex.Quote"            , Nothing)
+    -- , ("Text.Regex.Quote"            , Nothing)
     , ("Text.Taggy"                  , Just "Html")
     , ("Text.Taggy"                  , Just "H")
     , ("Text.Taggy.Lens"             , Just "Html")
     , ("Text.Taggy.Lens"             , Just "H")
-    , ("Codec.Compression.Zlib.Lens" , Nothing)
+    -- , ("Codec.Compression.Zlib.Lens" , Nothing)
     , ("Codec.Compression.Zlib.Lens" , Just "Z")
-    ]
+    ] ++ preludeImport
   interpret (unpack ("(" <> src <> ")")) infer
+
+importPrelude :: String -> [(String, Maybe String)]
+importPrelude s = [(s, Nothing)]

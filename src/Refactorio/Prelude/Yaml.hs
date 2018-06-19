@@ -4,6 +4,7 @@ module Refactorio.Prelude.Yaml
      ( module Exports
      ) where
 
-import Refactorio.Prelude as Exports
+import Refactorio.Prelude.Basic as Exports
 
-import Data.Aeson.Lens as Exports
+import Data.Aeson.Lens          as Exports
+

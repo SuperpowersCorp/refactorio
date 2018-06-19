@@ -42,7 +42,7 @@ process Config{..} = do
   let preferedPreludes :: [String]
       preferedPreludes = catMaybes
         [ preludeModuleMay
-        , (join $ customPrelude <$> specialModeMay)
+        , join $ customPrelude <$> specialModeMay
         , defaultPrelude
         ]
   putLn $ "Prelude preferences: " <>  show preferedPreludes
@@ -59,7 +59,7 @@ process Config{..} = do
       . unTarget
       $ target
 
-    defaultPrelude = Just "Refactorio.Prelude"
+    defaultPrelude = Just "Refactorio.Prelude.Basic"
 
     allFilters = expandExtraFilters filenameFilters
 
@@ -71,11 +71,12 @@ process Config{..} = do
       | otherwise = maybe Set.empty filtersForSpecialMode specialModeMay
 
 customPrelude :: SpecialMode -> Maybe FilePath
-customPrelude m = Just $ "Refactorio.Prelude" <> show m
+customPrelude m = Just $ "Refactorio.Prelude." <> show m
 
 filtersForSpecialMode :: SpecialMode -> Set FilenameFilter
 filtersForSpecialMode m = Set.fromList . map FilenameFilter $ case m of
   Haskell -> [ "**/*.hs" ]
+  Html    -> [ "**/*.html", "**/*.htm" ]
   Json    -> [ "**/*.json" ]
   Xml     -> [ "**/*.xml" ]
   Yaml    -> [ "**/*.yaml"

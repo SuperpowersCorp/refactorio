@@ -1,8 +1,8 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 
-module Refactorio.Prelude.Xml
+module Refactorio.Prelude.Html
      ( module Exports
-     , xmlL
+     , htmlL
      ) where
 
 import Refactorio.Prelude.Basic as Exports hiding ( children
@@ -13,5 +13,5 @@ import Refactorio.Prelude.Basic as Exports hiding ( children
 import Data.String.Conv                           ( convS )
 import Text.Xml.Lens            as Exports
 
-xmlL :: Lens' ByteString LByteString
-xmlL = convS
+htmlL :: Lens' ByteString LByteString
+htmlL = convS

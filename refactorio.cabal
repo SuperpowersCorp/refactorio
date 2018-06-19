@@ -21,6 +21,12 @@ library
                      , Refactorio.Helpers
                      , Refactorio.Main
                      , Refactorio.Prelude
+                     , Refactorio.Prelude.Basic
+                     , Refactorio.Prelude.Haskell
+                     , Refactorio.Prelude.Html
+                     , Refactorio.Prelude.Json
+                     , Refactorio.Prelude.Xml
+                     , Refactorio.Prelude.Yaml
                      , Refactorio.Theme
                      , Refactorio.Types
                      , X.Language.Haskell.Exts
@@ -48,10 +54,10 @@ library
                      , rainbow
                      , streaming
                      , string-conv
-                     , taggy-lens
                      , text
                      , unix
                      , vty
+                     , xml-html-conduit-lens
                      , yaml
                      , zlib-lens
   default-language:    Haskell2010
@@ -77,10 +83,10 @@ executable refactorio
                      , pretty
                      , protolude
                      , refactorio
-                     , taggy-lens
                      , text
                      , unix
                      , vty
+                     , xml-html-conduit-lens
                      , yaml
                      , zlib-lens
   default-language:    Haskell2010
@@ -108,10 +114,10 @@ test-suite refactorio-test
                      , pretty
                      , protolude
                      , refactorio
-                     , taggy-lens
                      , text
                      , unix
                      , vty
+                     , xml-html-conduit-lens
                      , yaml
                      , zlib-lens
   default-language:    Haskell2010
