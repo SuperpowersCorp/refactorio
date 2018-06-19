@@ -31,9 +31,10 @@ data SpecialMode
 
 data UpdateMode
   = AskMode
-  | PreviewMode
   | ModifyMode
+  | PreviewMode
   | ReviewMode
+  | SearchMode
   deriving (Data, Eq, Ord, Read, Show)
 
 newtype Target = Target { unTarget :: FilePath }

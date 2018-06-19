@@ -95,13 +95,17 @@ updateModeParser =
                            <> short 'p'
                            <> help  "Only show the changes that would be made"
                             )
+  <|> ModifyMode <$ switch ( long  "modify"
+                          <> short 'm'
+                          <> help  "Make the changes and summarize changed filenames"
+                           )
   <|> ReviewMode <$ switch ( long  "review"
                           <> short 'r'
                           <> help  "Make the changes and show details of changes"
                            )
-  <|> ModifyMode <$ switch ( long  "modify"
-                          <> short 'm'
-                          <> help  "Make the changes and summarize changed filenames"
+  <|> ReviewMode <$ switch ( long  "search"
+                          <> short 's'
+                          <> help  "Activate context sensitive search (Haskell mode only right now)"
                            )
   <|> pure AskMode
 

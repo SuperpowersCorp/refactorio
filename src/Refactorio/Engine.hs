@@ -122,6 +122,7 @@ processStdin :: (ByteString -> ByteString) -> IO ()
 processStdin f = BS.interact ( (<> "\n") . f )
 
 processWith :: UpdateMode -> (ByteString -> ByteString) -> FilePath -> IO ()
+processWith SearchMode f path = powerSearch f path
 processWith updateMode f path = do
   (beforeBytes, afterBytes) <- (identity &&& f) <$> case path of
     "-" -> BS.getContents
@@ -144,15 +145,15 @@ processWith updateMode f path = do
             QuitChanges  -> do
               putLn "Exiting at user's request."
               exitSuccess
-        ReviewMode -> do
-          saveChanges afterBytes
-          showChanges "Review" doc
         ModifyMode -> do
           saveChanges afterBytes
           putLn $ "Changed: " <> show path
         PreviewMode ->
           showChanges "Preview" doc
-
+        ReviewMode -> do
+          saveChanges afterBytes
+          showChanges "Review" doc
+        SearchMode -> panic "we should've been stopped before we got here!"
     showChanges :: Text -> Doc -> IO ()
     showChanges label doc = do
       nl
@@ -190,3 +191,6 @@ processWith updateMode f path = do
           | s `startsWith` "-" = putChunkLn $ chunk s & fore red
           | s `startsWith` "+" = putChunkLn $ chunk s & fore green
           | otherwise          = putChunkLn $ chunk s & fore grey
+
+powerSearch :: (ByteString -> ByteString) -> FilePath -> IO ()
+powerSearch _f _path = undefined
