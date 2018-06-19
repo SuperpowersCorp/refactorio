@@ -10,6 +10,7 @@ import qualified Data.Text                 as Text
 import           Options.Applicative               hiding ( prefs )
 import           Refactorio.Engine                        ( process )
 import           Refactorio.FilenameFilter
+import           Refactorio.SpecialMode
 import           Refactorio.Types
 import           X.Rainbow
 
@@ -99,13 +100,16 @@ updateModeParser =
                           <> short 'm'
                           <> help  "Make the changes and summarize changed filenames"
                            )
-  <|> ReviewMode <$ switch ( long  "review"
+  <|> ReviewMode <$ switch ( long  "replace"
                           <> short 'r'
+                          <> help  "Activate power replace mode (Haskell mode only currently)"
+                           )
+  <|> ReviewMode <$ switch ( long  "review"
                           <> help  "Make the changes and show details of changes"
                            )
   <|> ReviewMode <$ switch ( long  "search"
                           <> short 's'
-                          <> help  "Activate context sensitive search (Haskell mode only right now)"
+                          <> help  "Activate power search mode (Haskell mode only right now)"
                            )
   <|> pure AskMode
 

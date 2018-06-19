@@ -6,8 +6,8 @@ module Refactorio.Types where
 
 import Refactorio.Prelude
 
-import Data.Data                 ( Data )
 import Refactorio.FilenameFilter
+import Refactorio.SpecialMode
 
 data Config = Config
   { filenameFilters       :: Set FilenameFilter
@@ -21,18 +21,11 @@ data Config = Config
 newtype Expression = Expression { unExpression :: Text }
   deriving (Data, Eq, Ord, Read, Show)
 
-data SpecialMode
-  = Haskell
-  | Html
-  | Json
-  | Xml
-  | Yaml
-  deriving (Data, Eq, Ord, Read, Show, Typeable)
-
 data UpdateMode
   = AskMode
   | ModifyMode
   | PreviewMode
+  | ReplaceMode Text
   | ReviewMode
   | SearchMode
   deriving (Data, Eq, Ord, Read, Show)

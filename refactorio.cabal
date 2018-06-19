@@ -20,6 +20,7 @@ library
                      , Refactorio.FilenameFilter
                      , Refactorio.Helpers
                      , Refactorio.Main
+                     , Refactorio.Power
                      , Refactorio.Prelude
                      , Refactorio.Prelude.Basic
                      , Refactorio.Prelude.Haskell
@@ -27,6 +28,7 @@ library
                      , Refactorio.Prelude.Json
                      , Refactorio.Prelude.Xml
                      , Refactorio.Prelude.Yaml
+                     , Refactorio.SpecialMode
                      , Refactorio.Theme
                      , Refactorio.Types
                      , X.Language.Haskell.Exts

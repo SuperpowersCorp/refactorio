@@ -10,6 +10,7 @@ module Refactorio.Engine ( process ) where
 import           Refactorio.Prelude             as P   hiding ( (<>) )
 import qualified Streaming.Prelude              as S
 
+import qualified Refactorio.Power               as Power
 import           Data.Algorithm.DiffContext
 import qualified Data.ByteString                as BS
 import qualified Data.ByteString.Char8          as C8
@@ -19,6 +20,7 @@ import           Data.Text                                    ( lines
                                                               , toLower
                                                               )
 import           Refactorio.FilenameFilter
+import           Refactorio.SpecialMode
 import           Refactorio.Types
 import           System.IO                                    ( hFlush
                                                               , stdout
@@ -32,7 +34,7 @@ import           X.Streaming.Files                            ( tree )
 -- CURRENT TARGET: refio --haskell '& __Module.biplate._Int +~ 32'
 
 process :: Config -> IO ()
-process Config{..} = do
+process config@Config{..} = do
   case specialModeMay of
     Nothing   -> return ()
     Just mode -> putLnMay $ "Special processing activated: " <> show mode
@@ -49,7 +51,11 @@ process Config{..} = do
   putLnMay $ "Expression: " <> unExpression expr
   hFlush stdout
   -- ================================================================ --
-  build preferedPreludes (unExpression expr) >>= either (panic . show) treeOrStdin
+  case updateMode of
+      ReplaceMode _mapFnSrc -> Power.replace config _mapFnSrc
+      SearchMode            -> Power.search config
+      _                     -> build preferedPreludes (unExpression expr)
+                                 >>= either (panic . show) treeOrStdin
   where
     putLnMay s
       | target == Target "-" = return ()
@@ -69,27 +75,12 @@ process Config{..} = do
 
     defaultPrelude = Just "Refactorio.Prelude.Basic"
 
-    allFilters = expandExtraFilters filenameFilters
+    allFilters = expandExtraFilters specialModeMay filenameFilters
 
     compiledFilters = map compileFilter . Set.toList $ allFilters
 
-    expandExtraFilters :: Set FilenameFilter -> Set FilenameFilter
-    expandExtraFilters existing
-      | not . null $ existing = existing
-      | otherwise = maybe Set.empty filtersForSpecialMode specialModeMay
-
 customPrelude :: SpecialMode -> Maybe FilePath
 customPrelude m = Just $ "Refactorio.Prelude." <> show m
-
-filtersForSpecialMode :: SpecialMode -> Set FilenameFilter
-filtersForSpecialMode m = Set.fromList . map FilenameFilter $ case m of
-  Haskell -> [ "**/*.hs" ]
-  Html    -> [ "**/*.html", "**/*.xhtml", "**/*.htm" ]
-  Json    -> [ "**/*.json" ]
-  Xml     -> [ "**/*.xml" ]
-  Yaml    -> [ "**/*.yaml"
-             , "**/*.yml"
-             ]
 
 -- TODO: read .*ignore files from the target dir down to the current file, caching
 --       along the way, etc. but for now...
@@ -122,7 +113,6 @@ processStdin :: (ByteString -> ByteString) -> IO ()
 processStdin f = BS.interact ( (<> "\n") . f )
 
 processWith :: UpdateMode -> (ByteString -> ByteString) -> FilePath -> IO ()
-processWith SearchMode f path = powerSearch f path
 processWith updateMode f path = do
   (beforeBytes, afterBytes) <- (identity &&& f) <$> case path of
     "-" -> BS.getContents
@@ -150,6 +140,7 @@ processWith updateMode f path = do
           putLn $ "Changed: " <> show path
         PreviewMode ->
           showChanges "Preview" doc
+        ReplaceMode _ -> panic "we should've been stopped before we got here!"
         ReviewMode -> do
           saveChanges afterBytes
           showChanges "Review" doc
@@ -192,5 +183,29 @@ processWith updateMode f path = do
           | s `startsWith` "+" = putChunkLn $ chunk s & fore green
           | otherwise          = putChunkLn $ chunk s & fore grey
 
-powerSearch :: (ByteString -> ByteString) -> FilePath -> IO ()
-powerSearch _f _path = undefined
+-- +searchOrReplace :: Config -> IO ()
+-- +searchOrReplace config@Config{..} = do
+--    putChunksLn
+-- -    [ chunk "Searching within: " & withinHdr theme
+-- +    [ chunk within & withinHdr theme
+--      , chunk (pack projectRoot) & withinValue theme
+--      ]
+--    putChunksLn
+-- -    [ chunk "  for matches to: " & searchHdr theme
+-- +    [ chunk query & searchHdr theme
+--      , chunk lensText & searchValue theme
+--      ]
+--    newLine
+-- -  searchByLens config
+-- +  results
+-- +  where
+-- +    within    = case mapFnSrc of
+-- +      "" -> "Searching within: "
+-- +      _  -> "Previewing replacement within: "
+-- +    query     = justify "  for matches to: "
+-- +    justify s = Text.replicate (Text.length within - Text.length s) " " <> s
+-- +    results   = case mapFnSrc of
+-- +      ""  -> Search.byLens config
+-- +      src -> case compileMapFn src of
+-- +        Left err -> Replace.displayError err
+-- +        Right f  -> Replace.withLens config f
