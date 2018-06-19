@@ -1,5 +1,8 @@
 # refactorio
 
+** PLEASE BE AWARE THIS IS ALPHA SOFTWARE AND NOT ONLY WILL THE API CHANGE BUT
+IT WILL PROBABLY EAT YOUR CHILDREN.  YOU HAVE BEEN WARNED.**
+
 Lens based Haskell refactoring toolkit.
 
 ![refactorio](refactorio.png)
@@ -42,7 +45,11 @@ YAML (same operators):
 
 HTML (via `Text.Xml.Lens`) TODO: taggy
 
-    Coming soon.
+    HTML example coming soon.
+
+XML (via same):
+
+    XML example coming soon.
 
 Haskell:
 
