@@ -31,31 +31,31 @@ or
 
 Here are a few examples to whet your appetite.  For more see [examples](examples/).
 
-JSON (via [lens-aeson](https://hackage.haskell.org/package/lens-aeson)):
+### JSON (via [lens-aeson](https://hackage.haskell.org/package/lens-aeson)):
 
 "Increment the value at key 'baz' by 1962."
 
 ![JSON Example](examples/json.png)
 
-YAML (same operators):
+### YAML (same operators):
 
 "Multiply the value of the key 'baz' by 10."
 
 ![YAML Example](examples/yaml.png)
 
-HTML (via `Text.Xml.Lens`) TODO: taggy
+### HTML (via `Text.Xml.Lens`) TODO: taggy
 
     HTML example coming soon.
 
-XML (via same):
+### XML (via same):
 
     XML example coming soon.
 
-Regex (via TODO):
+### Regex (via TODO):
 
     XML example coming soon.
 
-Haskell:
+### Haskell:
 
 Try these on your projects:
 
