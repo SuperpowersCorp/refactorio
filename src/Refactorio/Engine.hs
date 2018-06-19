@@ -35,22 +35,25 @@ process :: Config -> IO ()
 process Config{..} = do
   case specialModeMay of
     Nothing   -> return ()
-    Just mode -> putLn $ "Special processing activated: " <> show mode
-  putLn $ "Targets: " <> show (unTarget target)
+    Just mode -> putLnMay $ "Special processing activated: " <> show mode
+  putLnMay $ "Targets: " <> show (unTarget target)
   unless (null allFilters) $
-    putLn $ "Filters: " <> show (map unFilenameFilter . Set.toList $ allFilters)
+    putLnMay $ "Filters: " <> show (map unFilenameFilter . Set.toList $ allFilters)
   let preferedPreludes :: [String]
       preferedPreludes = catMaybes
         [ preludeModuleMay
         , join $ customPrelude <$> specialModeMay
         , defaultPrelude
         ]
-  putLn $ "Prelude preferences: " <>  show preferedPreludes
-  putLn $ "Expression: " <> unExpression expr
+  putLnMay $ "Prelude preferences: " <>  show preferedPreludes
+  putLnMay $ "Expression: " <> unExpression expr
   hFlush stdout
   -- ================================================================ --
   build preferedPreludes (unExpression expr) >>= either (panic . show) treeOrStdin
   where
+    putLnMay
+      | target == Target "." = const $ return ()
+      | otherwise            = putLn
     treeOrStdin f = case target of
       Target "-" -> processStdin
       other      -> processTree other
