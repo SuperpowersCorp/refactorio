@@ -103,6 +103,10 @@ There are [more examples here](examples/).
 - [ ] Finish interlude implementation
 - [ ] Fully restore haskell-src-exts functionality.
 - [ ] Special mode pre/post adapter fns
+- [ ] Pandoc lens support for:
+  - [ ] Docx
+  - [ ] Markdown
+  - [ ] others
 - [X] Replace examples with open source examples
 - [X] Display error messages (at least somewhat) nicely
 - [ ] Sort out issue with `Control.Lens` not being available in installed executable
