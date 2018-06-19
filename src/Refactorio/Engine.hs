@@ -117,8 +117,9 @@ changePrompt = do
     "quit" -> return QuitChanges
     _      -> changePrompt
 
+-- TODO: eliminate newline hack
 processStdin :: (ByteString -> ByteString) -> IO ()
-processStdin f = BS.interact f
+processStdin f = BS.interact ( (<> "\n") . f )
 
 processWith :: UpdateMode -> (ByteString -> ByteString) -> FilePath -> IO ()
 processWith updateMode f path = do

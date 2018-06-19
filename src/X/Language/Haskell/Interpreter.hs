@@ -37,6 +37,8 @@ build possiblePreludes src = runInterpreter $ do
     , ("Data.Text.Lens"              , Just "Text")
     , ("Data.Text.Lens"              , Just "T")
     , ("Data.Aeson.Lens"             , Just "J")
+    , ("Data.ByteString"             , Just "BS")
+    , ("Data.ByteString.Lazy"        , Just "LBS")
     , ("Data.String.Conv"            , Just "S")
     , ("Language.Haskell.Exts"       , Just "HS")
     , ("Language.Haskell.Exts.Prisms", Just "HS")
