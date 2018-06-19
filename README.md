@@ -38,6 +38,35 @@ Lens based Haskell refactoring toolkit.
                                available
       -h,--help                Show this help text
 
+## Major Modes
+
+In all modes Refactorio traverses one or more files executing a `ByteString
+-> ByteString` function on them.  For a given file if the function does not
+change the input then no output is logged for that file.  If the function does
+change the file then what happens next is dependent on the mode:
+
+### Ask Mode (-a / --ask)
+
+This is the default mode.  In this mode Refactorio will show you the changes
+that it's about to make and prompt you on a file by file basis whether you want
+to accept the changes or not.  If you accept, the file will be replaced, if not
+the file will be left intact (or you can 'Q'uit at any time).
+
+### Preview Mode (-p / --preview)
+
+In this mode Refactorio will just show all the changes that it would make, but
+not touch any files.  You can think of it sort of like a `--dry-run`.
+
+### Review Mode (-r / --review)
+
+In this mode Refactorio will make changes to all files without asking but will
+show the full set of changes as they are made.
+
+### Modify Mode (-m / --modify)
+
+This is basically a `--quiet` style mode that makes all changes without
+confirmation and just reports which files changed with no further details.
+
 ## Examples
 
 Here are a few examples to whet your appetite.  For more see [examples](examples/).
