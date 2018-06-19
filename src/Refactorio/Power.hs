@@ -7,12 +7,14 @@ module Refactorio.Power where
 import           Refactorio.Prelude             as P   hiding ( (<>) )
 import qualified Streaming.Prelude              as S
 
-import Language.Haskell.Exts
+import           Language.Haskell.Exts
 import qualified Data.Set                       as Set
+-- import qualified Data.Text                      as Text
 import           Refactorio.FilenameFilter
 import           Refactorio.Types
 import           System.Posix.Files
 import           X.Streaming.Files                            ( tree )
+-- import           X.Rainbow
 
 -- CURRENT TARGET: refio --haskell '& __Module.biplate._Int +~ 32'
 
@@ -20,7 +22,7 @@ replace :: Config -> Text -> IO ()
 replace Config{..} _mapFnSrc = panic "powerReplace not implemented yet"
 
 search :: Config -> IO ()
-search Config{..} = S.mapM_ ( powerSearchWith f )
+search config@Config{..} = S.mapM_ ( powerSearchWith config f )
   . S.filter ( matchesAny compiledFilters )
   . S.filter ( not . ignored )
   . S.map fst
@@ -34,32 +36,33 @@ search Config{..} = S.mapM_ ( powerSearchWith f )
     compiledFilters = map compileFilter . Set.toList $ allFilters
     ignored         = panic "ignored undefined"
 
-powerSearchWith :: (ATraversal' (Module SrcSpanInfo) SrcSpanInfo) -> FilePath -> IO ()
-powerSearchWith = panic "powerSearchWith undefined"
+powerSearchWith :: Config
+                -> (ATraversal' (Module SrcSpanInfo) SrcSpanInfo)
+                -> FilePath
+                -> IO ()
+powerSearchWith _config _trav _path = panic "powerSearchWith not impl yet!"
 
--- +searchOrReplace :: Config -> IO ()
--- +searchOrReplace config@Config{..} = do
---    putChunksLn
--- -    [ chunk "Searching within: " & withinHdr theme
--- +    [ chunk within & withinHdr theme
---      , chunk (pack projectRoot) & withinValue theme
---      ]
---    putChunksLn
--- -    [ chunk "  for matches to: " & searchHdr theme
--- +    [ chunk query & searchHdr theme
---      , chunk lensText & searchValue theme
---      ]
---    newLine
--- -  searchByLens config
--- +  results
--- +  where
--- +    within    = case mapFnSrc of
--- +      "" -> "Searching within: "
--- +      _  -> "Previewing replacement within: "
--- +    query     = justify "  for matches to: "
--- +    justify s = Text.replicate (Text.length within - Text.length s) " " <> s
--- +    results   = case mapFnSrc of
--- +      ""  -> Search.byLens config
--- +      src -> case compileMapFn src of
--- +        Left err -> Replace.displayError err
--- +        Right f  -> Replace.withLens config f
+-- powerSearchWith _config _trav _path = do
+--   putChunksLn
+--     [ chunk within & withinHdr theme
+--     , chunk (pack projectRoot) & withinValue theme
+--     ]
+--   putChunksLn
+--     [ chunk query & searchHdr theme
+--     , chunk lensText & searchValue theme
+--     ]
+--   newLine
+--   searchByLens config
+--   results
+--    where
+--      within    = case mapFnSrc of
+--        "" -> "Searching within: "
+--        _  -> "Previewing replacement within: "
+--      query     = justify "  for matches to: "
+--      justify s = Text.replicate (Text.length within - Text.length s) " " <> s
+--      results   = panic "results not impl yet!"
+--      -- results   = case mapFnSrc of
+--      --   ""  -> Search.byLens config
+--      --   src -> case compileMapFn src of
+--      --     Left err -> Replace.displayError err
+--      --     Right f  -> Replace.withLens config f
