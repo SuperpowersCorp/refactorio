@@ -18,8 +18,7 @@ Lens based Haskell refactoring toolkit.
     Refactorio - Optical Refactoring Tool
 
     Usage: refactorio EXPR [-t|--target TARGET] [-g|--glob GLOB] [--prelude PRELUDE]
-                      [--unqualified-prelude UNQUALIFIED-PRELUDE] ([-a|--ask] |
-                      [-p|--preview] | [-r|--review] | [-m|--modify])
+                      ([-a|--ask] | [-p|--preview] | [-r|--review] | [-m|--modify])
                       [--haskell|--hs] [--json] [--xml] [--yaml]
       Zen and the art of optical file maintenance.
 
@@ -28,32 +27,33 @@ Lens based Haskell refactoring toolkit.
       -t,--target TARGET       A file/directory to search/replace (default: ".")
       -g,--glob GLOB           Glob matches to include (eg '*.ini', 'f??b?r.c')
       --prelude PRELUDE        Use a specific Prelude
-      --unqualified-prelude UNQUALIFIED-PRELUDE
-                               Use a specific unqualified Prelude
       -a,--ask                 Ask before changing files (default)
       -p,--preview             Only show the changes that would be made
       -r,--review              Make the changes and show details of changes
       -m,--modify              Make the changes and summarize changed filenames
-      --haskell,--hs           Include .hs files and activate Haskell module parsing
-                               mode
-      --json                   Include .json files
-      --xml                    Include .xml files
-      --yaml                   Include .yaml or .yml files
+      --haskell,--hs           Include .hs files and make Haskell ops available
+      --json                   Include .json files and make JSON ops available
+      --xml                    Include .xml files and make XML ops available
+      --yaml                   Include .yaml or .yml files and make YAML ops
+                               available
       -h,--help                Show this help text
 
 ## Pro-Tip
 
-For now:
+For now the easiest way to get it working is build it with `stack build` and then:
 
     alias refio="stack exec refactorio --"
 
-and run it from the project root to get an experience something like:
+and run it from the refactorio project root to get an experience something like:
 
     refio --json '& key "foo" . key "bar" . _Number *~ 15' -t ../voltron/test/fixtures
 
 or
 
     refio --haskell _Module.biplate._ModuleName.end -t ../voltron/src
+
+(where the `-t`/`--target` is a file or directory to process and can be outside
+of the refactorio project root).
 
 ## Examples
 
@@ -102,6 +102,7 @@ There are [more examples here](examples/).
 
 - [ ] Finish interlude implementation
 - [ ] Fully restore haskell-src-exts functionality.
+- [ ] Special mode pre/post adapter fns
 - [X] Replace examples with open source examples
 - [X] Display error messages (at least somewhat) nicely
 - [ ] Sort out issue with `Control.Lens` not being available in installed executable

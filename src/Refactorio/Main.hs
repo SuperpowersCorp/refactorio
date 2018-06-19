@@ -47,12 +47,11 @@ parser = prefixConfigParser
       <*> targetParser
       <*> filenameFilterSetParser
       <*> optional preludeParser
-      <*> optional unqualifiedPreludeParser
       <*> updateModeParser
       <*> specialModeParser
 
     -- So Optparse Applicative will generate the options in the right order
-    reorder ex ta ff pr up um sp = Config ff ex pr up sp um ta
+    reorder ex ta ff pr um sp = Config ff ex pr sp um ta
 
 expressionParser :: Parser Expression
 expressionParser = Expression . Text.pack <$> argument str
@@ -86,13 +85,6 @@ preludeParser = strOption
  <> metavar "PRELUDE"
   )
 
-unqualifiedPreludeParser :: Parser FilePath
-unqualifiedPreludeParser = strOption
-  ( long    "unqualified-prelude"
- <> help    "Use a specific unqualified Prelude"
- <> metavar "UNQUALIFIED-PRELUDE"
-  )
-
 updateModeParser :: Parser UpdateMode
 updateModeParser =
   AskMode <$ switch ( long  "ask"
@@ -118,19 +110,19 @@ specialModeParser = resolve <$> ( (,,,)
   <$> langSwitch Haskell
                ( long "haskell"
               <> long "hs"
-              <> help "Include .hs files and activate Haskell module parsing mode"
+              <> help "Include .hs files and make Haskell ops available"
                )
   <*> langSwitch Json
                ( long "json"
-              <> help "Include .json files"
+              <> help "Include .json files and make JSON ops available"
                )
   <*> langSwitch Xml
                ( long "xml"
-              <> help "Include .xml files"
+              <> help "Include .xml files and make XML ops available"
                )
   <*> langSwitch Yaml
                ( long "yaml"
-              <> help "Include .yaml or .yml files"
+              <> help "Include .yaml or .yml files and make YAML ops available"
                )
                                 )
   where
