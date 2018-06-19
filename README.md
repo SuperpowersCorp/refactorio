@@ -66,9 +66,12 @@ place?" Pshaw.
 
 ![XML Example](examples/xml.png)
 
-### Regex (via TODO):
+### Regex (via [lens-regex](https://hackage.haskell.org/package/lens-regex)):
 
-    XML example coming soon.
+Drop regex's in anywhere you like, eg. "uppercase and reverse the characters in
+the value of the JSON object at this key that match this regular expression":
+
+![Regex Example](examples/regex.png)
 
 ### Haskell:
 

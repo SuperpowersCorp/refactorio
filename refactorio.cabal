@@ -52,6 +52,7 @@ library
                      , pretty
                      , protolude
                      , rainbow
+                     , regex-pcre-builtin
                      , streaming
                      , string-conv
                      , text
@@ -83,6 +84,7 @@ executable refactorio
                      , pretty
                      , protolude
                      , refactorio
+                     , regex-pcre-builtin
                      , text
                      , unix
                      , vty
@@ -114,6 +116,7 @@ test-suite refactorio-test
                      , pretty
                      , protolude
                      , refactorio
+                     , regex-pcre-builtin
                      , text
                      , unix
                      , vty
