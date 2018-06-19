@@ -158,6 +158,7 @@ of the refactorio project root).
 - [ ] Sort out issue with `Control.Lens` not being available in installed executable
 - [ ] Line Numbers
 - [ ] Context lines
+- [ ] More granular patch acceptance/rejectance
 - [X] Loading of additional modules (via Prelude)
 - [X] Refactor CLI into `ref view`, `ref fmap` and `ref set`
 - [X] Suppress printing of filename when there are no matches (tardis?)
