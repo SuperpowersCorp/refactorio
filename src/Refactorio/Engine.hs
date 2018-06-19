@@ -77,7 +77,7 @@ filtersForSpecialMode :: SpecialMode -> Set FilenameFilter
 filtersForSpecialMode m = Set.fromList . map FilenameFilter $ case m of
   Docx    -> [ "**/*.docx" ]
   Haskell -> [ "**/*.hs" ]
-  Html    -> [ "**/*.html", "**/*.htm" ]
+  Html    -> [ "**/*.html", "**/*.xhtml", "**/*.htm" ]
   Json    -> [ "**/*.json" ]
   Xml     -> [ "**/*.xml" ]
   Yaml    -> [ "**/*.yaml"

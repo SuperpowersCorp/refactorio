@@ -1,14 +1,15 @@
+{-# LANGUAGE InstanceSigs              #-}
 {-# LANGUAGE MultiParamTypeClasses     #-}
 {-# LANGUAGE NoImplicitPrelude         #-}
 {-# LANGUAGE OverloadedStrings         #-}
 {-# LANGUAGE RankNTypes                #-}
 {-# LANGUAGE TypeSynonymInstances      #-}
 {-# OPTIONS_GHC -fno-warn-deprecations #-}
+{-# OPTIONS_GHC -fno-warn-orphans      #-}
 
 module Refactorio.Helpers
      ( Lazyboy(..)
      , debugL
-     , docx
      , hs
      , lazy
      , text
@@ -16,8 +17,9 @@ module Refactorio.Helpers
      ) where
 
 import           Refactorio.Prelude
-import System.IO.Unsafe (unsafePerformIO)
-import           Control.Lens            as L    ( Iso'
+
+import           Control.Lens            as L    ( Fold
+                                                 , Iso'
                                                  , from
                                                  , iso
                                                  )
@@ -25,12 +27,12 @@ import qualified Data.Aeson              as Json
 import qualified Data.ByteString.Lazy    as LBS
 import qualified Data.Text.Lazy          as LT
 import qualified Data.Yaml               as Yaml
-import           Text.Pandoc                     ( Pandoc
-                                                 , readDocx
-                                                 , writeDocx
+import           Text.Xml.Lens                   ( AsHtmlDocument
+                                                 , Document
+                                                 , _HtmlDocument
                                                  )
-import           Text.Pandoc.Options
 import           X.Language.Haskell.Exts         ( hs )
+
 class Lazyboy s l where
   strictify :: l -> s
   lazify    :: s -> l
@@ -43,21 +45,9 @@ instance Lazyboy Text LText where
   strictify = LT.toStrict
   lazify    = LT.fromStrict
 
-docx :: Iso' ByteString Pandoc
-docx = iso g s
-  where
-    g :: ByteString -> Pandoc
-    g = either (panic . show) fst . readDocx readerOpts . view lazy
-
-    -- TODO: eliminate unsafePerformIO by moving it outside the lens
-    s :: Pandoc -> ByteString
-    s = LBS.toStrict . unsafePerformIO . writeDocx writerOpts
-
-    readerOpts :: ReaderOptions
-    readerOpts = def
-
-    writerOpts :: WriterOptions
-    writerOpts = def
+instance AsHtmlDocument ByteString where
+  _HtmlDocument :: Fold ByteString Document
+  _HtmlDocument = (lazy :: Iso' ByteString LByteString) . _HtmlDocument
 
 lazy :: Lazyboy s l => Iso' s l
 lazy = iso lazify strictify

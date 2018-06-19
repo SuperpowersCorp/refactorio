@@ -22,9 +22,11 @@ library
                      , Refactorio.Main
                      , Refactorio.Prelude
                      , Refactorio.Prelude.Basic
+                     , Refactorio.Prelude.Docx
                      , Refactorio.Prelude.Haskell
                      , Refactorio.Prelude.Html
                      , Refactorio.Prelude.Json
+                     , Refactorio.Prelude.Pandoc
                      , Refactorio.Prelude.Xml
                      , Refactorio.Prelude.Yaml
                      , Refactorio.Theme

@@ -42,27 +42,19 @@ build possiblePreludes src = runInterpreter $ do
     , ("Language.Haskell.Exts"       , Just "HS")
     , ("Language.Haskell.Exts.Prisms", Just "HS")
     , ("Refactorio.Helpers"          , Just "H")
+    , ("Refactorio.Helpers"          , Just "Helpers")
+    , ("Refactorio.Prelude"          , Just "RP")
     , ("Text.Pandoc.Lens"            , Just "P")
     , ("Text.Pandoc.Lens"            , Just "Pandoc")
     , ("Text.Regex.Lens"             , Just "R")
     , ("Text.Regex.Lens"             , Just "Regex")
+    , ("Text.Regex.Quote"            , Nothing)       -- The only unqualified exception
     , ("Text.Xml.Lens"               , Just "Html")
     , ("Text.Xml.Lens"               , Just "H")
     , ("Text.Xml.Lens"               , Just "Xml")
     , ("Text.Xml.Lens"               , Just "X")
-    , ("Codec.Compression.Zlib.Lens" , Just "Z")
     ] ++ preludeImport
   interpret (unpack ("(" <> src <> ")")) infer
-
--- We only import qualified stuff now and the only unqualified stuff comes from
--- whatever Prelude is resolved.
---
---   ("Control.Lens"                , Nothing)
--- , ("Data.ByteString.Lens"        , Nothing)
--- , ("Data.Data.Lens"              , Nothing)
--- , ("Refactorio.Prelude"          , Nothing)
--- , ("Text.Regex.Quote"            , Nothing)
--- , ("Codec.Compression.Zlib.Lens" , Nothing)
 
 importPrelude :: String -> [(String, Maybe String)]
 importPrelude s = [(s, Nothing)]
