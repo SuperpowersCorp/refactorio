@@ -1,7 +1,8 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 
-module Streaming.Files
+module X.Streaming.Files
      ( FileInfo
+     , FileStatus
      , tree
      ) where
 
@@ -21,7 +22,7 @@ tree path = do
   if not (isDirectory pathStat)
     then selfStream
     else do
-      children <- concatStreams . map (tree . ((path ++ "/") ++))
+      children <- concatStreams . map (tree . ((path ++ "/") ++)) . sort
                     <$> liftIO (listDirectory path)
       selfStream >>= const children
 

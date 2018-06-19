@@ -6,11 +6,15 @@ packages:
 allow-newer: true
 
 extra-deps:
+- aeson-lens-0.5.0.0
 - haskell-src-exts-prisms-1.18.2.0
 - hierarchy-0.3.1.4
 - io-capture-1.0.0
 - lens-4.15.4
 - mueval-0.9.3
+- pandoc-lens-0.6.3
 - pipes-4.3.9
 - pipes-files-0.1.2
+- protolude-0.2.1
 - show-0.6
+- xml-html-conduit-lens-0.3.2.3
