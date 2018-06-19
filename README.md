@@ -38,23 +38,6 @@ Lens based Haskell refactoring toolkit.
                                available
       -h,--help                Show this help text
 
-## Pro-Tip
-
-For now the easiest way to get it working is build it with `stack build` and then:
-
-    alias refio="stack exec refactorio --"
-
-and run it from the refactorio project root to get an experience something like:
-
-    refio --json '& key "foo" . key "bar" . _Number *~ 15' -t ../voltron/test/fixtures
-
-or
-
-    refio --haskell _Module.biplate._ModuleName.end -t ../voltron/src
-
-(where the `-t`/`--target` is a file or directory to process and can be outside
-of the refactorio project root).
-
 ## Examples
 
 Here are a few examples to whet your appetite.  For more see [examples](examples/).
@@ -97,6 +80,23 @@ Try these on your projects:
     refio --haskell '_Module.biplate._Int.filtered((>10).view target).end'
 
 There are [more examples here](examples/).
+
+## Pro-Tip
+
+For now the easiest way to get it working is build it with `stack build` and then:
+
+    alias refio="stack exec refactorio --"
+
+and run it from the refactorio project root to get an experience something like:
+
+    refio --json '& key "foo" . key "bar" . _Number *~ 15' -t ../voltron/test/fixtures
+
+or
+
+    refio --haskell _Module.biplate._ModuleName.end -t ../voltron/src
+
+(where the `-t`/`--target` is a file or directory to process and can be outside
+of the refactorio project root).
 
 ## TODOs
 
