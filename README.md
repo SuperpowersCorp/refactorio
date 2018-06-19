@@ -57,10 +57,12 @@ Try these on your projects:
     refio --haskell '_Module.biplate._Int.filtered(even.view target).end'
     refio --haskell '_Module.biplate._Int.filtered((>10).view target).end'
 
-See [examples](examples/).
+There are [more examples here](examples/).
 
 ## TODOs
 
+- [ ] Finish interlude implementation
+- [ ] Fully restore haskell-src-exts functionality.
 - [X] Replace examples with open source examples
 - [X] Display error messages (at least somewhat) nicely
 - [ ] Sort out issue with `Control.Lens` not being available in installed executable
