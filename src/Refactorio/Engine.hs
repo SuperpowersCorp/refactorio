@@ -52,7 +52,7 @@ process Config{..} = do
   build preferedPreludes (unExpression expr) >>= either (panic . show) treeOrStdin
   where
     putLnMay
-      | target == Target "." = const $ return ()
+      | target == Target "-" = const $ return ()
       | otherwise            = putLn
     treeOrStdin f = case target of
       Target "-" -> processStdin

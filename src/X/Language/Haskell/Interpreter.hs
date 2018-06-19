@@ -28,7 +28,6 @@ build possiblePreludes src = runInterpreter $ do
       ]
   -- TODO: catch errors and try the rest.
   let preludeImport = maybe [] importPrelude . head $ possiblePreludes
-  putLn $ "DEBUG: preludeImport: " <> show preludeImport
   setImportsQ $
     [ ("Control.Lens"                , Just "L")
     , ("Data.Char"                   , Just "Char")
