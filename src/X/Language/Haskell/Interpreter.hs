@@ -29,7 +29,8 @@ build possiblePreludes src = runInterpreter $ do
   -- TODO: catch errors and try the rest.
   let preludeImport = maybe [] importPrelude . head $ possiblePreludes
   setImportsQ $
-    [ ("Control.Lens"                , Just "L")
+    [ ("Codec.Compression.Zlib.Lens" , Just "Z")
+    , ("Control.Lens"                , Just "L")
     , ("Data.Char"                   , Just "Char")
     , ("Data.String"                 , Just "String")
     , ("Data.Text"                   , Just "Text")

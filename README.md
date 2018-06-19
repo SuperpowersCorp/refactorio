@@ -110,6 +110,12 @@ the value of the JSON object at this key that match this regular expression":
 
 ![Regex Example](examples/regex.png)
 
+### Compressed Files (via [zlib-lens](https://hackage.haskell.org/package/zlib-lens)):
+
+Reach inside eg. gzipped files and do what you gotta do:
+
+![gzipped Example](examples/gzipped.png)
+
 ### Haskell (via [haskell-src-exts](https://hackage.haskell.org/package/haskell-src-exts) and [haskell-src-exts-prisms](https://hackage.haskell.org/package/haskell-src-exts-prisms)):
 
 TODO: revamp after re-wiring
