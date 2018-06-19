@@ -108,6 +108,8 @@ Reach inside eg. gzipped files and do what you gotta do:
 
 ![gzipped Example](examples/gzipped.png)
 
+(Not sure what's up with that "trailing garbage.")
+
 ### Haskell (via [haskell-src-exts](https://hackage.haskell.org/package/haskell-src-exts) and [haskell-src-exts-prisms](https://hackage.haskell.org/package/haskell-src-exts-prisms)):
 
 TODO: revamp after re-wiring
