@@ -13,7 +13,6 @@ data Config = Config
   { filenameFilters       :: Set FilenameFilter
   , expr                  :: Expression
   , preludeMay            :: Maybe FilePath
-  , unqualifiedPreludeMay :: Maybe FilePath
   , specialModeMay        :: Maybe SpecialMode
   , updateMode            :: UpdateMode
   , target                :: Target

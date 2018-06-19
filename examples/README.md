@@ -1,5 +1,8 @@
 # Refactorio Examples
 
+**These examples are from an earlier version of the code but I will be
+reintegrating similar functionality ASAP.**
+
 First of all let me say that I love `ag` and use it all the time.  Nothing in
 this document should be construed as a criticism of `ag` or anything else.
 However, I have tried to create some examples that, while contrived, are pretty
