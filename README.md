@@ -102,7 +102,9 @@ the value of the JSON object at this key that match this regular expression":
 
 ![Regex Example](examples/regex.png)
 
-### Haskell:
+### Haskell (via [haskell-src-exts](https://hackage.haskell.org/package/haskell-src-exts) and [haskell-src-exts-prisms](https://hackage.haskell.org/package/haskell-src-exts-prisms)):
+
+TODO: revamp after re-wiring
 
 Try these on your projects:
 
