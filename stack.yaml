@@ -17,4 +17,5 @@ extra-deps:
 - pipes-files-0.1.2
 - protolude-0.2.1
 - show-0.6
-- xml-html-conduit-lens-0.3.2.3
+- taggy-0.2.1
+- taggy-lens-0.1.2

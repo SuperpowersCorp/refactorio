@@ -6,4 +6,4 @@ module Refactorio.Prelude.Yaml
 
 import Refactorio.Prelude as Exports
 
-
+import Data.Aeson.Lens as Exports

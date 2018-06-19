@@ -39,14 +39,15 @@ process Config{..} = do
   putLn $ "Targets: " <> show (unTarget target)
   unless (null allFilters) $
     putLn $ "Filters: " <> show (map unFilenameFilter . Set.toList $ allFilters)
-  putLn $ "Expression: " <> unExpression expr
-  hFlush stdout
   let preferedPreludes :: [String]
       preferedPreludes = catMaybes
         [ preludeModuleMay
         , (join $ customPrelude <$> specialModeMay)
         , defaultPrelude
         ]
+  putLn $ "Prelude preferences: " <>  show preferedPreludes
+  putLn $ "Expression: " <> unExpression expr
+  hFlush stdout
   build preferedPreludes (unExpression expr) >>= either (panic . show) process'
   where
     process' f = S.mapM_ ( processWith updateMode f )
