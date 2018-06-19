@@ -48,16 +48,22 @@ process Config{..} = do
   putLn $ "Prelude preferences: " <>  show preferedPreludes
   putLn $ "Expression: " <> unExpression expr
   hFlush stdout
-  build preferedPreludes (unExpression expr) >>= either (panic . show) process'
+  -- ================================================================ --
+  build preferedPreludes (unExpression expr) >>= either (panic . show) treeOrStdin
   where
-    process' f = S.mapM_ ( processWith updateMode f )
-      . S.filter ( matchesAny compiledFilters )
-      . S.filter ( not . ignored )
-      . S.map fst
-      . S.filter ( not . isDirectory . snd )
-      . tree
-      . unTarget
-      $ target
+    treeOrStdin f = case target of
+      Target "-" -> processStdin
+      other      -> processTree other
+      where
+        processStdin = processWith updateMode f "-"
+
+        processTree = S.mapM_ ( processWith updateMode f )
+          . S.filter ( matchesAny compiledFilters )
+          . S.filter ( not . ignored )
+          . S.map fst
+          . S.filter ( not . isDirectory . snd )
+          . tree
+          . unTarget
 
     defaultPrelude = Just "Refactorio.Prelude.Basic"
 
@@ -111,7 +117,9 @@ changePrompt = do
 
 processWith :: UpdateMode -> (ByteString -> ByteString) -> FilePath -> IO ()
 processWith updateMode f path = do
-  (beforeBytes, afterBytes) <- (identity &&& f) <$> BS.readFile path
+  (beforeBytes, afterBytes) <- (identity &&& f) <$> case path of
+    "-" -> BS.getContents
+    p   -> BS.readFile p
   if beforeBytes == afterBytes
     then putLn $ "** Unchanged: " <> pack path
     else handleChange (beforeBytes, afterBytes)
