@@ -51,6 +51,10 @@ XML (via same):
 
     XML example coming soon.
 
+Regex (via TODO):
+
+    XML example coming soon.
+
 Haskell:
 
 Try these on your projects:
