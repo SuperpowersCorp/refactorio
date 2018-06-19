@@ -12,8 +12,7 @@ import Refactorio.FilenameFilter
 data Config = Config
   { filenameFilters       :: Set FilenameFilter
   , expr                  :: Expression
-  , preludeMay            :: Maybe FilePath
-  , unqualifiedPreludeMay :: Maybe FilePath
+  , preludeModuleMay      :: Maybe String
   , specialModeMay        :: Maybe SpecialMode
   , updateMode            :: UpdateMode
   , target                :: Target
@@ -25,7 +24,9 @@ newtype Expression = Expression { unExpression :: Text }
 data SpecialMode
   = Docx
   | Haskell
+  | Html
   | Json
+  | Xml
   | Yaml
   deriving (Data, Eq, Ord, Read, Show, Typeable)
 

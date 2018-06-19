@@ -20,7 +20,6 @@ import           Data.Text                                    ( lines
                                                               )
 import           Refactorio.FilenameFilter
 import           Refactorio.Types
-import           System.Directory
 import           System.IO                                    ( hFlush
                                                               , stdout
                                                               )
@@ -30,25 +29,26 @@ import           X.Language.Haskell.Interpreter               ( build )
 import           X.Rainbow
 import           X.Streaming.Files                            ( tree )
 
--- CURRENT TARGET:   refio --haskell view "__Module.biplate._Int" & "(+32)"
+-- CURRENT TARGET: refio --haskell '& __Module.biplate._Int +~ 32'
 
 process :: Config -> IO ()
 process Config{..} = do
-  _home <- getHomeDirectory
   case specialModeMay of
     Nothing   -> return ()
     Just mode -> putLn $ "Special processing activated: " <> show mode
   putLn $ "Targets: " <> show (unTarget target)
-  when (not . null $ allFilters) $
+  unless (null allFilters) $
     putLn $ "Filters: " <> show (map unFilenameFilter . Set.toList $ allFilters)
-  putLn $ "Expression: " <> show (unExpression expr)
+  let preferedPreludes :: [String]
+      preferedPreludes = catMaybes
+        [ preludeModuleMay
+        , join $ customPrelude <$> specialModeMay
+        , defaultPrelude
+        ]
+  putLn $ "Prelude preferences: " <>  show preferedPreludes
+  putLn $ "Expression: " <> unExpression expr
   hFlush stdout
-  -- let interlude :: FilePath = fromMaybe (defaultInterlude home)
-  --                           . fmap (prepend home)
-  --                           . join
-  --                           . fmap specialInterlude
-  --                           $ specialMode
-  build Nothing (unExpression expr) >>= either (panic . show) process'
+  build preferedPreludes (unExpression expr) >>= either (panic . show) process'
   where
     process' f = S.mapM_ ( processWith updateMode f )
       . S.filter ( matchesAny compiledFilters )
@@ -59,31 +59,27 @@ process Config{..} = do
       . unTarget
       $ target
 
-    _prepend :: FilePath -> FilePath -> FilePath
-    _prepend home = ((home <> "/.refactorio/") <>)
+    defaultPrelude = Just "Refactorio.Prelude.Basic"
 
     allFilters = expandExtraFilters filenameFilters
 
     compiledFilters = map compileFilter . Set.toList $ allFilters
-
-    -- defaultInterlude home = prepend home "Interlude.hs"
 
     expandExtraFilters :: Set FilenameFilter -> Set FilenameFilter
     expandExtraFilters existing
       | not . null $ existing = existing
       | otherwise = maybe Set.empty filtersForSpecialMode specialModeMay
 
--- specialInterlude :: SpecialMode -> Maybe FilePath
--- specialInterlude Docx    = Just "DocxInterlude.hs"
--- specialInterlude Haskell = Just "HaskellInterlude.hs"
--- specialInterlude Json    = Just "JsonInterlude.hs"
--- specialInterlude Yaml    = Just "YamlInterlude.hs"
+customPrelude :: SpecialMode -> Maybe FilePath
+customPrelude m = Just $ "Refactorio.Prelude." <> show m
 
 filtersForSpecialMode :: SpecialMode -> Set FilenameFilter
 filtersForSpecialMode m = Set.fromList . map FilenameFilter $ case m of
   Docx    -> [ "**/*.docx" ]
   Haskell -> [ "**/*.hs" ]
+  Html    -> [ "**/*.html", "**/*.htm" ]
   Json    -> [ "**/*.json" ]
+  Xml     -> [ "**/*.xml" ]
   Yaml    -> [ "**/*.yaml"
              , "**/*.yml"
              ]

@@ -11,20 +11,23 @@ module Refactorio.Prelude
     , putLn
     ) where
 
-import Control.Arrow  as Exports ( (&&&) )
-import Control.Lens   as Exports ( (%~)
-                                 , (.~)
-                                 , (^.)
-                                 , makeClassy
-                                 , view
-                                 )
-import Data.Data      as Exports ( Data )
-import Data.Data.Lens as Exports ( upon )
-import Data.List      as List
-import Data.String    as Exports ( String )
-import Data.Text      as Exports ( unpack )
-import Data.Text      as Text    ( isPrefixOf )
-import Protolude      as Exports
+import           Control.Arrow  as Exports ( (&&&) )
+import           Control.Lens   as Exports ( (%~)
+                                           , (.~)
+                                           , (^.)
+                                           , each
+                                           , makeClassy
+                                           , partsOf
+                                           , view
+                                           )
+import           Data.Data      as Exports ( Data )
+import           Data.Data.Lens as Exports ( upon )
+import           Data.List      as List
+import           Data.String    as Exports ( String )
+import           Data.Text      as Exports ( unpack )
+import           Data.Text      as Text    ( isPrefixOf )
+import qualified Data.Text      as Text
+import           Protolude      as Exports
 
 class Container a where
   contains :: a -> a -> Bool
@@ -46,6 +49,9 @@ instance Eq a => Started [a] where
 
 instance Started Text where
   startsWith = flip Text.isPrefixOf
+
+instance Ended Text where
+  endsWith = flip Text.isSuffixOf
 
 getLn :: MonadIO m => m Text
 getLn = liftIO getLine

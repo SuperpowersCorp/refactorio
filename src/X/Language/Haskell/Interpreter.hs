@@ -10,8 +10,9 @@ import Refactorio.Prelude
 
 import Language.Haskell.Interpreter
 
-build :: Typeable a => Maybe FilePath -> Text -> IO (Either InterpreterError a)
-build preludePathMay src = (putLn ("...compiling... '" <> show src <> "'") >>) . runInterpreter $ do
+build :: Typeable a => [String] -> Text -> IO (Either InterpreterError a)
+build possiblePreludes src = runInterpreter $ do
+  -- TODO: make extensions CLI options
   set [ languageExtensions
         := [ FlexibleContexts
            , FlexibleInstances
@@ -20,29 +21,48 @@ build preludePathMay src = (putLn ("...compiling... '" <> show src <> "'") >>) .
            , NoImplicitPrelude
            , LambdaCase
            , OverloadedStrings
-           -- , RankNTypes
+           , QuasiQuotes
            , RecordWildCards
            , ScopedTypeVariables
            ]
       ]
-  case preludePathMay of
-    Just preludePath -> loadModules [ preludePath ]
-    Nothing          -> return ()
-  setImportsQ
-    [ ("Control.Lens"                , Nothing)
-    , ("Control.Lens"                , Just "L")
+  -- TODO: catch errors and try the rest.
+  let preludeImport = maybe [] importPrelude . head $ possiblePreludes
+  putLn $ "DEBUG: preludeImport: " <> show preludeImport
+  setImportsQ $
+    [ ("Control.Lens"                , Just "L")
     , ("Data.Char"                   , Just "Char")
     , ("Data.String"                 , Just "String")
     , ("Data.Text"                   , Just "Text")
-    , ("Data.Aeson.Lens"             , Just "A")
-    , ("Data.ByteString.Lens"        , Nothing)
-    , ("Data.Data.Lens"              , Just "L")
+    , ("Data.Text"                   , Just "T")
+    , ("Data.Text.Lens"              , Just "Text")
+    , ("Data.Text.Lens"              , Just "T")
+    , ("Data.Aeson.Lens"             , Just "J")
     , ("Data.String.Conv"            , Just "S")
     , ("Language.Haskell.Exts"       , Just "HS")
     , ("Language.Haskell.Exts.Prisms", Just "HS")
-    , ("Protolude"                   , Nothing)
     , ("Refactorio.Helpers"          , Just "H")
     , ("Text.Pandoc.Lens"            , Just "P")
-    , ("Codec.Compression.Zlib.Lens" , Nothing)
-    ]
+    , ("Text.Pandoc.Lens"            , Just "Pandoc")
+    , ("Text.Regex.Lens"             , Just "R")
+    , ("Text.Regex.Lens"             , Just "Regex")
+    , ("Text.Xml.Lens"               , Just "Html")
+    , ("Text.Xml.Lens"               , Just "H")
+    , ("Text.Xml.Lens"               , Just "Xml")
+    , ("Text.Xml.Lens"               , Just "X")
+    , ("Codec.Compression.Zlib.Lens" , Just "Z")
+    ] ++ preludeImport
   interpret (unpack ("(" <> src <> ")")) infer
+
+-- We only import qualified stuff now and the only unqualified stuff comes from
+-- whatever Prelude is resolved.
+--
+--   ("Control.Lens"                , Nothing)
+-- , ("Data.ByteString.Lens"        , Nothing)
+-- , ("Data.Data.Lens"              , Nothing)
+-- , ("Refactorio.Prelude"          , Nothing)
+-- , ("Text.Regex.Quote"            , Nothing)
+-- , ("Codec.Compression.Zlib.Lens" , Nothing)
+
+importPrelude :: String -> [(String, Maybe String)]
+importPrelude s = [(s, Nothing)]

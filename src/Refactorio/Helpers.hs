@@ -23,6 +23,7 @@ import           Control.Lens            as L    ( Iso'
                                                  )
 import qualified Data.Aeson              as Json
 import qualified Data.ByteString.Lazy    as LBS
+import qualified Data.Text.Lazy          as LT
 import qualified Data.Yaml               as Yaml
 import           Text.Pandoc                     ( Pandoc
                                                  , readDocx
@@ -37,6 +38,10 @@ class Lazyboy s l where
 instance Lazyboy ByteString LByteString where
   strictify = LBS.toStrict
   lazify    = LBS.fromStrict
+
+instance Lazyboy Text LText where
+  strictify = LT.toStrict
+  lazify    = LT.fromStrict
 
 docx :: Iso' ByteString Pandoc
 docx = iso g s
