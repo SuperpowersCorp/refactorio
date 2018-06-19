@@ -17,25 +17,25 @@ Lens based Haskell refactoring toolkit.
 
     Refactorio - Optical Refactoring Tool
 
-    Usage: refactorio EXPR [-t|--target TARGET] [-g|--glob GLOB] [--prelude PRELUDE]
+    Usage: refactorio EXPR [-t|--target TARGET] [-g|--glob GLOB] [--prelude MODULE]
                       ([-a|--ask] | [-p|--preview] | [-r|--review] | [-m|--modify])
-                      [--haskell|--hs] [--json] [--xml] [--yaml]
+                      [--haskell|--hs] [--html] [--json] [--xml] [--yaml]
       Zen and the art of optical file maintenance.
 
     Available options:
       EXPR                     ByteString -> ByteString
       -t,--target TARGET       A file/directory to search/replace (default: ".")
       -g,--glob GLOB           Glob matches to include (eg '*.ini', 'f??b?r.c')
-      --prelude PRELUDE        Use a specific Prelude
+      --prelude MODULE         Use a specific Prelude module
       -a,--ask                 Ask before changing files (default)
       -p,--preview             Only show the changes that would be made
       -r,--review              Make the changes and show details of changes
       -m,--modify              Make the changes and summarize changed filenames
       --haskell,--hs           Include .hs files and make Haskell ops available
+      --html                   Include .htm(l) files and make XML ops available
       --json                   Include .json files and make JSON ops available
       --xml                    Include .xml files and make XML ops available
-      --yaml                   Include .yaml or .yml files and make YAML ops
-                               available
+      --yaml                   Include .y(a)ml files and make YAML ops available
       -h,--help                Show this help text
 
 ## Major Modes
