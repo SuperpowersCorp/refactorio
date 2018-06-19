@@ -50,7 +50,7 @@ library
                      , lens-aeson
                      , lens-regex
                      , optparse-applicative
-                     , pandoc
+                     , pandoc >= 2.2.1
                      , pandoc-lens
                      , pretty
                      , protolude
