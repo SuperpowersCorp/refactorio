@@ -144,10 +144,45 @@ or
 (where the `-t`/`--target` is a file or directory to process and can be outside
 of the refactorio project root).
 
+## Warnings
+
+In addition to the general warning about this being alpha quality software, no
+work has been done on performance and in fact in some cases even reasonable
+performance has been sacrificed in the name of expediency.
+
+In some places I've resorted to outright hacks, such as when parsing YAML by
+reading it as YAML, writing it as JSON for processing it with `lens-aeson`,
+then converting it back.
+
+In addition to being slow some of these tricks will do things like cause a file
+to be reformatted by the serialization round-trip even if your function doesn't
+make an actual semantic change.
+
+## Configurable Format-specific Preludes
+
+Refactorio has a hardcoded set of qualified imports which you can find
+[somewhere around
+here](https://github.com/SuperpowersCorp/refactorio/blob/master/src/X/Language/Haskell/Interpreter.hs#L30)
+or if you have a working Refactorio install you can see live via:
+
+    TODO: refio --haskell something...
+
+Currently the only unqualified import that Refactorio mandates is
+`Text.Regex.Quote` which brings the `r` QuasiQuoter into scope.
+
+In addition Refactorio attempts to load a single "Prelude" which can bring
+unqualified names into scope.  Various lens packages for different formats have
+conflicting imports (eg. _String in `lens-aeson` and in
+`haskell-src-exts-prisms`) so to avoid conflicts for now if you pass a "special
+mode" flag (eg. `--haskell`, `--json`, etc) Refactorio will attempt to use
+`Refactorio.Prelude.{ModeName}` (eg `Refactorio.Prelude.Haskell`, etc).  If no
+special mode is provided, `Refactorio.Prelude.Basic` is used.
+
+(TODO: clarify above)
+
 ## TODOs
 
-- [ ] Document qualified imports / use/selection of preludes
-- [ ] Document perils of roundtripping re-formatting your data
+- [ ] Allow parenthesizing '& ...' expressions
 - [ ] Examples
   - [ ] Replace strictify/etc with documentation/examples of appropriate existing lenses
   - [ ] Automate screenshots
@@ -156,6 +191,9 @@ of the refactorio project root).
   - [ ] More
     - [ ] Using preview to construct new elements
     - [ ] stdin
+    - [ ] Side effects
+    - [ ] Multiple sets/maps (eg "& foo .~ 5 & bar .~ 6" etc)
+      eg `% cat /tmp/b.json | refio --json -t - 'over (key "baz" . _Number) (+3) .  over (key "foo" . _String) (Text.reverse . Text.toUpper)'`
 - [ ] Special mode pre/post adapter fns
 - [ ] Multiple targets
   - [ ] Bail if multiple targets with stdin
