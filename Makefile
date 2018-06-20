@@ -1,6 +1,8 @@
 help:
 	@cat Makefile
 
+EXE=refactorio
+
 build:
 	stack build
 
@@ -29,8 +31,12 @@ longboye-all:
 	longboye pragmas src
 	longboye pragmas test
 
+make-screenshots:
+	stack exec $(EXE) -- -t examples/examples.yaml \
+		'over refactorioExamples %~ unsafeMakeScreenshot'
+
 run:
-	stack exec $(STACK_ARGS) -- refactorio $(ARGS)
+	stack exec $(EXE) $(STACK_ARGS) -- refactorio $(ARGS)
 
 test:
 	stack test
@@ -46,6 +52,7 @@ g: ghcid
 gd: ghcid-devel
 hl: hlint
 lba: longboye-all
+ms: make-screenshots
 r: run
 w: watch
 t: test
