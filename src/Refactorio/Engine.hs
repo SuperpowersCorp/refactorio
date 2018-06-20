@@ -25,8 +25,8 @@ import           System.IO                                    ( hFlush
                                                               )
 import           System.Posix.Files
 import           Text.PrettyPrint               as PP  hiding ( (<>) )
-import           X.Language.Haskell.Interpreter               ( InterpreterError(..)
-                                                              , GhcError( errMsg )
+import           X.Language.Haskell.Interpreter               ( GhcError( errMsg )
+                                                              , InterpreterError(..)
                                                               , build
                                                               )
 import           X.Rainbow

@@ -9,6 +9,7 @@ module Refactorio.Prelude
     , getLn
     , nl
     , putLn
+    , sleep
     ) where
 
 import           Control.Arrow  as Exports ( (&&&) )
@@ -60,3 +61,6 @@ putLn = putStrLn
 
 nl :: MonadIO m => m ()
 nl = putLn ""
+
+sleep :: MonadIO m => Float -> m ()
+sleep n = liftIO . threadDelay . round $ n * 1000 * 1000

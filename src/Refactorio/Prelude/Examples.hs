@@ -1,3 +1,4 @@
+{-# LANGUAGE LambdaCase        #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TemplateHaskell   #-}
@@ -16,13 +17,16 @@ module Refactorio.Prelude.Examples
      , version
      ) where
 
-import Refactorio.Prelude.Basic as Exports hiding ( (.=) )
+import           Refactorio.Prelude.Basic as Exports hiding ( (.=) )
+import qualified Refactorio.Prelude       as RP
 
-import Refactorio.Helpers       as H
-import Data.Aeson
-import Data.Aeson.Lens          as Exports
-import System.IO.Unsafe                           ( unsafePerformIO )
-import qualified Data.ByteString as TempBS
+import           Data.Aeson
+import           Data.Aeson.Lens          as Exports
+import           Data.Text                as T
+import           Refactorio.Helpers       as H
+import           Safe                                       ( readMay )
+import           System.IO.Unsafe                           ( unsafePerformIO )
+import           System.Process
 
 type Example = ( FilePath
                , ExampleData
@@ -63,13 +67,37 @@ instance ToJSON   ExampleData where
 refactorioExamplesL :: Traversal' ByteString ExampleData
 refactorioExamplesL = H.yaml . key "examples" . _Array . traverse . _JSON
 
-_test1 :: IO ()
-_test1 = do
-  bs <- TempBS.readFile "examples/examples.yaml"
-  print $ bs & refactorioExamplesL %~ unsafeMakeScreenshot
-
 -- TODO: Remove / move elsewhere
 unsafeMakeScreenshot :: ExampleData -> ExampleData
-unsafeMakeScreenshot exData = unsafePerformIO $ do
-  putStrLn ("================ WOULD SCREENSHOT HERE ================" :: Text)
-  return (exData & version +~ 1)
+unsafeMakeScreenshot exData = unsafePerformIO $ getWindowId >>= \case
+  Nothing -> do
+    RP.putLn "SCREENSHOT FAILED: COULD NOT FIND WINDOW ID"
+    return exData
+  Just winId -> do
+    clearScreen
+    RP.putLn $ "Example: " <> show (exData ^. exampleName)
+    RP.putLn $ "% " <> fullCmd
+    void . system . RP.unpack $ fullCmd
+    makeScreenshot winId exData
+    RP.sleep 0.25
+    return $ exData & version +~ 1
+  where
+    fullCmd = replaceTarget target $ exData ^. cmd
+    target = "/tmp/voltron"  -- TODO
+
+replaceTarget :: Text -> Text -> Text
+replaceTarget target = T.intercalate target . splitOn "$TARGET"
+
+clearScreen :: IO ()
+clearScreen = void $ system "clear"
+
+makeScreenshot :: Int -> ExampleData -> IO ()
+makeScreenshot winId exData = void $ readProcess "screencapture" args ""
+  where
+    args     = ["-l", show winId, RP.unpack filename]
+    filename = "/tmp/deleteme/" <> exData ^. exampleName <> ".png"
+
+getWindowId :: IO (Maybe Int)
+getWindowId = readMay <$> readProcess "osascript" args ""
+  where
+    args = ["-e", "tell app \"iTerm2\" to id of window 1"]

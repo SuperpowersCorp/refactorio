@@ -32,7 +32,7 @@ longboye-all:
 	longboye pragmas test
 
 make-screenshots:
-	stack exec $(EXE) -- --examples -t examples/examples.yaml \
+	stack exec $(EXE) -- -p --examples -t examples/examples.yaml \
 	  '& refactorioExamplesL %~ unsafeMakeScreenshot'
 
 run:

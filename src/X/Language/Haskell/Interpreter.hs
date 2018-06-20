@@ -33,6 +33,8 @@ build possiblePreludes src = runInterpreter $ do
     , ("Control.Lens"                , Just "L")
     , ("Data.Char"                   , Just "Char")
     , ("Data.String"                 , Just "String")
+    , ("Data.List.Lens"              , Just "L")
+    , ("Data.List.Lens"              , Just "ListL")
     , ("Data.Text"                   , Just "Text")
     , ("Data.Text"                   , Just "T")
     , ("Data.Text.Lens"              , Just "Text")

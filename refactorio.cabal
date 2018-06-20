@@ -51,6 +51,7 @@ library
                      , optparse-applicative
                      , pandoc-lens
                      , pretty
+                     , process
                      , protolude
                      , rainbow
                      , regex-pcre-builtin
@@ -84,6 +85,7 @@ executable refactorio
                      , optparse-applicative
                      , pandoc-lens
                      , pretty
+                     , process
                      , protolude
                      , refactorio
                      , regex-pcre-builtin
@@ -116,6 +118,7 @@ test-suite refactorio-test
                      , lens-regex
                      , pandoc-lens
                      , pretty
+                     , process
                      , protolude
                      , refactorio
                      , regex-pcre-builtin
