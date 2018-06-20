@@ -105,13 +105,16 @@ customPrelude m = Just $ "Refactorio.Prelude." <> show m
 
 filtersForSpecialMode :: SpecialMode -> Set FilenameFilter
 filtersForSpecialMode m = Set.fromList . map FilenameFilter $ case m of
-  Haskell -> [ "**/*.hs" ]
-  Html    -> [ "**/*.html", "**/*.xhtml", "**/*.htm" ]
-  Json    -> [ "**/*.json" ]
-  Xml     -> [ "**/*.xml" ]
-  Yaml    -> [ "**/*.yaml"
-             , "**/*.yml"
-             ]
+  Examples -> [ "**/*.yaml"
+              , "**/*.yml"
+              ]
+  Haskell  -> [ "**/*.hs" ]
+  Html     -> [ "**/*.html", "**/*.xhtml", "**/*.htm" ]
+  Json     -> [ "**/*.json" ]
+  Xml      -> [ "**/*.xml" ]
+  Yaml     -> [ "**/*.yaml"
+              , "**/*.yml"
+              ]
 
 -- TODO: read .*ignore files from the target dir down to the current file, caching
 --       along the way, etc. but for now...

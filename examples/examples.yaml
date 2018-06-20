@@ -1,39 +1,59 @@
 settings:
-  target: "/tmp/voltron"
+  target: /tmp/voltron
 examples:
-  - name: "help"
-    pre: "Current help output at screenshot generation time"
-    cmd: "refio --help"
-  - name: "json"
-    pre: "Increment the value at key 'baz' by 1962."
-    cmd: "refio -t $TARGET --json '& key \"baz\" . _Number *~ 42"
-  - name: "yaml"
-    pre: "Multiply the value of the key 'baz' by 10."
-    cmd: "refio -t $TARGET --yaml '& key \"baz\" . _Number +~ 2112'"
-  - name: "html"
-    pre: "HTML example coming soon."
-    cmd: "refio -t $TARGET --html '& html . node \"fixme\" %~ toUpper'"
-  - name: "xml"
-    pre: "C'mon, you've never needed to \"find all the authors with names longer than 15 characters and then sort all of the letters in their name that are above 'm' in place?\" Pshaw."
-    cmd: "refio -t $TARGET --xml '& xml . node \"book\" . node \"author\" . text . filtered ((>=11) . Text.length) . partsOf (each.filtered (>'m')) %~ sort"
-  - name: "regex"
-    pre: "Drop regex's in anywhere you like, eg. \"uppercase and reverse the characters in the value of the JSON object at this key that match this regular expression\":"
-    cmd: "refio -t $TARGET --json '& key \"foo\" . _String . Text.unpacked . regex [|ba|] . matchedString %~ reverse . map Char.toUpper "
-  - name: "zlib"
-    pre: "Reach inside eg. gzipped files and do what you gotta do:"
-    cmd: "gzcat $TARGET/src/b.json.gz ; gzcat $TARGET/src/b.json.gz | refio --json -t '& lazy . from Z.gzipped . from lazy . key \"baz\" . _Nunber *~ 85' | gzcat -"
-    post: "(Not sure what's up with that \"trailing garbage.\")"
-  - name: "hs-ints"
-    cmd: "refio -t $TARGET --haskell _Module.biplate._Int"
-  - name: "hs-modname"
-    cmd: "refio -t $TARGET--haskell _Module.biplate._ModuleName.end"
-  - name: "hs-string"
-    cmd: "refio --haskell _Module.biplate._String.end"
-  - name: "hs-fieldupdate"
-    cmd: "refio --haskell _Module.biplate._FieldUpdate.end"
-  - name: "hs-frac"
-    cmd: "refio --haskell _Module.biplate._Frac.end"
-  - name: "hs-odd-ints"
-    cmd: "refio --haskell '_Module.biplate._Int.filtered(odd.view target).end'"
-  - name: "hs-ints-gt-10"
-    cmd: "refio --haskell '_Module.biplate._Int.filtered((>10).view target).end'"
+- pre: Current help output at screenshot generation time
+  name: help
+  version: 1
+  cmd: refio --help
+- pre: Increment the value at key 'baz' by 1962.
+  name: json
+  version: 1
+  cmd: refio -t $TARGET --json '& key "baz" . _Number *~ 42
+- pre: Multiply the value of the key 'baz' by 10.
+  name: yaml
+  version: 1
+  cmd: refio -t $TARGET --yaml '& key "baz" . _Number +~ 2112'
+- pre: HTML example coming soon.
+  name: html
+  version: 1
+  cmd: refio -t $TARGET --html '& html . node "fixme" %~ toUpper'
+- pre: C'mon, you've never needed to "find all the authors with names longer than
+    15 characters and then sort all of the letters in their name that are above 'm'
+    in place?" Pshaw.
+  name: xml
+  version: 1
+  cmd: refio -t $TARGET --xml '& xml . node "book" . node "author" . text . filtered
+    ((>=11) . Text.length) . partsOf (each.filtered (>'m')) %~ sort
+- pre: ! 'Drop regex''s in anywhere you like, eg. "uppercase and reverse the characters
+    in the value of the JSON object at this key that match this regular expression":'
+  name: regex
+  version: 1
+  cmd: ! 'refio -t $TARGET --json ''& key "foo" . _String . Text.unpacked . regex
+    [|ba|] . matchedString %~ reverse . map Char.toUpper '
+- pre: ! 'Reach inside eg. gzipped files and do what you gotta do:'
+  post: (Not sure what's up with that "trailing garbage.")
+  name: zlib
+  version: 1
+  cmd: gzcat $TARGET/src/b.json.gz ; gzcat $TARGET/src/b.json.gz | refio --json -t
+    '& lazy . from Z.gzipped . from lazy . key "baz" . _Nunber *~ 85' | gzcat -
+- name: hs-ints
+  version: 1
+  cmd: refio -t $TARGET --haskell _Module.biplate._Int
+- name: hs-modname
+  version: 1
+  cmd: refio -t $TARGET--haskell _Module.biplate._ModuleName.end
+- name: hs-string
+  version: 1
+  cmd: refio --haskell _Module.biplate._String.end
+- name: hs-fieldupdate
+  version: 1
+  cmd: refio --haskell _Module.biplate._FieldUpdate.end
+- name: hs-frac
+  version: 1
+  cmd: refio --haskell _Module.biplate._Frac.end
+- name: hs-odd-ints
+  version: 1
+  cmd: refio --haskell '_Module.biplate._Int.filtered(odd.view target).end'
+- name: hs-ints-gt-10
+  version: 1
+  cmd: refio --haskell '_Module.biplate._Int.filtered((>10).view target).end'

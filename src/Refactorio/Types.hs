@@ -22,7 +22,8 @@ newtype Expression = Expression { unExpression :: Text }
   deriving (Data, Eq, Ord, Read, Show)
 
 data SpecialMode
-  = Haskell
+  = Examples
+  | Haskell
   | Html
   | Json
   | Xml

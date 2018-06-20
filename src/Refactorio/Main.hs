@@ -106,8 +106,12 @@ updateModeParser =
   <|> pure AskMode
 
 specialModeParser :: Parser (Maybe SpecialMode)
-specialModeParser = resolve <$> ( (,,,,)
-  <$> langSwitch Haskell
+specialModeParser = resolve <$> ( (,,,,,)
+  <$> langSwitch Examples
+               ( long "examples"
+              <> help "Temporary mode for creating examples"
+               )
+  <*> langSwitch Haskell
                ( long "haskell"
               <> long "hs"
               <> help "Include .hs files and make Haskell ops available"
