@@ -178,10 +178,11 @@ mode" flag (eg. `--haskell`, `--json`, etc) Refactorio will attempt to use
 `Refactorio.Prelude.{ModeName}` (eg `Refactorio.Prelude.Haskell`, etc).  If no
 special mode is provided, `Refactorio.Prelude.Basic` is used.
 
-(TODO: clarify the above)
+(TODO: clarify above)
 
 ## TODOs
 
+- [ ] Allow parenthesizing '& ...' expressions
 - [ ] Examples
   - [ ] Replace strictify/etc with documentation/examples of appropriate existing lenses
   - [ ] Automate screenshots
@@ -190,6 +191,9 @@ special mode is provided, `Refactorio.Prelude.Basic` is used.
   - [ ] More
     - [ ] Using preview to construct new elements
     - [ ] stdin
+    - [ ] Side effects
+    - [ ] Multiple sets/maps (eg "& foo .~ 5 & bar .~ 6" etc)
+      eg `% cat /tmp/b.json | refio --json -t - 'over (key "baz" . _Number) (+3) .  over (key "foo" . _String) (Text.reverse . Text.toUpper)'`
 - [ ] Special mode pre/post adapter fns
 - [ ] Multiple targets
   - [ ] Bail if multiple targets with stdin
