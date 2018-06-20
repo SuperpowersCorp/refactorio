@@ -27,7 +27,10 @@ import           System.IO                                    ( hFlush
                                                               )
 import           System.Posix.Files
 import           Text.PrettyPrint               as PP  hiding ( (<>) )
-import           X.Language.Haskell.Interpreter               ( build )
+import           X.Language.Haskell.Interpreter               ( InterpreterError(..)
+                                                              , GhcError( errMsg )
+                                                              , build
+                                                              )
 import           X.Rainbow
 import           X.Streaming.Files                            ( tree )
 
@@ -47,7 +50,7 @@ process config@Config{..} = do
         , join $ customPrelude <$> specialModeMay
         , defaultPrelude
         ]
-  putLnMay $ "Prelude preferences: " <>  show preferedPreludes
+  -- putLnMay $ "Prelude preferences: " <>  show preferedPreludes
   putLnMay $ "Expression: " <> unExpression expr
   hFlush stdout
   -- ================================================================ --
@@ -55,12 +58,13 @@ process config@Config{..} = do
       ReplaceMode _mapFnSrc -> Power.replace config _mapFnSrc
       SearchMode            -> Power.search config
       _                     -> build preferedPreludes (unExpression expr)
-                                 >>= either (panic . show) treeOrStdin
+                                 >>= either (reportError expr) treeOrStdin
   where
     putLnMay s
       | target == Target "-" = return ()
       | otherwise = putLn s
 
+    treeOrStdin :: (ByteString -> ByteString) -> IO ()
     treeOrStdin f = case target of
       Target "-" -> processStdin f
       other      -> processTree other
@@ -78,6 +82,25 @@ process config@Config{..} = do
     allFilters = expandExtraFilters specialModeMay filenameFilters
 
     compiledFilters = map compileFilter . Set.toList $ allFilters
+
+reportError :: Expression -> InterpreterError -> IO ()
+reportError expr e = do
+  nl
+  putChunkLn $ chunk hdr  & fore c
+  putChunkLn $ chunk msg & fore c
+  nl
+  where
+    hdr :: Text = "Failed to compile expression:\n\n    " <> unExpression expr <> "\n"
+
+    c = red  -- TODO: theme
+
+    msg = case e of
+      GhcException s        -> "GHC Exception:\n\n" <> s
+      NotAllowed   s        -> "Not Allowed:\n\n"   <> s
+      UnknownError s        -> "Unknown Error:\n\n" <> s
+      WontCompile ghcErrors -> "GHC Errors:\n\n"    <> intercalate "\n" errors
+        where
+          errors = map errMsg ghcErrors
 
 customPrelude :: SpecialMode -> Maybe FilePath
 customPrelude m = Just $ "Refactorio.Prelude." <> show m

@@ -15,27 +15,27 @@ Lens based Haskell refactoring toolkit.
 
 ## Usage
 
-    Refactorio - Optical Refactoring Tool
+Refactorio - Optical Refactoring Tool
 
-    Usage: refactorio EXPR [-t|--target TARGET] [-g|--glob GLOB] [--prelude PRELUDE]
+    Usage: refactorio EXPR [-t|--target TARGET] [-g|--glob GLOB] [--prelude MODULE]
                       ([-a|--ask] | [-p|--preview] | [-r|--review] | [-m|--modify])
-                      [--haskell|--hs] [--json] [--xml] [--yaml]
+                      [--haskell|--hs] [--html] [--json] [--xml] [--yaml]
       Zen and the art of optical file maintenance.
 
     Available options:
       EXPR                     ByteString -> ByteString
       -t,--target TARGET       A file/directory to search/replace (default: ".")
       -g,--glob GLOB           Glob matches to include (eg '*.ini', 'f??b?r.c')
-      --prelude PRELUDE        Use a specific Prelude
+      --prelude MODULE         Use a specific Prelude module
       -a,--ask                 Ask before changing files (default)
       -p,--preview             Only show the changes that would be made
       -r,--review              Make the changes and show details of changes
       -m,--modify              Make the changes and summarize changed filenames
       --haskell,--hs           Include .hs files and make Haskell ops available
+      --html                   Include .htm(l) files and make XML ops available
       --json                   Include .json files and make JSON ops available
       --xml                    Include .xml files and make XML ops available
-      --yaml                   Include .yaml or .yml files and make YAML ops
-                               available
+      --yaml                   Include .y(a)ml files and make YAML ops available
       -h,--help                Show this help text
 
 ## Major Modes
@@ -116,6 +116,8 @@ Reach inside eg. gzipped files and do what you gotta do:
 
 ![gzipped Example](examples/gzipped.png)
 
+(Not sure what's up with that "trailing garbage.")
+
 ### Haskell (via [haskell-src-exts](https://hackage.haskell.org/package/haskell-src-exts) and [haskell-src-exts-prisms](https://hackage.haskell.org/package/haskell-src-exts-prisms)):
 
 TODO: revamp after re-wiring
@@ -152,34 +154,39 @@ of the refactorio project root).
 
 ## TODOs
 
-- [X] Finish custom prelude implementation
-- [ ] Fully restore haskell-src-exts functionality.
+- [ ] Document qualified imports / use/selection of preludes
+- [ ] Document perils of roundtripping re-formatting your data
+- [ ] Examples
+  - [ ] Replace strictify/etc with documentation/examples of appropriate existing lenses
+  - [ ] Automate screenshots
+  - [ ] Formulate everthing in terms of appropriate starting Prisms
+  - [ ] Embiggen/embetter existing examples to make it more clear whats going on
+  - [ ] More
+    - [ ] Using preview to construct new elements
+    - [ ] stdin
 - [ ] Special mode pre/post adapter fns
-- [ ] Pandoc lens support for:
-  - [ ] Docx
-  - [ ] Markdown
-  - [ ] others
-- [X] Replace examples with open source examples
-- [X] Display error messages (at least somewhat) nicely
-- [ ] Sort out issue with `Control.Lens` not being available in installed executable
-- [ ] Line Numbers
-- [ ] Context lines
-- [X] Loading of additional modules (via Prelude)
-- [X] Refactor CLI into `ref view`, `ref fmap` and `ref set`
-- [X] Suppress printing of filename when there are no matches (tardis?)
-- [X] `-f/fmap`
-- [ ] Eliminate unnecessary serialization round trips
-  - [ ] eg when processing YAML via JSON
-  - [ ] don't changes files when all that changed was formatting.
-- [X] Handle '-' as filename for stdin->stdout
+- [ ] Multiple targets
+  - [ ] Bail if multiple targets with stdin
 - [ ] Bail if modes are provided with stdin ('-') processing
 - [ ] Seek guidance from the pros on
   - [ ] CT/lenses
   - [ ] Cool lens tricks that might be applicable
-- [X] Allow storing of lenses in `~/.refactorio`  (replaced by custom prelude)
+- [ ] Fully restore `haskell-src-exts` functionality.
+- [ ] Pandoc lens support for:
+  - [ ] Docx
+  - [ ] Markdown
+  - [ ] others
+- [ ] Line Numbers
+- [ ] Context lines
+- [ ] Sort out issue with `Control.Lens` not being available in installed executable
+- [ ] Eliminate unnecessary serialization round trips
+  - [ ] eg when processing YAML via JSON
+  - [ ] don't changes files when all that changed was formatting.
+- [ ] Figure out which existing haskell function `concatStreams` can be reduced to.
+- [ ] 1.0 release somewhere around here
+- [ ] More granular patch acceptance/rejectance
 - [ ] Use mueval so that shared lenses can be used safely.
 - [ ] Emacs integration
-- [ ] Figure out which existing haskell function `concatStreams` can be reduced to.
 - [ ] Can we cache generated lenses somehow?
 - [ ] Allow Traversals for extraction of arbitrary info.
 - [ ] Brick TUI with:
@@ -192,7 +199,5 @@ of the refactorio project root).
 - [ ] Better Themes
 - [ ] Better Banner Image
 - [ ] Approach Factorio people about permission to use a (better version of) the logo
-- [X] I think I could eliminate the `LensOperator` and always be able to auto
-      detect the operator to use by type correctly ...right? (replace by EXPR)
 - [ ] `fileplate` to let you treat multiple files as a single unit and do
       `biplate` type stuff to them as a whole?
