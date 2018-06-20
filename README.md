@@ -146,28 +146,39 @@ of the refactorio project root).
 
 ## TODOs
 
-- [ ] More Examples
-  - [ ] Using preview to construct new elements
-- [ ] Fully restore haskell-src-exts functionality.
+- [ ] Document qualified imports / use/selection of preludes
+- [ ] Document perils of roundtripping re-formatting your data
+- [ ] Examples
+  - [ ] Replace strictify/etc with documentation/examples of appropriate existing lenses
+  - [ ] Automate screenshots
+  - [ ] Formulate everthing in terms of appropriate starting Prisms
+  - [ ] Embiggen/embetter existing examples to make it more clear whats going on
+  - [ ] More
+    - [ ] Using preview to construct new elements
+    - [ ] stdin
 - [ ] Special mode pre/post adapter fns
-- [ ] Pandoc lens support for:
-  - [ ] Docx
-  - [ ] Markdown
-  - [ ] others
-- [ ] Sort out issue with `Control.Lens` not being available in installed executable
-- [ ] Line Numbers
-- [ ] Context lines
-- [ ] More granular patch acceptance/rejectance
-- [ ] Eliminate unnecessary serialization round trips
-  - [ ] eg when processing YAML via JSON
-  - [ ] don't changes files when all that changed was formatting.
+- [ ] Multiple targets
+  - [ ] Bail if multiple targets with stdin
 - [ ] Bail if modes are provided with stdin ('-') processing
 - [ ] Seek guidance from the pros on
   - [ ] CT/lenses
   - [ ] Cool lens tricks that might be applicable
+- [ ] Fully restore `haskell-src-exts` functionality.
+- [ ] Pandoc lens support for:
+  - [ ] Docx
+  - [ ] Markdown
+  - [ ] others
+- [ ] Line Numbers
+- [ ] Context lines
+- [ ] Sort out issue with `Control.Lens` not being available in installed executable
+- [ ] Eliminate unnecessary serialization round trips
+  - [ ] eg when processing YAML via JSON
+  - [ ] don't changes files when all that changed was formatting.
+- [ ] Figure out which existing haskell function `concatStreams` can be reduced to.
+- [ ] 1.0 release somewhere around here
+- [ ] More granular patch acceptance/rejectance
 - [ ] Use mueval so that shared lenses can be used safely.
 - [ ] Emacs integration
-- [ ] Figure out which existing haskell function `concatStreams` can be reduced to.
 - [ ] Can we cache generated lenses somehow?
 - [ ] Allow Traversals for extraction of arbitrary info.
 - [ ] Brick TUI with:
