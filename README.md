@@ -146,32 +146,25 @@ of the refactorio project root).
 
 ## TODOs
 
-- [X] Finish custom prelude implementation
+- [ ] More Examples
+  - [ ] Using preview to construct new elements
 - [ ] Fully restore haskell-src-exts functionality.
 - [ ] Special mode pre/post adapter fns
 - [ ] Pandoc lens support for:
   - [ ] Docx
   - [ ] Markdown
   - [ ] others
-- [X] Replace examples with open source examples
-- [X] Display error messages (at least somewhat) nicely
 - [ ] Sort out issue with `Control.Lens` not being available in installed executable
 - [ ] Line Numbers
 - [ ] Context lines
 - [ ] More granular patch acceptance/rejectance
-- [X] Loading of additional modules (via Prelude)
-- [X] Refactor CLI into `ref view`, `ref fmap` and `ref set`
-- [X] Suppress printing of filename when there are no matches (tardis?)
-- [X] `-f/fmap`
 - [ ] Eliminate unnecessary serialization round trips
   - [ ] eg when processing YAML via JSON
   - [ ] don't changes files when all that changed was formatting.
-- [X] Handle '-' as filename for stdin->stdout
 - [ ] Bail if modes are provided with stdin ('-') processing
 - [ ] Seek guidance from the pros on
   - [ ] CT/lenses
   - [ ] Cool lens tricks that might be applicable
-- [X] Allow storing of lenses in `~/.refactorio`  (replaced by custom prelude)
 - [ ] Use mueval so that shared lenses can be used safely.
 - [ ] Emacs integration
 - [ ] Figure out which existing haskell function `concatStreams` can be reduced to.
@@ -187,7 +180,5 @@ of the refactorio project root).
 - [ ] Better Themes
 - [ ] Better Banner Image
 - [ ] Approach Factorio people about permission to use a (better version of) the logo
-- [X] I think I could eliminate the `LensOperator` and always be able to auto
-      detect the operator to use by type correctly ...right? (replace by EXPR)
 - [ ] `fileplate` to let you treat multiple files as a single unit and do
       `biplate` type stuff to them as a whole?
