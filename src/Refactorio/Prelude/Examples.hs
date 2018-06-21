@@ -78,12 +78,13 @@ unsafeMakeScreenshot exData = unsafePerformIO $ getWindowId >>= \case
     RP.putLn $ "Example: " <> show (exData ^. exampleName)
     RP.putLn $ "% " <> fullCmd
     void . system . RP.unpack $ fullCmd
+    RP.sleep 0.5
     makeScreenshot winId exData
     RP.sleep 0.5
     return $ exData & version +~ 1
   where
     fullCmd = replaceTarget target $ exData ^. cmd
-    target = "/tmp/voltron"  -- TODO
+    target = "examples"  -- TODO
 
 replaceTarget :: Text -> Text -> Text
 replaceTarget target = T.intercalate target . splitOn "$TARGET"
@@ -94,8 +95,8 @@ clearScreen = void $ system "clear"
 makeScreenshot :: Int -> ExampleData -> IO ()
 makeScreenshot winId exData = void $ readProcess "screencapture" args ""
   where
-    args     = ["-l", show winId, RP.unpack filename]
-    filename = "/tmp/deleteme/" <> exData ^. exampleName <> ".png"
+    args     = ["-t", "jpg", "-l", show winId, "-f", RP.unpack filename]
+    filename = "examples/" <> exData ^. exampleName <> ".jpg"
 
 getWindowId :: IO (Maybe Int)
 getWindowId = readMay <$> readProcess "osascript" args ""

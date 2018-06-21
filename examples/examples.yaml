@@ -1,5 +1,5 @@
 settings:
-  target: /tmp/voltron
+  target: ../example-data
 examples:
 - pre: "Current help output at screenshot generation time"
   name: "help"
@@ -30,25 +30,24 @@ examples:
   name: zlib
   version: 0
   cmd: "cat $TARGET/src/b.json.gz | stack exec refactorio -- -t - --json '& lazy . from Z.gzipped . from lazy . key \"baz\" . _Number *~ 85' | gzcat -"
-  cmd: "gzcat $TARGET/src/b.json.gz ; gzcat $TARGET/src/b.json.gz | stack exec refactorio -- --json -t - '& lazy . from Z.gzipped . from lazy . key \"baz\" . _Nunber *~ 85' | gzcat -"
-- name: hs-ints
-  version: 0
-  cmd: "stack exec refactorio -- -t $TARGET --search --haskell _Module.biplate._Int"
-- name: hs-modname
-  version: 0
-  cmd: "stack exec refactorio -- -t $TARGET --search --haskell _Module.biplate._ModuleName.end"
-- name: hs-string
-  version: 0
-  cmd: "stack exec refactorio -- --haskell --search _Module.biplate._String.end"
-- name: hs-fieldupdate
-  version: 0
-  cmd: "stack exec refactorio -- --haskell --search _Module.biplate._FieldUpdate.end"
-- name: hs-frac
-  version: 0
-  cmd: "stack exec refactorio -- --haskell --search _Module.biplate._Frac.end"
-- name: hs-odd-ints
-  version: 0
-  cmd: "stack exec refactorio -- --haskell --search '_Module.biplate._Int.filtered(odd.view target).end'"
-- name: hs-ints-gt-10
-  version: 0
-  cmd: "stack exec refactorio -- --haskell --search '_Module.biplate._Int.filtered((>10).view target).end'"
+# - name: hs-ints
+#   version: 0
+#   cmd: "stack exec refactorio -- -t $TARGET --search --haskell _Module.biplate._Int"
+# - name: hs-modname
+#   version: 0
+#   cmd: "stack exec refactorio -- -t $TARGET --search --haskell _Module.biplate._ModuleName.end"
+# - name: hs-string
+#   version: 0
+#   cmd: "stack exec refactorio -- --haskell --search _Module.biplate._String.end"
+# - name: hs-fieldupdate
+#   version: 0
+#   cmd: "stack exec refactorio -- --haskell --search _Module.biplate._FieldUpdate.end"
+# - name: hs-frac
+#   version: 0
+#   cmd: "stack exec refactorio -- --haskell --search _Module.biplate._Frac.end"
+# - name: hs-odd-ints
+#   version: 0
+#   cmd: "stack exec refactorio -- --haskell --search '_Module.biplate._Int.filtered(odd.view target).end'"
+# - name: hs-ints-gt-10
+#   version: 0
+#   cmd: "stack exec refactorio -- --haskell --search '_Module.biplate._Int.filtered((>10).view target).end'"
