@@ -110,6 +110,18 @@ Reach inside eg. gzipped files and do what you gotta do:
 
 (Not sure what's up with that "trailing garbage.")
 
+### Type Conversions
+
+The beginnings of `convert` and `convertTo` exist which can be used like so:
+
+When types can be infered:
+
+    % refio --html -t /tmp/voltron/src '& convert %~ Text.toUpper'
+
+When types have to be clarified:
+
+    % refio --html -t /tmp/voltron/src '& convertTo(a::LByteString).xml...name %~ Text.toUpper'
+
 ### Haskell (via [haskell-src-exts](https://hackage.haskell.org/package/haskell-src-exts) and [haskell-src-exts-prisms](https://hackage.haskell.org/package/haskell-src-exts-prisms)):
 
 TODO: revamp after re-wiring

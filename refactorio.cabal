@@ -22,6 +22,7 @@ library
                      , Refactorio.Main
                      , Refactorio.Prelude
                      , Refactorio.Prelude.Basic
+                     , Refactorio.Prelude.Basic.Extra
                      , Refactorio.Prelude.Examples
                      , Refactorio.Prelude.Haskell
                      , Refactorio.Prelude.Html
