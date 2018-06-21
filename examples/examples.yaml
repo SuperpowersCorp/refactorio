@@ -12,7 +12,7 @@ examples:
 - pre: "Multiply the value of the key 'baz' by 10."
   name: yaml
   version: 0
-  cmd: "stack exec refactorio -- -t $TARGET -p --yaml '& H.yaml . key \"baz\" . _Number +~ 2112'"
+  cmd: "stack exec refactorio -- -t $TARGET/src/a.yaml -p --yaml '& H.yaml . key \"baz\" . _Number +~ 2112'"
 - pre: "HTML example coming soon."
   name: html
   version: 0
