@@ -14,8 +14,6 @@ import           Refactorio.SpecialMode
 import           Refactorio.Types
 import           X.Rainbow
 
--- CURRENT TARGET: refio --haskell '& __Module.biplate._Int +~ 32'
-
 main :: IO ()
 main = void $ customExecParser prefs opts >>= process . wrapSrc
   where
@@ -102,14 +100,14 @@ updateModeParser =
                            )
   -- <|> ReplaceMode <$ switch ( long  "replace"
   --                          <> short 'r'
-  --                          <> help  "Activate power replace mode (Haskell mode only currently)"
+  --                          <> help  "Activate alternate replace mode (Haskell mode only currently)"
   --                           )
   <|> ReviewMode <$ switch ( long  "review"
                           <> help  "Make the changes and show details of changes"
                            )
   <|> SearchMode <$ switch ( long  "search"
                           <> short 's'
-                          <> help  "Activate power search mode (Haskell mode only right now)"
+                          <> help  "Activate alternate search mode (Haskell mode only right now)"
                            )
   <|> pure AskMode
 

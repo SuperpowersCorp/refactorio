@@ -7,34 +7,32 @@
 
 module Refactorio.Engine ( process ) where
 
-import           Refactorio.Prelude             as P     hiding ( (<>) )
+import           Refactorio.Prelude             as P      hiding ( (<>) )
 import qualified Streaming.Prelude              as S
 
 import           Data.Algorithm.DiffContext
 import qualified Data.ByteString                as BS
 import qualified Data.ByteString.Char8          as C8
 import qualified Data.Set                       as Set
-import           Data.Text                                      ( lines
-                                                                , pack
-                                                                , toLower
-                                                                )
+import           Data.Text                                       ( lines
+                                                                 , pack
+                                                                 , toLower
+                                                                 )
 import           Refactorio.FilenameFilter
-import qualified Refactorio.Power               as Power
+import qualified Refactorio.Legacy              as Legacy
 import           Refactorio.SpecialMode
 import           Refactorio.Types
-import           System.IO                                      ( hFlush
-                                                                , stdout
-                                                                )
+import           System.IO                                       ( hFlush
+                                                                 , stdout
+                                                                 )
 import           System.Posix.Files
-import           Text.PrettyPrint               as PP    hiding ( (<>) )
-import           X.Language.Haskell.Interpreter                 ( GhcError( errMsg )
-                                                                , InterpreterError(..)
-                                                                , build
-                                                                )
+import           Text.PrettyPrint               as PP     hiding ( (<>) )
+import           X.Language.Haskell.Interpreter                  ( GhcError( errMsg )
+                                                                 , InterpreterError(..)
+                                                                 , build
+                                                                 )
 import           X.Rainbow
-import           X.Streaming.Files                              ( tree )
-
--- CURRENT TARGET: refio --haskell '& __Module.biplate._Int +~ 32'
+import           X.Streaming.Files                               ( tree )
 
 process :: Config -> IO ()
 process config@Config{..} = do
@@ -59,8 +57,8 @@ process config@Config{..} = do
   hFlush stdout
   -- ================================================================ --
   case updateMode of
-      -- ReplaceMode _mapFnSrc -> Power.replace config _mapFnSrc
-      SearchMode            -> Power.search config
+      -- ReplaceMode _mapFnSrc -> Legacy.replace config _mapFnSrc
+      SearchMode            -> Legacy.search config
       _                     -> build preferedPreludes (unExpression expr)
                                  >>= either (reportError expr) treeOrStdin
   where

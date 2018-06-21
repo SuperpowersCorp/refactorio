@@ -20,7 +20,7 @@ library
                      , Refactorio.FilenameFilter
                      , Refactorio.Helpers
                      , Refactorio.Main
-                     , Refactorio.Power
+                     , Refactorio.Legacy
                      , Refactorio.Prelude
                      , Refactorio.Prelude.Basic
                      , Refactorio.Prelude.Basic.Extra

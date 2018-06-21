@@ -3,33 +3,32 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards   #-}
 
-module Refactorio.Power where
+module Refactorio.Legacy where
 
-import           Refactorio.Prelude        as P   hiding ( (<>) )
-import qualified Streaming.Prelude         as S
+import           Refactorio.Prelude             as P   hiding ( (<>) )
+import qualified Streaming.Prelude              as S
 
-import qualified Data.List                 as L
-import qualified Data.Set                  as Set
-import qualified Data.Text                 as T
+import qualified Data.List                      as L
+import qualified Data.Set                       as Set
+import qualified Data.Text                      as T
 import           Language.Haskell.Exts
 import           Language.Haskell.Interpreter
 import           Refactorio.FilenameFilter
 import           Refactorio.Theme
 import           Refactorio.Types
 import           System.Posix.Files
+import           X.Language.Haskell.Exts.Prisms               ( ourParseMode )
+import           X.Language.Haskell.Interpreter               ( build )
 import           X.Rainbow
-import           X.Streaming.Files                       ( FileInfo
-                                                         , tree
-                                                         )
-import X.Language.Haskell.Exts.Prisms ( ourParseMode )
-import X.Language.Haskell.Interpreter (build)
--- CURRENT TARGET: refio --haskell '& __Module.biplate._Int +~ 32'
+import           X.Streaming.Files                            ( FileInfo
+                                                              , tree
+                                                              )
 
 replace :: Config -> Text -> IO ()
-replace Config{..} _mapFnSrc = panic "powerReplace not implemented yet"
+replace Config{..} _mapFnSrc = panic "legacyReplace not implemented yet"
 
 search :: Config -> IO ()
-search config@Config{..} = S.mapM_ ( powerSearchWith config f )
+search config@Config{..} = S.mapM_ ( legacySearchWith config f )
   . S.filter ( matchesAny compiledFilters )
   . S.filter ( not . ignored )
   . S.map fst
@@ -38,7 +37,7 @@ search config@Config{..} = S.mapM_ ( powerSearchWith config f )
   . unTarget
   $ target
   where
-    f               = panic "powerSearch f undefined"
+    f               = panic "legacySearch f undefined"
     allFilters      = expandExtraFilters specialModeMay filenameFilters
     compiledFilters = map compileFilter . Set.toList $ allFilters
 
@@ -53,11 +52,11 @@ ignored path = ocd
   where
     ocd = False
 
-powerSearchWith :: Config
+legacySearchWith :: Config
                 -> ATraversal' (Module SrcSpanInfo) SrcSpanInfo
                 -> FilePath
                 -> IO ()
-powerSearchWith config@Config{..} _trav _path = do
+legacySearchWith config@Config{..} _trav _path = do
   putChunksLn
     [ chunk within & withinHdr theme
     , chunk (T.pack . unTarget $ target) & withinValue theme
