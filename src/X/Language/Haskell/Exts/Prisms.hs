@@ -1,19 +1,18 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RankNTypes        #-}
-{-# LANGUAGE TupleSections     #-}
 
 module X.Language.Haskell.Exts.Prisms where
 
-import           Refactorio.Prelude               hiding ( Alt )
+import           Refactorio.Prelude                              hiding ( Alt )
 
-import           Control.Lens                            ( Prism'
-                                                         , Iso'
-                                                         , prism
-                                                         )
-import           Data.ByteString.Char8        as Char8
+import           Control.Lens                                           ( Iso'
+                                                                        , Prism'
+                                                                        , prism
+                                                                        )
+import           Data.ByteString.Char8                as Char8
 import           Language.Haskell.Exts
-import qualified Language.Haskell.Exts.Prisms as X
+import qualified Language.Haskell.Exts.Prisms         as X
 import           X.Language.Haskell.Exts.Prisms.Types as Exports
 
 -- TODO: Surely there's a way to avoid the 'ambiguous l' problem without
@@ -25,33 +24,33 @@ _Hask = prism get_ set_
     get_ = Char8.pack . uncurry exactPrint
 
     set_ :: ByteString -> Either ByteString (Module SrcSpanInfo, [Comment])
-    set_ bs = case parseWithComments parseMode . Char8.unpack $ bs of
+    set_ bs = case parseWithComments ourParseMode . Char8.unpack $ bs of
                 ParseOk modWithComments -> Right modWithComments
                 ParseFailed srcLoc' msg -> panic . show $ (msg,srcLoc',bs)
                 -- ParseFailed _ _         -> Left bs
 
     -- TODO: unhardcode
-    parseMode :: ParseMode
-    parseMode = defaultParseMode
-      { baseLanguage          = Haskell2010
-      , ignoreLanguagePragmas = False
-      , extensions            = configuredExtensions
-      , parseFilename         = path
-      }
-      where
-        configuredExtensions = extensions defaultParseMode ++ tempManualExtensions
-        tempManualExtensions = fmap EnableExtension
-          [ FlexibleContexts
-          , FlexibleInstances
-          , InstanceSigs
-          , MultiParamTypeClasses
-          , OverloadedStrings
-          , RankNTypes
-          , ScopedTypeVariables
-          , TemplateHaskell
-          , ViewPatterns
-          ]
-        path = "REFACTORIO*BUFFER"
+ourParseMode :: ParseMode
+ourParseMode = defaultParseMode
+  { baseLanguage          = Haskell2010
+  , ignoreLanguagePragmas = False
+  , extensions            = configuredExtensions
+  , parseFilename         = path
+  }
+  where
+    configuredExtensions = extensions defaultParseMode ++ tempManualExtensions
+    tempManualExtensions = fmap EnableExtension
+      [ FlexibleContexts
+      , FlexibleInstances
+      , InstanceSigs
+      , MultiParamTypeClasses
+      , OverloadedStrings
+      , RankNTypes
+      , ScopedTypeVariables
+      , TemplateHaskell
+      , ViewPatterns
+      ]
+    path = "REFACTORIO*BUFFER"
 
 _ParenFormula :: Prism'
                  (BooleanFormula SrcSpanInfo)

@@ -38,6 +38,10 @@ import           X.Streaming.Files                              ( tree )
 
 process :: Config -> IO ()
 process config@Config{..} = do
+  case updateMode of
+      -- ReplaceMode _ -> putLn "Legacy Replace Mode Activated."
+      SearchMode    -> putLn "Legacy Search Mode Activated."
+      _             -> return ()
   case specialModeMay of
     Nothing   -> return ()
     Just mode -> putLnMay $ "Special processing activated: " <> show mode
@@ -55,7 +59,7 @@ process config@Config{..} = do
   hFlush stdout
   -- ================================================================ --
   case updateMode of
-      ReplaceMode _mapFnSrc -> Power.replace config _mapFnSrc
+      -- ReplaceMode _mapFnSrc -> Power.replace config _mapFnSrc
       SearchMode            -> Power.search config
       _                     -> build preferedPreludes (unExpression expr)
                                  >>= either (reportError expr) treeOrStdin
@@ -164,7 +168,7 @@ processWith updateMode f path = do
           putLn $ "Changed: " <> show path
         PreviewMode ->
           showChanges "Preview" doc
-        ReplaceMode _ -> panic "we should've been stopped before we got here!"
+        -- ReplaceMode _ -> panic "we should've been stopped before we got here!"
         ReviewMode -> do
           saveChanges afterBytes
           showChanges "Review" doc

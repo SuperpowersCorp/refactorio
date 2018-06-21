@@ -25,7 +25,7 @@ data UpdateMode
   = AskMode
   | ModifyMode
   | PreviewMode
-  | ReplaceMode Text
+  -- | ReplaceMode Text
   | ReviewMode
   | SearchMode
   deriving (Data, Eq, Ord, Read, Show)

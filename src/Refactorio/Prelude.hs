@@ -14,10 +14,15 @@ module Refactorio.Prelude
 import           Control.Arrow  as Exports ( (&&&) )
 import           Control.Lens   as Exports ( (%~)
                                            , (.~)
+                                           , (^.)
                                            , ATraversal'
+                                           , Lens'
+                                           , cloneTraversal
                                            , each
+                                           , lens
                                            , makeClassy
                                            , partsOf
+                                           , toListOf
                                            , view
                                            )
 import           Data.Data      as Exports ( Data )

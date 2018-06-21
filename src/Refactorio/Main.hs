@@ -100,14 +100,14 @@ updateModeParser =
                           <> short 'm'
                           <> help  "Make the changes and summarize changed filenames"
                            )
-  <|> ReviewMode <$ switch ( long  "replace"
-                          <> short 'r'
-                          <> help  "Activate power replace mode (Haskell mode only currently)"
-                           )
+  -- <|> ReplaceMode <$ switch ( long  "replace"
+  --                          <> short 'r'
+  --                          <> help  "Activate power replace mode (Haskell mode only currently)"
+  --                           )
   <|> ReviewMode <$ switch ( long  "review"
                           <> help  "Make the changes and show details of changes"
                            )
-  <|> ReviewMode <$ switch ( long  "search"
+  <|> SearchMode <$ switch ( long  "search"
                           <> short 's'
                           <> help  "Activate power search mode (Haskell mode only right now)"
                            )
