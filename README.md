@@ -222,6 +222,7 @@ special mode is provided, `Refactorio.Prelude.Basic` is used.
 ## TODOs
 
 - [ ] Allow parenthesizing '& ...' expressions
+- [ ] Vary extension list based on pragmas
 - [ ] Examples
   - [ ] Replace strictify/etc with documentation/examples of appropriate existing lenses
   - [ ] Automate screenshots

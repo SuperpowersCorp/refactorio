@@ -5,6 +5,7 @@ module Refactorio.SpecialMode where
 
 import Refactorio.Prelude
 
+
 data SpecialMode
   = Haskell
   | Html

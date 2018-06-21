@@ -33,6 +33,8 @@ library
                      , Refactorio.Theme
                      , Refactorio.Types
                      , X.Language.Haskell.Exts
+                     , X.Language.Haskell.Exts.Prisms
+                     , X.Language.Haskell.Exts.Prisms.Types
                      , X.Language.Haskell.Interpreter
                      , X.Rainbow
                      , X.Streaming.Files

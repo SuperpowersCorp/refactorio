@@ -11,21 +11,21 @@ module Refactorio.FilenameFilter
      , matchesAnyString -- For dev
      ) where
 
-import Refactorio.Prelude   hiding ( empty
-                                   , null
-                                   )
+import Refactorio.Prelude     hiding ( empty
+                                     , null
+                                     )
 
-import Data.Data                   ( Data )
-import Data.List                   ( null )
-import Data.Set                    ( empty
-                                   , fromList
-                                   )
-import Data.Text                   ( pack )
-import System.FilePath.Glob        ( Pattern
-                                   , compile
-                                   , match
-                                   )
+import Data.Data                     ( Data )
+import Data.List                     ( null )
+import Data.Set                      ( empty
+                                     , fromList
+                                     )
+import Data.Text                     ( pack )
 import Refactorio.SpecialMode
+import System.FilePath.Glob          ( Pattern
+                                     , compile
+                                     , match
+                                     )
 
 newtype FilenameFilter = FilenameFilter { unFilenameFilter :: Text }
   deriving (Data, Eq, Ord, Read, Show, Typeable)
@@ -60,4 +60,3 @@ matchesAny filters path
 
 matchesAnyString :: [String] -> FilePath -> Bool
 matchesAnyString = matchesAny . map (compileFilter . FilenameFilter . pack)
-

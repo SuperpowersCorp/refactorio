@@ -4,16 +4,16 @@
 
 module Refactorio.Power where
 
-import           Refactorio.Prelude             as P   hiding ( (<>) )
-import qualified Streaming.Prelude              as S
+import           Refactorio.Prelude        as P   hiding ( (<>) )
+import qualified Streaming.Prelude         as S
 
+import qualified Data.Set                  as Set
 import           Language.Haskell.Exts
-import qualified Data.Set                       as Set
--- import qualified Data.Text                      as Text
 import           Refactorio.FilenameFilter
 import           Refactorio.Types
 import           System.Posix.Files
-import           X.Streaming.Files                            ( tree )
+import           X.Streaming.Files                       ( tree )
+
 -- import           X.Rainbow
 
 -- CURRENT TARGET: refio --haskell '& __Module.biplate._Int +~ 32'

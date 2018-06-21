@@ -1,9 +1,9 @@
 {-# LANGUAGE FlexibleInstances     #-}
-{-# LANGUAGE TypeSynonymInstances  #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE NoImplicitPrelude     #-}
 {-# LANGUAGE OverloadedStrings     #-}
 {-# LANGUAGE RankNTypes            #-}
+{-# LANGUAGE TypeSynonymInstances  #-}
 
 module Refactorio.Prelude.Basic.Extra
      ( Convert(..)
@@ -12,16 +12,15 @@ module Refactorio.Prelude.Basic.Extra
      , convertTo
      ) where
 
-import Protolude hiding (from)
-
 import Control.Lens         as L
-import Data.Text            as T
-import Data.Text.Lazy       as LT
 import Data.ByteString      as BS
 import Data.ByteString.Lazy as LBS
-import Data.Text.Encoding   as TE
-import Data.Text.Lens       as TL
 import Data.String          as S
+import Data.Text            as T
+import Data.Text.Encoding   as TE
+import Data.Text.Lazy       as LT
+import Data.Text.Lens       as TL
+import Protolude                   hiding ( from )
 
 class Convert a b where
   convert :: Iso' a b

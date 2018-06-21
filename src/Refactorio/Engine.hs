@@ -7,32 +7,32 @@
 
 module Refactorio.Engine ( process ) where
 
-import           Refactorio.Prelude             as P   hiding ( (<>) )
+import           Refactorio.Prelude             as P     hiding ( (<>) )
 import qualified Streaming.Prelude              as S
 
-import qualified Refactorio.Power               as Power
 import           Data.Algorithm.DiffContext
 import qualified Data.ByteString                as BS
 import qualified Data.ByteString.Char8          as C8
 import qualified Data.Set                       as Set
-import           Data.Text                                    ( lines
-                                                              , pack
-                                                              , toLower
-                                                              )
+import           Data.Text                                      ( lines
+                                                                , pack
+                                                                , toLower
+                                                                )
 import           Refactorio.FilenameFilter
+import qualified Refactorio.Power               as Power
 import           Refactorio.SpecialMode
 import           Refactorio.Types
-import           System.IO                                    ( hFlush
-                                                              , stdout
-                                                              )
+import           System.IO                                      ( hFlush
+                                                                , stdout
+                                                                )
 import           System.Posix.Files
-import           Text.PrettyPrint               as PP  hiding ( (<>) )
-import           X.Language.Haskell.Interpreter               ( InterpreterError(..)
-                                                              , GhcError( errMsg )
-                                                              , build
-                                                              )
+import           Text.PrettyPrint               as PP    hiding ( (<>) )
+import           X.Language.Haskell.Interpreter                 ( GhcError( errMsg )
+                                                                , InterpreterError(..)
+                                                                , build
+                                                                )
 import           X.Rainbow
-import           X.Streaming.Files                            ( tree )
+import           X.Streaming.Files                              ( tree )
 
 -- CURRENT TARGET: refio --haskell '& __Module.biplate._Int +~ 32'
 
@@ -145,6 +145,7 @@ processWith updateMode f path = do
     else handleChange (beforeBytes, afterBytes)
   where
     handleChange (beforeBytes, afterBytes) = do
+      putLn $ "DELETE ME: CHANGING: " <> pack path
       let beforeLines = C8.lines beforeBytes
           afterLines  = C8.lines afterBytes
           diff'       = getContextDiff ctxLines beforeLines afterLines
