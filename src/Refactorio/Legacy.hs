@@ -53,9 +53,9 @@ ignored path = ocd
     ocd = False
 
 legacySearchWith :: Config
-                -> ATraversal' (Module SrcSpanInfo) SrcSpanInfo
-                -> FilePath
-                -> IO ()
+                 -> ATraversal' (Module SrcSpanInfo) SrcSpanInfo
+                 -> FilePath
+                 -> IO ()
 legacySearchWith config@Config{..} _trav _path = do
   putChunksLn
     [ chunk within & withinHdr theme
@@ -67,21 +67,11 @@ legacySearchWith config@Config{..} _trav _path = do
     ]
   nl
   searchByLens config
-  results
    where
-     within = "Searching within: "
-     -- within    = case mapFnSrc of
-     --   "" -> "Searching within: "
-     --   _  -> "Previewing replacement within: "
+     within    = "Searching within: "
      query     = justify "  for matches to: "
      justify s = T.replicate (T.length within - T.length s) " " <> s
-     results   = panic "results not impl yet!"
-     -- results   = case mapFnSrc of
-     --   ""  -> Search.byLens config
-     --   src -> case compileMapFn src of
-     --     Left err -> Replace.displayError err
-     --     Right f  -> Replace.withLens config f
-     theme = defaultTheme
+     theme     = defaultTheme
 
 searchByLens :: Config -> IO ()
 searchByLens Config {..} = makeLens (unExpression expr) >>= \case
@@ -98,7 +88,6 @@ searchByLens Config {..} = makeLens (unExpression expr) >>= \case
 
       reportFile :: FileInfo -> IO ()
       reportFile (p, _) = putChunkLn (chunk (T.pack p) & filename theme)
-
       theme = defaultTheme
 
 makeLens :: Text -> IO (Either InterpreterError
