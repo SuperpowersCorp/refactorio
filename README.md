@@ -43,7 +43,26 @@ Refactorio - Optical Refactoring Tool
 In all modes Refactorio traverses one or more files executing a `ByteString
 -> ByteString` function on them.  For a given file if the function does not
 change the input then no output is logged for that file.  If the function does
-change the file then what happens next is dependent on the mode:
+change the file then what happens next is dependent on the mode.
+
+Any `ByteString -> ByteString` function definition will work, for example:
+
+    BS.reverse
+
+    BS.take 1024
+
+    over convert Text.toUpper
+
+There is a shortcut for using `&` style lens application in point-free style.
+The last `over` example can be written as:
+
+    & convert %~ Text.toUpper
+
+which allows the use of the wider range of operators, eg.
+
+    & key "foo" . _Number *~ 3
+    & key "foo" . _Number +~ 10
+    etc
 
 ### Ask Mode (-a / --ask)
 
