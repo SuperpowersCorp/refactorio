@@ -86,6 +86,14 @@ show the full set of changes as they are made.
 This is basically a `--quiet` style mode that makes all changes without
 confirmation and just reports which files changed with no further details.
 
+### Search Mode (-s / --search)
+
+This is a special mode which currently only works with
+`haskell-src-exts(-prisms)` which provide `SrcSpanInfo`s which represent the
+portion of the source code that a given feature occupies.  This mode can be
+easily made to work with any other lenses that can provide access to similar
+information and we are exploring ways to broaden it's usefulness further.
+
 ## Examples
 
 Here are a few examples to whet your appetite.  For more see [examples](examples/).
@@ -214,6 +222,7 @@ special mode is provided, `Refactorio.Prelude.Basic` is used.
 ## TODOs
 
 - [ ] Allow parenthesizing '& ...' expressions
+- [ ] Vary extension list based on pragmas
 - [ ] Examples
   - [ ] Replace strictify/etc with documentation/examples of appropriate existing lenses
   - [ ] Automate screenshots

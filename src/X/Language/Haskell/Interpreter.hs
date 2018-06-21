@@ -32,6 +32,7 @@ build possiblePreludes src = runInterpreter $ do
     [ ("Codec.Compression.Zlib.Lens" , Just "Z")
     , ("Control.Lens"                , Just "L")
     , ("Data.Char"                   , Just "Char")
+    , ("Data.String"                 , Just "S")
     , ("Data.String"                 , Just "String")
     , ("Data.List.Lens"              , Just "L")
     , ("Data.List.Lens"              , Just "ListL")

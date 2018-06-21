@@ -7,35 +7,39 @@
 
 module Refactorio.Engine ( process ) where
 
-import           Refactorio.Prelude             as P   hiding ( (<>) )
+import           Refactorio.Prelude             as P      hiding ( (<>) )
 import qualified Streaming.Prelude              as S
 
 import           Data.Algorithm.DiffContext
 import qualified Data.ByteString                as BS
 import qualified Data.ByteString.Char8          as C8
 import qualified Data.Set                       as Set
-import           Data.Text                                    ( lines
-                                                              , pack
-                                                              , toLower
-                                                              )
+import           Data.Text                                       ( lines
+                                                                 , pack
+                                                                 , toLower
+                                                                 )
 import           Refactorio.FilenameFilter
+import qualified Refactorio.Legacy              as Legacy
+import           Refactorio.SpecialMode
 import           Refactorio.Types
-import           System.IO                                    ( hFlush
-                                                              , stdout
-                                                              )
+import           System.IO                                       ( hFlush
+                                                                 , stdout
+                                                                 )
 import           System.Posix.Files
-import           Text.PrettyPrint               as PP  hiding ( (<>) )
-import           X.Language.Haskell.Interpreter               ( GhcError( errMsg )
-                                                              , InterpreterError(..)
-                                                              , build
-                                                              )
+import           Text.PrettyPrint               as PP     hiding ( (<>) )
+import           X.Language.Haskell.Interpreter                  ( GhcError( errMsg )
+                                                                 , InterpreterError(..)
+                                                                 , build
+                                                                 )
 import           X.Rainbow
-import           X.Streaming.Files                            ( tree )
-
--- CURRENT TARGET: refio --haskell '& __Module.biplate._Int +~ 32'
+import           X.Streaming.Files                               ( tree )
 
 process :: Config -> IO ()
-process Config{..} = do
+process config@Config{..} = do
+  case updateMode of
+      -- ReplaceMode _ -> putLn "Legacy Replace Mode Activated."
+      SearchMode    -> putLn "Legacy Search Mode Activated."
+      _             -> return ()
   case specialModeMay of
     Nothing   -> return ()
     Just mode -> putLnMay $ "Special processing activated: " <> show mode
@@ -52,12 +56,17 @@ process Config{..} = do
   putLnMay $ "Expression: " <> unExpression expr
   hFlush stdout
   -- ================================================================ --
-  build preferedPreludes (unExpression expr) >>= either (reportError expr) treeOrStdin
+  case updateMode of
+      -- ReplaceMode _mapFnSrc -> Legacy.replace config _mapFnSrc
+      SearchMode            -> Legacy.search config
+      _                     -> build preferedPreludes (unExpression expr)
+                                 >>= either (reportError expr) treeOrStdin
   where
     putLnMay s
       | target == Target "-" = return ()
       | otherwise = putLn s
 
+    treeOrStdin :: (ByteString -> ByteString) -> IO ()
     treeOrStdin f = case target of
       Target "-" -> processStdin f
       other      -> processTree other
@@ -72,14 +81,9 @@ process Config{..} = do
 
     defaultPrelude = Just "Refactorio.Prelude.Basic"
 
-    allFilters = expandExtraFilters filenameFilters
+    allFilters = expandExtraFilters specialModeMay filenameFilters
 
     compiledFilters = map compileFilter . Set.toList $ allFilters
-
-    expandExtraFilters :: Set FilenameFilter -> Set FilenameFilter
-    expandExtraFilters existing
-      | not . null $ existing = existing
-      | otherwise = maybe Set.empty filtersForSpecialMode specialModeMay
 
 reportError :: Expression -> InterpreterError -> IO ()
 reportError expr e = do
@@ -102,19 +106,6 @@ reportError expr e = do
 
 customPrelude :: SpecialMode -> Maybe FilePath
 customPrelude m = Just $ "Refactorio.Prelude." <> show m
-
-filtersForSpecialMode :: SpecialMode -> Set FilenameFilter
-filtersForSpecialMode m = Set.fromList . map FilenameFilter $ case m of
-  Examples -> [ "**/*.yaml"
-              , "**/*.yml"
-              ]
-  Haskell  -> [ "**/*.hs" ]
-  Html     -> [ "**/*.html", "**/*.xhtml", "**/*.htm" ]
-  Json     -> [ "**/*.json" ]
-  Xml      -> [ "**/*.xml" ]
-  Yaml     -> [ "**/*.yaml"
-              , "**/*.yml"
-              ]
 
 -- TODO: read .*ignore files from the target dir down to the current file, caching
 --       along the way, etc. but for now...
@@ -156,6 +147,7 @@ processWith updateMode f path = do
     else handleChange (beforeBytes, afterBytes)
   where
     handleChange (beforeBytes, afterBytes) = do
+      putLn $ "DELETE ME: CHANGING: " <> pack path
       let beforeLines = C8.lines beforeBytes
           afterLines  = C8.lines afterBytes
           diff'       = getContextDiff ctxLines beforeLines afterLines
@@ -169,15 +161,16 @@ processWith updateMode f path = do
             QuitChanges  -> do
               putLn "Exiting at user's request."
               exitSuccess
-        ReviewMode -> do
-          saveChanges afterBytes
-          showChanges "Review" doc
         ModifyMode -> do
           saveChanges afterBytes
           putLn $ "Changed: " <> show path
         PreviewMode ->
           showChanges "Preview" doc
-
+        -- ReplaceMode _ -> panic "we should've been stopped before we got here!"
+        ReviewMode -> do
+          saveChanges afterBytes
+          showChanges "Review" doc
+        SearchMode -> panic "we should've been stopped before we got here!"
     showChanges :: Text -> Doc -> IO ()
     showChanges label doc = do
       nl
@@ -215,3 +208,30 @@ processWith updateMode f path = do
           | s `startsWith` "-" = putChunkLn $ chunk s & fore red
           | s `startsWith` "+" = putChunkLn $ chunk s & fore green
           | otherwise          = putChunkLn $ chunk s & fore grey
+
+-- +searchOrReplace :: Config -> IO ()
+-- +searchOrReplace config@Config{..} = do
+--    putChunksLn
+-- -    [ chunk "Searching within: " & withinHdr theme
+-- +    [ chunk within & withinHdr theme
+--      , chunk (pack projectRoot) & withinValue theme
+--      ]
+--    putChunksLn
+-- -    [ chunk "  for matches to: " & searchHdr theme
+-- +    [ chunk query & searchHdr theme
+--      , chunk lensText & searchValue theme
+--      ]
+--    newLine
+-- -  searchByLens config
+-- +  results
+-- +  where
+-- +    within    = case mapFnSrc of
+-- +      "" -> "Searching within: "
+-- +      _  -> "Previewing replacement within: "
+-- +    query     = justify "  for matches to: "
+-- +    justify s = Text.replicate (Text.length within - Text.length s) " " <> s
+-- +    results   = case mapFnSrc of
+-- +      ""  -> Search.byLens config
+-- +      src -> case compileMapFn src of
+-- +        Left err -> Replace.displayError err
+-- +        Right f  -> Replace.withLens config f

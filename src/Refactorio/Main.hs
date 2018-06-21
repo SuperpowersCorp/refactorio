@@ -10,10 +10,9 @@ import qualified Data.Text                 as Text
 import           Options.Applicative               hiding ( prefs )
 import           Refactorio.Engine                        ( process )
 import           Refactorio.FilenameFilter
+import           Refactorio.SpecialMode
 import           Refactorio.Types
 import           X.Rainbow
-
--- CURRENT TARGET: refio --haskell '& __Module.biplate._Int +~ 32'
 
 main :: IO ()
 main = void $ customExecParser prefs opts >>= process . wrapSrc
@@ -95,13 +94,20 @@ updateModeParser =
                            <> short 'p'
                            <> help  "Only show the changes that would be made"
                             )
-  <|> ReviewMode <$ switch ( long  "review"
-                          <> short 'r'
-                          <> help  "Make the changes and show details of changes"
-                           )
   <|> ModifyMode <$ switch ( long  "modify"
                           <> short 'm'
                           <> help  "Make the changes and summarize changed filenames"
+                           )
+  -- <|> ReplaceMode <$ switch ( long  "replace"
+  --                          <> short 'r'
+  --                          <> help  "Activate alternate replace mode (Haskell mode only currently)"
+  --                           )
+  <|> ReviewMode <$ switch ( long  "review"
+                          <> help  "Make the changes and show details of changes"
+                           )
+  <|> SearchMode <$ switch ( long  "search"
+                          <> short 's'
+                          <> help  "Activate alternate search mode (Haskell mode only right now)"
                            )
   <|> pure AskMode
 

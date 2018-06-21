@@ -21,6 +21,7 @@ library
                      , Refactorio.FilenameFilter
                      , Refactorio.Helpers
                      , Refactorio.Main
+                     , Refactorio.Legacy
                      , Refactorio.Prelude
                      , Refactorio.Prelude.Basic
                      , Refactorio.Prelude.Examples
@@ -29,9 +30,12 @@ library
                      , Refactorio.Prelude.Json
                      , Refactorio.Prelude.Xml
                      , Refactorio.Prelude.Yaml
+                     , Refactorio.SpecialMode
                      , Refactorio.Theme
                      , Refactorio.Types
                      , X.Language.Haskell.Exts
+                     , X.Language.Haskell.Exts.Prisms
+                     , X.Language.Haskell.Exts.Prisms.Types
                      , X.Language.Haskell.Interpreter
                      , X.Rainbow
                      , X.Streaming.Files

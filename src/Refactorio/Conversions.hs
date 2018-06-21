@@ -3,6 +3,7 @@
 {-# LANGUAGE NoImplicitPrelude     #-}
 {-# LANGUAGE OverloadedStrings     #-}
 {-# LANGUAGE RankNTypes            #-}
+{-# LANGUAGE TypeSynonymInstances  #-}
 
 module Refactorio.Conversions
      ( Convert(..)
