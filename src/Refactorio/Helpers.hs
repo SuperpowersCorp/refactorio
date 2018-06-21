@@ -8,11 +8,8 @@
 {-# OPTIONS_GHC -fno-warn-orphans      #-}
 
 module Refactorio.Helpers
-     ( Lazyboy(..)
-     , debugL
+     ( debugL
      , hs
-     , lazy
-     , text
      , yaml
      ) where
 
@@ -24,36 +21,20 @@ import           Control.Lens            as L    ( Fold
                                                  , iso
                                                  )
 import qualified Data.Aeson              as Json
-import qualified Data.ByteString.Lazy    as LBS
-import qualified Data.Text.Lazy          as LT
 import qualified Data.Yaml               as Yaml
+import           Refactorio.Conversions          ( a
+                                                 , convert
+                                                 , convertTo
+                                                 )
 import           Text.Xml.Lens                   ( AsHtmlDocument
                                                  , Document
                                                  , _HtmlDocument
                                                  )
 import           X.Language.Haskell.Exts         ( hs )
 
-class Lazyboy s l where
-  strictify :: l -> s
-  lazify    :: s -> l
-
-instance Lazyboy ByteString LByteString where
-  strictify = LBS.toStrict
-  lazify    = LBS.fromStrict
-
-instance Lazyboy Text LText where
-  strictify = LT.toStrict
-  lazify    = LT.fromStrict
-
 instance AsHtmlDocument ByteString where
   _HtmlDocument :: Fold ByteString Document
-  _HtmlDocument = (lazy :: Iso' ByteString LByteString) . _HtmlDocument
-
-lazy :: Lazyboy s l => Iso' s l
-lazy = iso lazify strictify
-
-text :: Iso' ByteString Text
-text = iso decodeUtf8 encodeUtf8
+  _HtmlDocument = convertTo (a :: LByteString) . _HtmlDocument
 
 -- | You can drop this into the middle of a composed lens ala...
 --
@@ -78,7 +59,7 @@ yaml :: Iso' ByteString ByteString
 yaml = iso g s
   where
     g :: ByteString -> ByteString
-    g = view (L.from lazy) . Json.encode . yamlBsToValue
+    g = view (L.from convert) . Json.encode . yamlBsToValue
 
     yamlBsToValue :: ByteString -> Json.Value
     yamlBsToValue = either (panic "yamlBsToValue decode failed") identity
@@ -87,4 +68,4 @@ yaml = iso g s
     s :: ByteString -> ByteString
     s = (Yaml.encode :: Maybe Json.Value -> ByteString)
       . (Json.decode :: LByteString -> Maybe Json.Value)
-      . view lazy
+      . view convert

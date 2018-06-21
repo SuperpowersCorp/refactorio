@@ -79,7 +79,7 @@ unsafeMakeScreenshot exData = unsafePerformIO $ getWindowId >>= \case
     RP.putLn $ "% " <> fullCmd
     void . system . RP.unpack $ fullCmd
     makeScreenshot winId exData
-    RP.sleep 0.25
+    RP.sleep 0.5
     return $ exData & version +~ 1
   where
     fullCmd = replaceTarget target $ exData ^. cmd

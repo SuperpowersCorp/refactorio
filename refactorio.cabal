@@ -16,13 +16,13 @@ cabal-version:       >=1.10
 library
   hs-source-dirs:      src
   ghc-options:         -Wall
-  exposed-modules:     Refactorio.Engine
+  exposed-modules:     Refactorio.Conversions
+                     , Refactorio.Engine
                      , Refactorio.FilenameFilter
                      , Refactorio.Helpers
                      , Refactorio.Main
                      , Refactorio.Prelude
                      , Refactorio.Prelude.Basic
-                     , Refactorio.Prelude.Basic.Extra
                      , Refactorio.Prelude.Examples
                      , Refactorio.Prelude.Haskell
                      , Refactorio.Prelude.Html

@@ -1,27 +1,42 @@
 {-# LANGUAGE FlexibleInstances     #-}
-{-# LANGUAGE TypeSynonymInstances  #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE NoImplicitPrelude     #-}
 {-# LANGUAGE OverloadedStrings     #-}
 {-# LANGUAGE RankNTypes            #-}
 
-module Refactorio.Prelude.Basic.Extra
+module Refactorio.Conversions
      ( Convert(..)
      , a
      , an
+     , convertFrom
      , convertTo
      ) where
 
-import Protolude hiding (from)
-
 import Control.Lens         as L
-import Data.Text            as T
-import Data.Text.Lazy       as LT
 import Data.ByteString      as BS
 import Data.ByteString.Lazy as LBS
-import Data.Text.Encoding   as TE
-import Data.Text.Lens       as TL
 import Data.String          as S
+import Data.Text            as T
+import Data.Text.Encoding   as TE
+import Data.Text.Lazy       as LT
+import Data.Text.Lens       as TL
+import Protolude                   hiding ( from )
+
+a :: a
+a = panic "witness used inappropriately."
+
+an :: a
+an = a
+
+-- | Useful when target type is ambiguous, like so:
+--
+--     % refio --html -t /tmp/foo '& convertTo(a::LByteString).xml...name %~ Text.toUpper'
+--
+convertTo :: Convert a b => b -> Iso' a b
+convertTo _ = convert
+
+convertFrom :: Convert a b => a -> Iso' a b
+convertFrom _ = convert
 
 class Convert a b where
   convert :: Iso' a b
@@ -55,16 +70,3 @@ instance Convert T.Text S.String where
 
 instance Convert LT.Text S.String where
   convert = unpacked
-
-a :: a
-a = panic "witness used inappropriately."
-
-an :: a
-an = a
-
--- | Useful when target type is ambiguous, like so:
---
---     % refio --html -t /tmp/foo '& convertTo(a::LByteString).xml...name %~ Text.toUpper'
---
-convertTo :: Convert a b => b -> Iso' a b
-convertTo _ = convert
