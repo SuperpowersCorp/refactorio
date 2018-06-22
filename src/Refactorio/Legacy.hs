@@ -67,7 +67,6 @@ legacySearchWith config@Config{..} _trav _path = do
     ]
   nl
   searchByLens config
-  results
    where
      within = "Searching within: "
      -- within    = case mapFnSrc of
@@ -75,7 +74,6 @@ legacySearchWith config@Config{..} _trav _path = do
      --   _  -> "Previewing replacement within: "
      query     = justify "  for matches to: "
      justify s = T.replicate (T.length within - T.length s) " " <> s
-     results   = panic "results not impl yet!"
      -- results   = case mapFnSrc of
      --   ""  -> Search.byLens config
      --   src -> case compileMapFn src of
