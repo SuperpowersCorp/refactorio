@@ -27,28 +27,7 @@ replace :: Config -> Text -> IO ()
 replace Config{..} _mapFnSrc = panic "legacyReplace not implemented yet"
 
 search :: Config -> IO ()
-search config@Config{..} = legacySearchWith config f . unTarget $ target
-  where
-    f               = panic "legacySearch f undefined"
-    allFilters      = expandExtraFilters specialModeMay filenameFilters
-    compiledFilters = map compileFilter . Set.toList $ allFilters
-
--- DRY UP vs Engine
--- TODO: read .*ignore files from the target dir down to the current file, caching
---       along the way, etc. but for now...
-ignored :: FilePath -> Bool
-ignored path = ocd
-  || path `contains`   ".stack-work"
-  || path `startsWith` ".git/"
-  || path `contains`   "/.git/"
-  where
-    ocd = False
-
-legacySearchWith :: Config
-                 -> ATraversal' (Module SrcSpanInfo) SrcSpanInfo
-                 -> FilePath
-                 -> IO ()
-legacySearchWith config@Config{..} _trav _path = do
+search config@Config{..} = do
   putChunksLn
     [ chunk within & withinHdr theme
     , chunk (T.pack . unTarget $ target) & withinValue theme
@@ -65,11 +44,23 @@ legacySearchWith config@Config{..} _trav _path = do
      justify s = T.replicate (T.length within - T.length s) " " <> s
      theme     = defaultTheme
 
+-- DRY UP vs Engine
+-- TODO: read .*ignore files from the target dir down to the current file, caching
+--       along the way, etc. but for now...
+ignored :: FilePath -> Bool
+ignored path = ocd
+  || path `contains`   ".stack-work"
+  || path `startsWith` ".git/"
+  || path `contains`   "/.git/"
+  where
+    ocd = False
+
 searchByLens :: Config -> IO ()
 searchByLens Config {..} = makeLens (unExpression expr) >>= \case
   Left err -> print err
   Right trav -> S.mapM_ (showMatches trav)
     . S.chain reportFile
+    . S.filter ( matchesAny compiledFilters . fst )
     . S.filter (\(p, _) -> ".hs" `L.isSuffixOf` p && not (".stack-work" `L.isInfixOf` p))
     . tree
     . unTarget
@@ -81,6 +72,10 @@ searchByLens Config {..} = makeLens (unExpression expr) >>= \case
       reportFile :: FileInfo -> IO ()
       reportFile (p, _) = putChunkLn (chunk (T.pack p) & filename theme)
       theme = defaultTheme
+
+      -- TODO: dry up vs Engine
+      allFilters      = expandExtraFilters specialModeMay filenameFilters
+      compiledFilters = map compileFilter . Set.toList $ allFilters
 
 makeLens :: Text -> IO (Either InterpreterError
                         (ATraversal' (Module SrcSpanInfo) SrcSpanInfo))
