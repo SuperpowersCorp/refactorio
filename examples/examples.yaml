@@ -12,11 +12,11 @@ examples:
 - pre: "Multiply the value of the key 'baz' by 10."
   name: yaml
   version: 0
-  cmd: "stack exec refactorio -- -t $TARGET/src/a.yaml -p --yaml '& H.yaml . key \"baz\" . _Number +~ 2112'"
+  cmd: "stack exec refactorio -- -t $TARGET/examples.yaml -p --yaml '& H.yaml . key \"examples\" . key \"version\" . _Number +~ 32'"
 - pre: "HTML example coming soon."
   name: html
   version: 0
-  cmd: "stack exec refactorio -- -t $TARGET -p --html '& html . node \"fixme\" %~ toUpper'"
+  cmd: "echo HTML makes me sad - real example coming soon."
 - pre: "C'mon, you've never needed to \"find all the authors with names longer than 15 characters and then sort all of the letters in their name that are above 'm' in place?\" Pshaw."
   name: xml
   version: 0
