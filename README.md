@@ -201,10 +201,7 @@ make an actual semantic change.
 
 Refactorio has a hardcoded set of qualified imports which you can find
 [somewhere around
-here](https://github.com/SuperpowersCorp/refactorio/blob/master/src/X/Language/Haskell/Interpreter.hs#L30)
-or if you have a working Refactorio install you can see live via:
-
-    TODO: refio --haskell something...
+here](https://github.com/SuperpowersCorp/refactorio/blob/master/src/X/Language/Haskell/Interpreter.hs#L30).
 
 Currently the only unqualified import that Refactorio mandates is
 `Text.Regex.Quote` which brings the `r` QuasiQuoter into scope.
@@ -217,10 +214,11 @@ mode" flag (eg. `--haskell`, `--json`, etc) Refactorio will attempt to use
 `Refactorio.Prelude.{ModeName}` (eg `Refactorio.Prelude.Haskell`, etc).  If no
 special mode is provided, `Refactorio.Prelude.Basic` is used.
 
-(TODO: clarify above)
+(TODO: clarify/elaborate on preludes)
 
 ## TODOs
 
+- [ ] "results not impl yet" in legacy search
 - [ ] Allow parenthesizing '& ...' expressions
 - [ ] Vary extension list based on pragmas
 - [ ] Examples
