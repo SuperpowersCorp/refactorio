@@ -63,6 +63,7 @@ library
                      , safe
                      , streaming
                      , string-conv
+                     , taggy-lens
                      , text
                      , unix
                      , vty
@@ -94,6 +95,7 @@ executable refactorio
                      , protolude
                      , refactorio
                      , regex-pcre-builtin
+                     , taggy-lens
                      , text
                      , unix
                      , vty
@@ -127,6 +129,7 @@ test-suite refactorio-test
                      , protolude
                      , refactorio
                      , regex-pcre-builtin
+                     , taggy-lens
                      , text
                      , unix
                      , vty

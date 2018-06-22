@@ -16,7 +16,6 @@ import           Language.Haskell.Interpreter
 import           Refactorio.FilenameFilter
 import           Refactorio.Theme
 import           Refactorio.Types
-import           System.Posix.Files
 import           X.Language.Haskell.Exts.Prisms               ( ourParseMode )
 import           X.Language.Haskell.Interpreter               ( build )
 import           X.Rainbow

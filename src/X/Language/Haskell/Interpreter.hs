@@ -60,8 +60,8 @@ build possiblePreludes src = runInterpreter $ do
       , ("Text.Regex.Lens"             , Just "R")
       , ("Text.Regex.Lens"             , Just "Regex")
       , ("Text.Regex.Quote"            , Nothing)       -- The only unqualified exception
-      , ("Text.Xml.Lens"               , Just "Html")
-      , ("Text.Xml.Lens"               , Just "H")
+      , ("Text.Taggy.Lens"             , Just "Html")
+      , ("Text.Taggy.Lens"             , Just "H")
       , ("Text.Xml.Lens"               , Just "Xml")
       , ("Text.Xml.Lens"               , Just "X")
       ] ++ preludeImport

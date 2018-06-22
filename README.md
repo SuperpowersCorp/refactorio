@@ -139,7 +139,8 @@ Reach inside eg. gzipped files and do what you gotta do:
 
 ### Type Conversions
 
-The beginnings of `convert` and `convertTo` exist which can be used like so:
+The beginnings of `convert` and `convertTo/convertFrom` (along with `a`/`an`)
+exist which can be used like so:
 
 When types can be infered:
 

@@ -1,3 +1,4 @@
+{-# LANGUAGE InstanceSigs #-}
 {-# LANGUAGE FlexibleInstances     #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE NoImplicitPrelude     #-}
@@ -71,3 +72,7 @@ instance Convert T.Text S.String where
 
 instance Convert LT.Text S.String where
   convert = unpacked
+
+instance Convert BS.ByteString LT.Text where
+  convert :: Iso' BS.ByteString LT.Text
+  convert = convertTo (a :: T.Text) . convertTo (a :: LT.Text)
