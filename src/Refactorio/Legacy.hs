@@ -28,14 +28,7 @@ replace :: Config -> Text -> IO ()
 replace Config{..} _mapFnSrc = panic "legacyReplace not implemented yet"
 
 search :: Config -> IO ()
-search config@Config{..} = S.mapM_ ( legacySearchWith config f )
-  . S.filter ( matchesAny compiledFilters )
-  . S.filter ( not . ignored )
-  . S.map fst
-  . S.filter ( not . isDirectory . snd )
-  . tree
-  . unTarget
-  $ target
+search config@Config{..} = legacySearchWith config f . unTarget $ target
   where
     f               = panic "legacySearch f undefined"
     allFilters      = expandExtraFilters specialModeMay filenameFilters
