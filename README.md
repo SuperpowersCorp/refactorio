@@ -218,7 +218,6 @@ special mode is provided, `Refactorio.Prelude.Basic` is used.
 
 ## TODOs
 
-- [ ] "results not impl yet" in legacy search
 - [ ] Allow parenthesizing '& ...' expressions
 - [ ] Vary extension list based on pragmas
 - [ ] Examples
