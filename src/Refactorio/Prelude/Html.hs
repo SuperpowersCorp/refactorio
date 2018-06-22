@@ -1,7 +1,9 @@
 {-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module Refactorio.Prelude.Html
      ( module Exports
+     , html
      ) where
 
 import Refactorio.Prelude.Basic as Exports hiding ( children
@@ -9,4 +11,23 @@ import Refactorio.Prelude.Basic as Exports hiding ( children
                                                   , elements
                                                   )
 
-import Text.Taggy.Lens          as Exports
+import Text.XML.Lens            as Exports
+import Text.XML
+
+html :: Prism' ByteString Document
+html = prism g s
+  where
+    g :: Document -> ByteString
+    g = view convert . renderLBS renderSettings
+
+    s :: ByteString -> Either ByteString Document
+    s = f . view (convertTo (a :: LByteString))
+      where
+        f :: LByteString -> Either ByteString Document
+        f = first show . parseLBS parseSettings
+
+    renderSettings :: RenderSettings
+    renderSettings = def
+
+    parseSettings :: ParseSettings
+    parseSettings = def

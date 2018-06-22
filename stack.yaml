@@ -8,6 +8,9 @@ allow-newer: true
 extra-deps:
 - aeson-lens-0.5.0.0
 - haskell-src-exts-prisms-1.18.2.0
+- hexml-lens-0.2.1
+- hexpat-lens-0.1.7
+- hexpat-tagsoup-0.1
 - hierarchy-0.3.1.4
 - io-capture-1.0.0
 - lens-4.15.4

@@ -63,7 +63,13 @@ build possiblePreludes src = runInterpreter $ do
       , ("Text.Taggy.Lens"             , Just "Html")
       , ("Text.Taggy.Lens"             , Just "H")
       , ("Text.Xml.Lens"               , Just "Xml")
-      , ("Text.Xml.Lens"               , Just "X")
+      , ("Text.Xml.Lens"               , Just "XC")
+      , ("Text.XML.Lens"               , Just "XML")
+      , ("Text.XML.Lens"               , Just "X")
+      , ("Text.XML.Hexml.Lens"         , Just "HX")
+      , ("Text.XML.Hexml.Lens"         , Just "Hexml")
+      , ("Text.XML.Expat.Lens"         , Just "Expat")
+      , ("Text.XML.Expat.Lens"         , Just "EX")
       ] ++ preludeImport
 
 importPrelude :: String -> [(String, Maybe String)]
