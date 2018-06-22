@@ -112,7 +112,7 @@ Here are a few examples to whet your appetite.  For more see [examples](examples
 
 ### HTML (via [xml-html-conduit-lens](https://hackage.haskell.org/package/xml-html-conduit-lens))
 
-    HTML example coming soon.
+    TODO: Find a good way to deal with HTML.  (problems with each of `hexpat-lens`, `hexml-lens`, `xml-html-conduit-lens` and `xml-lens`)
 
 ### XML (also via [xml-html-conduit-lens](https://hackage.haskell.org/package/xml-html-conduit-lens))
 
@@ -174,11 +174,15 @@ For now the easiest way to get it working is build it with `stack build` and the
 
 and run it from the refactorio project root to get an experience something like:
 
+    refio --json 'over (key "foo" . key "bar" . _Number) (+3)' -t ../voltron/test/fixtures
+
+or
+
     refio --json '& key "foo" . key "bar" . _Number *~ 15' -t ../voltron/test/fixtures
 
 or
 
-    refio --haskell _Module.biplate._ModuleName.end -t ../voltron/src
+    refio -s --haskell _Module.biplate._ModuleName.end -t ../voltron/src
 
 (where the `-t`/`--target` is a file or directory to process and can be outside
 of the refactorio project root).
