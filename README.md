@@ -40,10 +40,10 @@ Refactorio - Optical Refactoring Tool
 
 ## Major Modes
 
-In all modes Refactorio traverses one or more files executing a `ByteString
--> ByteString` function on them.  For a given file if the function does not
-change the input then no output is logged for that file.  If the function does
-change the file then what happens next is dependent on the mode.
+In all modes Refactorio traverses one or more files executing a `ByteString ->
+ByteString` function on them.  For a given file if the function does not change
+the input then no output is logged for that file.  If the function does change
+the file then what happens next is dependent on the mode.
 
 Any `ByteString -> ByteString` function definition will work, for example:
 
@@ -73,8 +73,8 @@ the file will be left intact (or you can 'Q'uit at any time).
 
 ### Preview Mode (-p / --preview)
 
-In this mode Refactorio will just show all the changes that it would make, but
 not touch any files.  You can think of it sort of like a `--dry-run`.
+In this mode Refactorio will just show all the changes that it would make, but
 
 ### Review Mode (-r / --review)
 
@@ -96,7 +96,8 @@ information and we are exploring ways to broaden it's usefulness further.
 
 ## Examples
 
-Here are a few examples to whet your appetite.  For more see [examples](examples/).
+Here are a few examples to whet your appetite.  For more see
+[examples](examples/).
 
 ### JSON (via [lens-aeson](https://hackage.haskell.org/package/lens-aeson)):
 
@@ -172,7 +173,8 @@ For now the easiest way to get it working is build it with `stack build` and the
 
     alias refio="stack exec refactorio --"
 
-and run it from the refactorio project root to get an experience something like:
+and run it from the refactorio project root to get an experience something
+like:
 
     refio --json 'over (key "foo" . key "bar" . _Number) (+3)' -t ../voltron/test/fixtures
 
@@ -219,56 +221,3 @@ mode" flag (eg. `--haskell`, `--json`, etc) Refactorio will attempt to use
 special mode is provided, `Refactorio.Prelude.Basic` is used.
 
 (TODO: clarify/elaborate on preludes)
-
-## TODOs
-
-- [ ] Allow parenthesizing '& ...' expressions
-- [ ] Vary extension list based on pragmas
-- [ ] Examples
-  - [ ] Replace strictify/etc with documentation/examples of appropriate existing lenses
-  - [ ] Automate screenshots
-  - [ ] Formulate everthing in terms of appropriate starting Prisms
-  - [ ] Embiggen/embetter existing examples to make it more clear whats going on
-  - [ ] More
-    - [ ] Using preview to construct new elements
-    - [ ] stdin
-    - [ ] Side effects
-    - [ ] Multiple sets/maps (eg "& foo .~ 5 & bar .~ 6" etc)
-      eg `% cat /tmp/b.json | refio --json -t - 'over (key "baz" . _Number) (+3) .  over (key "foo" . _String) (Text.reverse . Text.toUpper)'`
-- [ ] Special mode pre/post adapter fns
-- [ ] Multiple targets
-  - [ ] Bail if multiple targets with stdin
-- [ ] Bail if modes are provided with stdin ('-') processing
-- [ ] Seek guidance from the pros on
-  - [ ] CT/lenses
-  - [ ] Cool lens tricks that might be applicable
-- [ ] Fully restore `haskell-src-exts` functionality.
-- [ ] Pandoc lens support for:
-  - [ ] Docx
-  - [ ] Markdown
-  - [ ] others
-- [ ] Line Numbers
-- [ ] Context lines
-- [ ] Sort out issue with `Control.Lens` not being available in installed executable
-- [ ] Eliminate unnecessary serialization round trips
-  - [ ] eg when processing YAML via JSON
-  - [ ] don't changes files when all that changed was formatting.
-- [ ] Figure out which existing haskell function `concatStreams` can be reduced to.
-- [ ] 1.0 release somewhere around here
-- [ ] More granular patch acceptance/rejectance
-- [ ] Use mueval so that shared lenses can be used safely.
-- [ ] Emacs integration
-- [ ] Can we cache generated lenses somehow?
-- [ ] Allow Traversals for extraction of arbitrary info.
-- [ ] Brick TUI with:
-  - [ ] Keep files in memory across edits
-  - [ ] Preview / review / selective application
-  - [ ] Undo
-  - [ ] Fetch/store/share lenses via:
-    - [ ] GitHub/gist?
-    - [ ] anything else?
-- [ ] Better Themes
-- [ ] Better Banner Image
-- [ ] Approach Factorio people about permission to use a (better version of) the logo
-- [ ] `fileplate` to let you treat multiple files as a single unit and do
-      `biplate` type stuff to them as a whole?
