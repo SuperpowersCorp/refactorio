@@ -147,7 +147,6 @@ processWith updateMode f path = do
     else handleChange (beforeBytes, afterBytes)
   where
     handleChange (beforeBytes, afterBytes) = do
-      putLn $ "DELETE ME: CHANGING: " <> pack path
       let beforeLines = C8.lines beforeBytes
           afterLines  = C8.lines afterBytes
           diff'       = getContextDiff ctxLines beforeLines afterLines

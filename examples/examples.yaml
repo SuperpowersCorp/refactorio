@@ -25,7 +25,7 @@ examples:
 - pre: "Drop regex's in anywhere you like, eg. \"uppercase and reverse the characters in the value of the JSON object at this key that match this regular expression\":"
   name: regex
   version: 0
-  cmd: "$EXE -- -t $TARGET -p --json 'key \"foo\" . _String . Text.unpacked . regex [|ba|] . matchedString %~ reverse . map Char.toUpper'"
+  cmd: "$EXE -t $TARGET -p --json 'key \"quiz\" . key \"sport\" . key \"q1\" . key \"answer\" . _String . Text.unpacked . regex [r|[aeiou]|] . matchedString %~ map Char.toUpper'"
 - pre: "Reach inside eg. gzipped files and do what you gotta do:"
   post: "(Not sure what's up with that \"trailing garbage.\")"
   name: zlib
@@ -35,27 +35,27 @@ examples:
   name: composing-multiple-edits
   version: 0
   post: NB. in this example the JSON is roundtripped through the serialization process twice
-# - name: hs-ints
-#   version: 0
-#   cmd: "$EXE --search --haskell _Module.biplate._Int"
-# - name: hs-modname
-#   version: 0
-#   cmd: "$EXE --search --haskell _Module.biplate._ModuleName.end"
-# - name: hs-string
-#   version: 0
-#   cmd: "$EXE --haskell --search _Module.biplate._String.end"
+- name: hs-ints
+  version: 0
+  cmd: "$EXE -t src/Refactorio/Engine.hs --search --haskell _Module.biplate._Int.end"
+- name: hs-modname
+  version: 0
+  cmd: "$EXE -t src/Refactorio/Main.hs --search --haskell _Module.biplate._ModuleName.end"
+- name: hs-string
+  version: 0
+  cmd: "$EXE -t src/Refactorio/Main.hs --search --haskell _Module.biplate._String.end"
 - name: hs-fieldupdate
   version: 0
-  cmd: "$EXE -t src/Refactorio/Theme.hs --haskell --search _Module.biplate._FieldUpdate.end"
-# - name: hs-frac
-#   version: 0
-#   cmd: "$EXE --haskell --search _Module.biplate._Frac.end"
-# - name: hs-odd-ints
-#   version: 0
-#   cmd: "$EXE --haskell --search '_Module.biplate._Int.filtered(odd.view target).end'"
+  cmd: "$EXE -t src/Refactorio/Theme.hs --search --haskell _Module.biplate._FieldUpdate.end"
+- name: hs-frac
+  version: 0
+  cmd: "$EXE -t src --search --haskell _Module.biplate._Frac.end"
+- name: hs-odd-ints
+  version: 0
+  cmd: "$EXE -t src/Refactorio/Legacy.hs --search --haskell '_Module.biplate._Int.filtered(odd.view target).end'"
 - name: hs-ints-gt-10
   version: 0
-  cmd: "$EXE --haskell --search '_Module.biplate._Int.filtered((>10).view target).end'"
+  cmd: "$EXE -t src --search --haskell '_Module.biplate._Int.filtered((>10).view target).end'"
 - name: json-review-string
   version: 0
   cmd: "$EXE -p -t examples/quiz.json --json '(key \"quiz\" . members .~ _String # \"DELETED\")'"

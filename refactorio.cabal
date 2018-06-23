@@ -16,6 +16,11 @@ cabal-version:       >=1.10
 library
   hs-source-dirs:      src
   ghc-options:         -Wall
+                       -Wcompat
+                       -Wincomplete-record-updates
+                       -Wincomplete-uni-patterns
+                       -Wpartial-fields
+                       -Wredundant-constraints
   exposed-modules:     Refactorio.Conversions
                      , Refactorio.Engine
                      , Refactorio.FilenameFilter
