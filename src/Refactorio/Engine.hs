@@ -208,30 +208,3 @@ processWith updateMode f path = do
           | s `startsWith` "-" = putChunkLn $ chunk s & fore red
           | s `startsWith` "+" = putChunkLn $ chunk s & fore green
           | otherwise          = putChunkLn $ chunk s & fore grey
-
--- +searchOrReplace :: Config -> IO ()
--- +searchOrReplace config@Config{..} = do
---    putChunksLn
--- -    [ chunk "Searching within: " & withinHdr theme
--- +    [ chunk within & withinHdr theme
---      , chunk (pack projectRoot) & withinValue theme
---      ]
---    putChunksLn
--- -    [ chunk "  for matches to: " & searchHdr theme
--- +    [ chunk query & searchHdr theme
---      , chunk lensText & searchValue theme
---      ]
---    newLine
--- -  searchByLens config
--- +  results
--- +  where
--- +    within    = case mapFnSrc of
--- +      "" -> "Searching within: "
--- +      _  -> "Previewing replacement within: "
--- +    query     = justify "  for matches to: "
--- +    justify s = Text.replicate (Text.length within - Text.length s) " " <> s
--- +    results   = case mapFnSrc of
--- +      ""  -> Search.byLens config
--- +      src -> case compileMapFn src of
--- +        Left err -> Replace.displayError err
--- +        Right f  -> Replace.withLens config f

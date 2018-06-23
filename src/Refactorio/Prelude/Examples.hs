@@ -83,8 +83,12 @@ unsafeMakeScreenshot exData = unsafePerformIO $ getWindowId >>= \case
     RP.sleep 0.9
     return $ exData & version +~ 1
   where
-    fullCmd = replaceTarget target $ exData ^. cmd
-    target = "examples"  -- TODO
+    fullCmd = replaceExe exe . replaceTarget target $ exData ^. cmd
+    target  = "examples"                 -- TODO
+    exe     = "stack exec refactorio --" -- TODO
+
+replaceExe :: Text -> Text -> Text
+replaceExe exe = T.intercalate exe . splitOn "$EXE"
 
 replaceTarget :: Text -> Text -> Text
 replaceTarget target = T.intercalate target . splitOn "$TARGET"
