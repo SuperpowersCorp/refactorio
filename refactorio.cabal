@@ -19,7 +19,6 @@ library
                        -Wcompat
                        -Wincomplete-record-updates
                        -Wincomplete-uni-patterns
-                       -Wpartial-fields
                        -Wredundant-constraints
   exposed-modules:     Refactorio.Conversions
                      , Refactorio.Engine
