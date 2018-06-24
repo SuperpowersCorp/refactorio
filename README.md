@@ -135,9 +135,9 @@ Reach inside eg. gzipped files and do what you gotta do:
 
 <!-- ![gzipped Example](examples/gzipped.jpg) -->
 
-    Example is temporarily unavailable, but goes something like:
+Example is temporarily unavailable, but goes something like:
 
-    cat foo.json.gz | refio -t - --json 'convert . from Z.gzipped . from convert . key \"baz\" . _Number *~ 85' > bar.json.gz
+    refio -t foo.json.gz --json 'convert . from Z.gzipped . from convert . key \"baz\" . _Number *~ 85'
 
 <!-- (Not sure what's up with that "trailing garbage.") -->
 
