@@ -31,9 +31,16 @@ longboye-all:
 	longboye pragmas src
 	longboye pragmas test
 
+make-examples: make-screenshots make-example-index
+
+make-example-index:
+	cat examples/examples.yaml \
+	  | stack exec $(EXE) -- --examples -t - 'generateIndex' \
+	  > examples/README.html
+
 make-screenshots:
 	stack exec $(EXE) -- --examples -p -t examples/examples.yaml --io \
-	  'traverseOf refactorioExamplesL safeMakeScreenshot'
+	  'traverseOf (H.yaml . key "examples" . _Array . traverse . _JSON) safeMakeScreenshot'
 
 run:
 	stack exec $(EXE) $(STACK_ARGS) -- refactorio $(ARGS)
@@ -53,6 +60,8 @@ gd: ghcid-devel
 hl: hlint
 lba: longboye-all
 ms: make-screenshots
+mei: make-example-index
+me: make-examples
 r: run
 w: watch
 t: test

@@ -5,15 +5,15 @@
 
 module Refactorio.Prelude.Examples
      ( module Exports
-     , ExampleData
      , Example
+     , ExampleData
      , H.yaml
-     , exampleName
-     , preText
-     , postText
      , cmd
-     , refactorioExamplesL
-     , safeMakeScreenshot
+     , exampleName
+     , generateIndex
+     , makeScreenshot
+     , postText
+     , preText
      , version
      ) where
 
@@ -62,13 +62,8 @@ instance ToJSON   ExampleData where
          Nothing -> []
          Just s  -> [ "post" .= s ]
 
--- TODO: Remove / move elsewhere
-refactorioExamplesL :: Traversal' ByteString ExampleData
-refactorioExamplesL = H.yaml . key "examples" . _Array . traverse . _JSON
-
--- TODO: Remove / move elsewhere
-safeMakeScreenshot :: ExampleData -> IO ExampleData
-safeMakeScreenshot exData = getWindowId >>= \case
+makeScreenshot :: ExampleData -> IO ExampleData
+makeScreenshot exData = getWindowId >>= \case
   Nothing -> do
     RP.putLn "SCREENSHOT FAILED: COULD NOT FIND WINDOW ID"
     return exData
@@ -78,7 +73,7 @@ safeMakeScreenshot exData = getWindowId >>= \case
     RP.putLn $ "% " <> fullCmd
     void . system . RP.unpack $ fullCmd
     RP.sleep 0.2
-    makeScreenshot winId exData
+    makeScreenshotOf winId exData
     RP.sleep 0.9
     return $ exData & version +~ 1
   where
@@ -95,8 +90,8 @@ replaceTarget target = T.intercalate target . splitOn "$TARGET"
 clearScreen :: IO ()
 clearScreen = void $ system "clear"
 
-makeScreenshot :: Int -> ExampleData -> IO ()
-makeScreenshot winId exData = void $ readProcess "screencapture" args ""
+makeScreenshotOf :: Int -> ExampleData -> IO ()
+makeScreenshotOf winId exData = void $ readProcess "screencapture" args ""
   where
     args     = ["-t", "jpg", "-l", show winId, "-f", RP.unpack filename]
     filename = "examples/" <> exData ^. exampleName <> ".jpg"
@@ -105,3 +100,6 @@ getWindowId :: IO (Maybe Int)
 getWindowId = readMay <$> readProcess "osascript" args ""
   where
     args = ["-e", "tell app \"iTerm2\" to id of window 1"]
+
+generateIndex :: ByteString -> ByteString
+generateIndex = panic "generateIndex undefined"

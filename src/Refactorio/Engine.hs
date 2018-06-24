@@ -1,8 +1,7 @@
-{-# LANGUAGE LambdaCase          #-}
-{-# LANGUAGE NoImplicitPrelude   #-}
-{-# LANGUAGE OverloadedStrings   #-}
-{-# LANGUAGE RecordWildCards     #-}
-{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE LambdaCase        #-}
+{-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE RecordWildCards   #-}
 
 module Refactorio.Engine ( process ) where
 
@@ -34,9 +33,9 @@ process :: Config -> IO ()
 process config@Config{..} = if updateMode == SearchMode
   then Legacy.search config
   else describeProcess config >> buildMapFn config >>= \case
-    Left err -> reportError expr err
+    Left err -> errorInExpression expr err
     Right  f -> if mixingStdin targets
-      then reportCannotMixError (toList targets)
+      then errorCannotMix . toList $ targets
       else forM_ targets $
              S.mapM_ (processFile updateMode f)
              . S.filter ( matchesAny compiledFilters )
@@ -57,12 +56,6 @@ process config@Config{..} = if updateMode == SearchMode
       , (`contains`   "/.git/")
       ]
 
-allFilters :: Config -> Set FilenameFilter
-allFilters Config{..} = expandExtraFilters specialModeMay filenameFilters
-
-mixingStdin :: NonEmpty Target -> Bool
-mixingStdin xs = length xs > 1 && Target "-" `elem` toList xs
-
 processFile :: UpdateMode -> MappingFn -> FilePath -> IO ()
 processFile updateMode (MapFn   f) path = processFile updateMode (MapMFn $ return . f) path
 processFile updateMode (MapMFn mf) path = do
@@ -74,7 +67,7 @@ processFile updateMode (MapMFn mf) path = do
       diff'       = getContextDiff ctxLines beforeLines afterLines
       beforeLines = C8.lines beforeBytes
       afterLines  = C8.lines afterBytes
-  when (beforeBytes /= afterBytes) $ do
+  when (beforeBytes /= afterBytes) $
     -- TODO: doublecheck (gh-6) here.
     case updateMode of
       AskMode -> changePrompt >>= \case
@@ -124,6 +117,17 @@ processFile updateMode (MapMFn mf) path = do
     render' :: Doc -> Text
     render' = T.pack . PP.render
 
+allFilters :: Config -> Set FilenameFilter
+allFilters Config{..} = expandExtraFilters specialModeMay filenameFilters
+
+buildMapFn :: Config -> IO (Either InterpreterError MappingFn)
+buildMapFn config@Config{..}
+  | monadic   = MapMFn <<$>> buildFn
+  | otherwise = MapFn  <<$>> buildFn
+  where
+    buildFn :: Typeable a => IO (Either InterpreterError a)
+    buildFn = build (preludesFrom config) (unExpression expr)
+
 changePrompt :: IO ChangeChoice
 changePrompt = do
   putStr ("Accept change (Y/N/Q)? " :: Text)
@@ -137,13 +141,8 @@ changePrompt = do
     "quit" -> return QuitChanges
     _      -> changePrompt
 
-buildMapFn :: Config -> IO (Either InterpreterError MappingFn)
-buildMapFn config@Config{..}
-  | monadic   = MapMFn <<$>> buildFn
-  | otherwise = MapFn  <<$>> buildFn
-  where
-    buildFn :: Typeable a => IO (Either InterpreterError a)
-    buildFn = build (preludesFrom config) (unExpression expr)
+customPrelude :: SpecialMode -> Maybe FilePath
+customPrelude m = Just $ "Refactorio.Prelude." <> show m
 
 describeProcess :: Config -> IO ()
 describeProcess config@Config{..} = do
@@ -164,6 +163,9 @@ describeProcess config@Config{..} = do
       | toList targets == [Target "-"] = return ()
       | otherwise                      = putLn s
 
+mixingStdin :: NonEmpty Target -> Bool
+mixingStdin xs = length xs > 1 && Target "-" `elem` toList xs
+
 preludesFrom :: Config ->[String]
 preludesFrom Config{..} = catMaybes
   [ preludeModuleMay
@@ -173,35 +175,30 @@ preludesFrom Config{..} = catMaybes
   where
     defaultPrelude = Just "Refactorio.Prelude.Basic"
 
-customPrelude :: SpecialMode -> Maybe FilePath
-customPrelude m = Just $ "Refactorio.Prelude." <> show m
-
-reportCannotMixError :: [Target] -> IO ()
-reportCannotMixError targets = do
+reportError :: Text -> Text -> IO ()
+reportError hdr msg = do
   nl
   putChunkLn $ chunk hdr & fore c
   putChunkLn $ chunk msg & fore c
   nl
   where
-    hdr :: Text = "Invalid target set:\n\n    " <> show (map unTarget targets) <> "\n"
-    msg :: Text = "You cannot mix stdin '-' with other targets."
     c = red  -- TODO: theme
 
-reportError :: Expression -> InterpreterError -> IO ()
-reportError expr e = do
-  nl
-  putChunkLn $ chunk hdr  & fore c
-  putChunkLn $ chunk msg & fore c
-  nl
+errorCannotMix :: [Target] -> IO ()
+errorCannotMix targets = reportError hdr msg
   where
-    hdr :: Text = "Failed to compile expression:\n\n    " <> unExpression expr <> "\n"
+    hdr = "Invalid target set:\n\n    " <> show (map unTarget targets) <> "\n"
+    msg = "You cannot mix stdin '-' with other targets."
 
-    msg = case e of
+errorInExpression :: Expression -> InterpreterError -> IO ()
+errorInExpression expr e = reportError hdr msg
+  where
+    hdr = "Failed to compile expression:\n\n    " <> unExpression expr <> "\n"
+
+    msg = T.pack $ case e of
       GhcException s        -> "GHC Exception:\n\n" <> s
       NotAllowed   s        -> "Not Allowed:\n\n"   <> s
       UnknownError s        -> "Unknown Error:\n\n" <> s
       WontCompile ghcErrors -> "GHC Errors:\n\n"    <> intercalate "\n" errors
         where
           errors = map errMsg ghcErrors
-
-    c = red  -- TODO: theme

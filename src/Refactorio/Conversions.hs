@@ -1,10 +1,8 @@
 {-# LANGUAGE FlexibleInstances     #-}
-{-# LANGUAGE InstanceSigs          #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE NoImplicitPrelude     #-}
 {-# LANGUAGE OverloadedStrings     #-}
 {-# LANGUAGE RankNTypes            #-}
-{-# LANGUAGE TypeSynonymInstances  #-}
 
 module Refactorio.Conversions
      ( Convert(..)
@@ -12,6 +10,7 @@ module Refactorio.Conversions
      , an
      , convertFrom
      , convertTo
+     , isoAs
      ) where
 
 import Control.Lens         as L
@@ -39,6 +38,9 @@ convertTo _ = convert
 
 convertFrom :: Convert a b => a -> Iso' a b
 convertFrom _ = convert
+
+isoAs :: a -> Iso' a a
+isoAs _ = iso identity identity
 
 class Convert a b where
   convert :: Iso' a b
@@ -74,5 +76,4 @@ instance Convert LT.Text S.String where
   convert = unpacked
 
 instance Convert BS.ByteString LT.Text where
-  convert :: Iso' BS.ByteString LT.Text
   convert = convertTo (a :: T.Text) . convertTo (a :: LT.Text)

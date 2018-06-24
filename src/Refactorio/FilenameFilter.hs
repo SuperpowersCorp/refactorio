@@ -5,10 +5,10 @@
 module Refactorio.FilenameFilter
      ( FilenameFilter(..)
      , compileFilter
+     , devMatchesAnyString -- For dev
      , expandExtraFilters
      , matches
      , matchesAny
-     , matchesAnyString -- For dev
      ) where
 
 import Refactorio.Prelude     hiding ( empty
@@ -35,6 +35,9 @@ type CompiledFilter = Pattern
 compileFilter :: FilenameFilter -> CompiledFilter
 compileFilter = compile . unpack . unFilenameFilter
 
+devMatchesAnyString :: [String] -> FilePath -> Bool
+devMatchesAnyString = matchesAny . map (compileFilter . FilenameFilter . pack)
+
 expandExtraFilters :: Maybe SpecialMode -> Set FilenameFilter -> Set FilenameFilter
 expandExtraFilters specialModeMay existing
   | not . null $ existing = existing
@@ -60,6 +63,3 @@ matchesAny :: [CompiledFilter] -> FilePath -> Bool
 matchesAny filters path
   | null filters = True
   | otherwise    = any (`matches` path) filters
-
-matchesAnyString :: [String] -> FilePath -> Bool
-matchesAnyString = matchesAny . map (compileFilter . FilenameFilter . pack)

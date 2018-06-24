@@ -8,7 +8,6 @@ module X.Language.Haskell.Exts
 
 import Refactorio.Prelude               hiding ( get )
 
-import Control.Lens                     hiding ( set )
 import Data.ByteString.Char8 as Char8
 import Language.Haskell.Exts as Exports
 

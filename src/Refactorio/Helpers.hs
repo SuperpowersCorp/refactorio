@@ -1,9 +1,6 @@
-{-# LANGUAGE InstanceSigs              #-}
-{-# LANGUAGE MultiParamTypeClasses     #-}
 {-# LANGUAGE NoImplicitPrelude         #-}
 {-# LANGUAGE OverloadedStrings         #-}
 {-# LANGUAGE RankNTypes                #-}
-{-# LANGUAGE TypeSynonymInstances      #-}
 {-# OPTIONS_GHC -fno-warn-deprecations #-}
 {-# OPTIONS_GHC -fno-warn-orphans      #-}
 
@@ -15,11 +12,6 @@ module Refactorio.Helpers
 
 import           Refactorio.Prelude
 
-import           Control.Lens            as L    ( Fold
-                                                 , Iso'
-                                                 , from
-                                                 , iso
-                                                 )
 import qualified Data.Aeson              as Json
 import qualified Data.Yaml               as Yaml
 import           Refactorio.Conversions          ( a
@@ -27,13 +19,11 @@ import           Refactorio.Conversions          ( a
                                                  , convertTo
                                                  )
 import           Text.Xml.Lens                   ( AsHtmlDocument
-                                                 , Document
                                                  , _HtmlDocument
                                                  )
 import           X.Language.Haskell.Exts         ( hs )
 
 instance AsHtmlDocument ByteString where
-  _HtmlDocument :: Fold ByteString Document
   _HtmlDocument = convertTo (a :: LByteString) . _HtmlDocument
 
 -- | You can drop this into the middle of a composed lens ala...
@@ -59,7 +49,7 @@ yaml :: Iso' ByteString ByteString
 yaml = iso g s
   where
     g :: ByteString -> ByteString
-    g = view (L.from convert) . Json.encode . yamlBsToValue
+    g = view (from convert) . Json.encode . yamlBsToValue
 
     yamlBsToValue :: ByteString -> Json.Value
     yamlBsToValue = either (panic "yamlBsToValue decode failed") identity

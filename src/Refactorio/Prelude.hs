@@ -12,28 +12,31 @@ module Refactorio.Prelude
     , sleep
     ) where
 
-import           Control.Arrow  as Exports ( (&&&) )
-import           Control.Lens   as Exports ( (%~)
-                                           , (.~)
-                                           , (^.)
-                                           , ATraversal'
-                                           , Lens'
-                                           , cloneTraversal
-                                           , each
-                                           , lens
-                                           , makeClassy
-                                           , partsOf
-                                           , toListOf
-                                           , view
-                                           )
-import           Data.Data      as Exports ( Data )
-import           Data.Data.Lens as Exports ( upon )
+import           Control.Arrow  as Exports        ( (&&&) )
+import           Control.Lens   as Exports        ( (%~)
+                                                  , (.~)
+                                                  , (^.)
+                                                  , ATraversal'
+                                                  , Iso'
+                                                  , Lens'
+                                                  , cloneTraversal
+                                                  , each
+                                                  , from
+                                                  , iso
+                                                  , lens
+                                                  , makeClassy
+                                                  , partsOf
+                                                  , toListOf
+                                                  , view
+                                                  )
+import           Data.Data      as Exports        ( Data )
+import           Data.Data.Lens as Exports        ( upon )
 import           Data.List      as List
-import           Data.String    as Exports ( String )
-import           Data.Text      as Exports ( unpack )
-import           Data.Text      as Text    ( isPrefixOf )
+import           Data.String    as Exports        ( String )
+import           Data.Text      as Exports        ( unpack )
+import           Data.Text      as Text           ( isPrefixOf )
 import qualified Data.Text      as Text
-import           Protolude      as Exports
+import           Protolude      as Exports hiding ( from )
 
 class Container a where
   contains :: a -> a -> Bool
