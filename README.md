@@ -102,13 +102,13 @@ Here are a few examples to whet your appetite.  For more see
 
 "Increment the value at key 'baz' by 1962."
 
-![JSON Example](examples/json.png)
+![JSON Example](examples/json.jpg)
 
 ### YAML (same operators):
 
 "Multiply the value of the key 'baz' by 10."
 
-![YAML Example](examples/yaml.png)
+![YAML Example](examples/yaml.jpg)
 
 ### HTML (via [xml-html-conduit-lens](https://hackage.haskell.org/package/xml-html-conduit-lens))
 
@@ -120,20 +120,20 @@ C'mon, you've never needed to "find all the authors with names longer than 15
 characters and then sort all of the letters in their name that are above 'm' in
 place?" Pshaw.
 
-![XML Example](examples/xml.png)
+![XML Example](examples/xml.jpg)
 
 ### Regex (via [lens-regex](https://hackage.haskell.org/package/lens-regex)):
 
 Drop regex's in anywhere you like, eg. "uppercase and reverse the characters in
 the value of the JSON object at this key that match this regular expression":
 
-![Regex Example](examples/regex.png)
+![Regex Example](examples/regex.jpg)
 
 ### Compressed Files (via [zlib-lens](https://hackage.haskell.org/package/zlib-lens)):
 
 Reach inside eg. gzipped files and do what you gotta do:
 
-![gzipped Example](examples/gzipped.png)
+![gzipped Example](examples/gzipped.jpg)
 
 (Not sure what's up with that "trailing garbage.")
 
