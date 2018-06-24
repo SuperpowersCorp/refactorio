@@ -8,11 +8,11 @@ examples:
   version: 0
 - name: "json"
   pre: "Increment the value at key 'baz' by 1962."
-  cmd: "$EXE -p -t examples --json 'key \"quiz\" . key \"sport\" . key \"q1\" . key \"options\" . _Array . each . _String %~ Text.toUpper'"
+  cmd: "$EXE -p -t $TARGET --json 'key \"quiz\" . key \"sport\" . key \"q1\" . key \"options\" . _Array . each . _String %~ Text.toUpper'"
   version: 0
 - name: yaml
   pre: "Multiply the value of the key 'baz' by 10."
-  cmd: "$EXE -t $TARGET/examples.yaml -p --yaml 'H.yaml . key \"examples\" . key \"version\" . _Number +~ 32' | head -40"
+  cmd: "$EXE -t $TARGET/examples.yaml -p --yaml 'yaml . key "examples" ... key "version" . _Number +~ 32' | head -40"
   version: 0
 # - name: html
 #   pre: "HTML example coming soon."
@@ -32,7 +32,7 @@ examples:
 #   cmd: "cat $TARGET/b.json.gz | $EXE -t - --json 'convert . from Z.gzipped . from convert . key \"baz\" . _Number *~ 85' | gzcat -"
 #   version: 0
 - name: composing-multiple-edits
-  cmd: "$EXE -p -t examples/quiz.json --json '(key \"quiz\" . key \"sport\" . key \"q1\" . key \"answer\" . _String %~ Text.toUpper) . (key \"quiz\" . key \"maths\" . key \"q2\" . key \"options\" . _Array . traverse . _String .~ \"censored\")'"
+  cmd: "$EXE -p -t $TARGET/quiz.json --json '(key \"quiz\" . key \"sport\" . key \"q1\" . key \"answer\" . _String %~ Text.toUpper) . (key \"quiz\" . key \"maths\" . key \"q2\" . key \"options\" . _Array . traverse . _String .~ \"censored\")'"
   post: NB. in this example the JSON is roundtripped through the serialization process twice
   version: 0
 - name: hs-ints
@@ -57,7 +57,7 @@ examples:
   cmd: "$EXE -t src --search --haskell '_Module.biplate._Int.filtered((>10).view target).end'"
   version: 0
 - name: json-review-string
-  cmd: "$EXE -p -t examples/quiz.json --json 'key \"quiz\" . members .~ _String # \"DELETED\"'"
+  cmd: "$EXE -p -t $TARGET/quiz.json --json 'key \"quiz\" . members .~ _String # \"DELETED\"'"
   version: 0
 # - name: decimal
 #   cmd: "$EXE -t - 'convert.decimal +~ 1'"
