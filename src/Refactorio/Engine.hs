@@ -74,16 +74,18 @@ processFile updateMode (MapMFn mf) path = do
       diff'       = getContextDiff ctxLines beforeLines afterLines
       beforeLines = C8.lines beforeBytes
       afterLines  = C8.lines afterBytes
-  case updateMode of
-    AskMode -> changePrompt >>= \case
-      AcceptChange -> saveChanges afterBytes >> putLn ("Saved: " <> show path)
-      RejectChange -> putLn "File unchanged."
-      QuitChanges  -> putLn "Exiting at user's request." >> exitSuccess
-    ModifyMode  -> saveChanges afterBytes >> putLn ("Changed: " <> show path)
-    Nope        -> putLn "File unchanged."
-    PreviewMode -> showChanges "Preview" doc
-    ReviewMode  -> saveChanges afterBytes >> showChanges "Review" doc
-    SearchMode  -> panic "we should not be in processFile in SearchMode"
+  when (beforeBytes /= afterBytes) $ do
+    -- TODO: doublecheck (gh-6) here.
+    case updateMode of
+      AskMode -> changePrompt >>= \case
+        AcceptChange -> saveChanges afterBytes >> putLn ("Saved: " <> show path)
+        RejectChange -> putLn "File unchanged."
+        QuitChanges  -> putLn "Exiting at user's request." >> exitSuccess
+      ModifyMode  -> saveChanges afterBytes >> putLn ("Changed: " <> show path)
+      Nope        -> putLn "File unchanged."
+      PreviewMode -> showChanges "Preview" doc
+      ReviewMode  -> saveChanges afterBytes >> showChanges "Review" doc
+      SearchMode  -> panic "we should not be in processFile in SearchMode"
   where
     ctxLines = 2
 
