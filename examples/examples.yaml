@@ -2,64 +2,64 @@ settings:
   target: ../example-data
   # exe: "stack exec refactorio --"  # TODO: This is currently hardcoded
 examples:
-- pre: "Current help output at screenshot generation time"
-  name: "help"
-  version: 0
+- name: "help"
   cmd: "$EXE --help"
-- pre: "Increment the value at key 'baz' by 1962."
-  name: "json"
+  pre: "Current help output at screenshot generation time"
   version: 0
+- name: "json"
+  pre: "Increment the value at key 'baz' by 1962."
   cmd: "$EXE -p -t examples --json 'key \"quiz\" . key \"sport\" . key \"q1\" . key \"options\" . _Array . each . _String %~ Text.toUpper'"
-- pre: "Multiply the value of the key 'baz' by 10."
-  name: yaml
   version: 0
+- name: yaml
+  pre: "Multiply the value of the key 'baz' by 10."
   cmd: "$EXE -t $TARGET/examples.yaml -p --yaml 'H.yaml . key \"examples\" . key \"version\" . _Number +~ 32' | head -40"
-# - pre: "HTML example coming soon."
-#   name: html
-#   version: 0
+  version: 0
+# - name: html
+#   pre: "HTML example coming soon."
 #   cmd: "echo HTML makes me sad - real example coming soon."
-- pre: "C'mon, you've never needed to \"find all the authors with names longer than 15 characters and then sort all of the letters in their name that are above 'm' in place?\" Pshaw."
-  name: xml
-  version: 0
+#   version: 0
+- name: xml
+  pre: "C'mon, you've never needed to \"find all the authors with names longer than 15 characters and then sort all of the letters in their name that are above 'm' in place?\" Pshaw."
   cmd: "$EXE -t $TARGET/books.xml -p --xml 'convertTo(a::LByteString) . xml . node \"book\" . node \"author\" . text . filtered ((>12) . Text.length) . partsOf (each.filtered (>Prelude.head \"m\")) %~ sort'"
-- pre: "Drop regex's in anywhere you like, eg. \"uppercase and reverse the characters in the value of the JSON object at this key that match this regular expression\":"
-  name: regex
   version: 0
+- name: regex
+  pre: "Drop regex's in anywhere you like, eg. \"uppercase and reverse the characters in the value of the JSON object at this key that match this regular expression\":"
   cmd: "$EXE -t $TARGET -p --json 'key \"quiz\" . key \"sport\" . key \"q1\" . key \"answer\" . _String . Text.unpacked . regex [r|[aeiou]|] . matchedString %~ map Char.toUpper'"
-# - pre: "Reach inside eg. gzipped files and do what you gotta do:"
+  version: 0
+# - name: zlib
+#   pre: "Reach inside eg. gzipped files and do what you gotta do:"
 #   post: "(Not sure what's up with that \"trailing garbage.\")"
-#   name: zlib
-#   version: 0
 #   cmd: "cat $TARGET/b.json.gz | $EXE -t - --json 'convert . from Z.gzipped . from convert . key \"baz\" . _Number *~ 85' | gzcat -"
-- cmd: "$EXE -p -t examples/quiz.json --json '(key \"quiz\" . key \"sport\" . key \"q1\" . key \"answer\" . _String %~ Text.toUpper) . (key \"quiz\" . key \"maths\" . key \"q2\" . key \"options\" . _Array . traverse . _String .~ \"censored\")'"
-  name: composing-multiple-edits
-  version: 0
-  post: NB. in this example the JSON is roundtripped through the serialization process twice
-- name: hs-ints
-  version: 0
-  cmd: "$EXE -t src/Refactorio/Engine.hs --search --haskell _Module.biplate._Int.end"
-- name: hs-modname
-  version: 0
-  cmd: "$EXE -t src/Refactorio/Main.hs --search --haskell _Module.biplate._ModuleName.end"
-- name: hs-string
-  version: 0
-  cmd: "$EXE -t src/Refactorio/Main.hs --search --haskell _Module.biplate._String.end | head -40"
-- name: hs-fieldupdate
-  version: 0
-  cmd: "$EXE -t src/Refactorio/Theme.hs --search --haskell _Module.biplate._FieldUpdate.end"
-- name: hs-frac
-  version: 0
-  cmd: "$EXE -t src --search --haskell _Module.biplate._Frac.end"
-- name: hs-odd-ints
-  version: 0
-  cmd: "$EXE -t src/Refactorio/Legacy.hs --search --haskell '_Module.biplate._Int.filtered(odd.view target).end'"
-- name: hs-ints-gt-10
-  version: 0
-  cmd: "$EXE -t src --search --haskell '_Module.biplate._Int.filtered((>10).view target).end'"
-- name: json-review-string
-  version: 0
-  cmd: "$EXE -p -t examples/quiz.json --json 'key \"quiz\" . members .~ _String # \"DELETED\"'"
-# - name: decimal
 #   version: 0
+- name: composing-multiple-edits
+  cmd: "$EXE -p -t examples/quiz.json --json '(key \"quiz\" . key \"sport\" . key \"q1\" . key \"answer\" . _String %~ Text.toUpper) . (key \"quiz\" . key \"maths\" . key \"q2\" . key \"options\" . _Array . traverse . _String .~ \"censored\")'"
+  post: NB. in this example the JSON is roundtripped through the serialization process twice
+  version: 0
+- name: hs-ints
+  cmd: "$EXE -t src/Refactorio/Engine.hs --search --haskell _Module.biplate._Int.end"
+  version: 0
+- name: hs-modname
+  cmd: "$EXE -t src/Refactorio/Main.hs --search --haskell _Module.biplate._ModuleName.end"
+  version: 0
+- name: hs-string
+  cmd: "$EXE -t src/Refactorio/Main.hs --search --haskell _Module.biplate._String.end | head -40"
+  version: 0
+- name: hs-fieldupdate
+  cmd: "$EXE -t src/Refactorio/Theme.hs --search --haskell _Module.biplate._FieldUpdate.end"
+  version: 0
+- name: hs-frac
+  cmd: "$EXE -t src --search --haskell _Module.biplate._Frac.end"
+  version: 0
+- name: hs-odd-ints
+  cmd: "$EXE -t src/Refactorio/Legacy.hs --search --haskell '_Module.biplate._Int.filtered(odd.view target).end'"
+  version: 0
+- name: hs-ints-gt-10
+  cmd: "$EXE -t src --search --haskell '_Module.biplate._Int.filtered((>10).view target).end'"
+  version: 0
+- name: json-review-string
+  cmd: "$EXE -p -t examples/quiz.json --json 'key \"quiz\" . members .~ _String # \"DELETED\"'"
+  version: 0
+# - name: decimal
 #   cmd: "$EXE -t - 'convert.decimal +~ 1'"
 #   stdin: "10"
+#   version: 0
