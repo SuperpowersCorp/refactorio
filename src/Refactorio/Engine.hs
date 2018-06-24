@@ -31,21 +31,20 @@ import           X.Rainbow
 import           X.Streaming.Files                               ( tree )
 
 process :: Config -> IO ()
-process config@Config{..} =
-  if updateMode == SearchMode
-    then Legacy.search config
-    else describeProcess config >> buildMapFn config >>= \case
-      Left err -> reportError expr err
-      Right  f -> if mixingStdin targets
-        then reportCannotMixError (toList targets)
-        else forM_ targets $
-               S.mapM_ (processFile updateMode f)
-               . S.filter ( matchesAny compiledFilters )
-               . S.filter ( not . ignored )
-               . S.map fst
-               . S.filter ( not . isDirectory . snd )
-               . tree
-               . unTarget
+process config@Config{..} = if updateMode == SearchMode
+  then Legacy.search config
+  else describeProcess config >> buildMapFn config >>= \case
+    Left err -> reportError expr err
+    Right  f -> if mixingStdin targets
+      then reportCannotMixError (toList targets)
+      else forM_ targets $
+             S.mapM_ (processFile updateMode f)
+             . S.filter ( matchesAny compiledFilters )
+             . S.filter ( not . ignored )
+             . S.map fst
+             . S.filter ( not . isDirectory . snd )
+             . tree
+             . unTarget
   where
     compiledFilters = map compileFilter . Set.toList . allFilters $ config
 
@@ -178,7 +177,7 @@ customPrelude m = Just $ "Refactorio.Prelude." <> show m
 reportCannotMixError :: [Target] -> IO ()
 reportCannotMixError targets = do
   nl
-  putChunkLn $ chunk hdr  & fore c
+  putChunkLn $ chunk hdr & fore c
   putChunkLn $ chunk msg & fore c
   nl
   where
@@ -204,4 +203,3 @@ reportError expr e = do
           errors = map errMsg ghcErrors
 
     c = red  -- TODO: theme
-

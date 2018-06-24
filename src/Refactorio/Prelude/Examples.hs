@@ -13,7 +13,7 @@ module Refactorio.Prelude.Examples
      , postText
      , cmd
      , refactorioExamplesL
-     , unsafeMakeScreenshot
+     , safeMakeScreenshot
      , version
      ) where
 
@@ -25,7 +25,6 @@ import           Data.Aeson.Lens          as Exports
 import           Data.Text                as T
 import           Refactorio.Helpers       as H
 import           Safe                                       ( readMay )
-import           System.IO.Unsafe                           ( unsafePerformIO )
 import           System.Process
 
 type Example = ( FilePath
@@ -68,8 +67,8 @@ refactorioExamplesL :: Traversal' ByteString ExampleData
 refactorioExamplesL = H.yaml . key "examples" . _Array . traverse . _JSON
 
 -- TODO: Remove / move elsewhere
-unsafeMakeScreenshot :: ExampleData -> ExampleData
-unsafeMakeScreenshot exData = unsafePerformIO $ getWindowId >>= \case
+safeMakeScreenshot :: ExampleData -> IO ExampleData
+safeMakeScreenshot exData = getWindowId >>= \case
   Nothing -> do
     RP.putLn "SCREENSHOT FAILED: COULD NOT FIND WINDOW ID"
     return exData
