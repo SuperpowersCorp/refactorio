@@ -45,6 +45,9 @@ isoAs _ = iso identity identity
 class Convert a b where
   convert :: Iso' a b
 
+instance Convert a a where
+  convert = iso identity identity
+
 instance Convert BS.ByteString LBS.ByteString where
   convert = iso LBS.fromStrict LBS.toStrict
 
@@ -77,3 +80,6 @@ instance Convert LT.Text S.String where
 
 instance Convert BS.ByteString LT.Text where
   convert = convertTo (a :: T.Text) . convertTo (a :: LT.Text)
+
+instance Convert BS.ByteString String where
+  convert = convertTo (a :: T.Text) . unpacked

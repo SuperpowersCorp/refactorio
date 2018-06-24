@@ -15,6 +15,7 @@ extra-deps:
 - io-capture-1.0.0
 - lens-4.15.4
 - mueval-0.9.3
+- number-show-0.1.0.0
 - pandoc-lens-0.6.3
 - pipes-4.3.9
 - pipes-files-0.1.2

@@ -58,4 +58,10 @@ examples:
   cmd: "$EXE -t src --search --haskell '_Module.biplate._Int.filtered((>10).view target).end'"
 - name: json-review-string
   version: 0
-  cmd: "$EXE -p -t examples/quiz.json --json '(key \"quiz\" . members .~ _String # \"DELETED\")'"
+  cmd: "$EXE -p -t examples/quiz.json --json 'key \"quiz\" . members .~ _String # \"DELETED\"'"
+- name: versions
+  version: 0
+  cmd: "$EXE -p -t examples/quiz.json --json 'key \"version\" . _String . patch +~ 1'"
+- name: number-show
+  version: 0
+  cmd: "$EXE -p -t examples/examples.yaml --yaml 'yaml . key \"examples\" . key \"version\" . _Number . isNegative %~ not'

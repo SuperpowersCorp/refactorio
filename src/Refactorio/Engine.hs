@@ -30,20 +30,20 @@ import           X.Rainbow
 import           X.Streaming.Files                               ( tree )
 
 process :: Config -> IO ()
-process config@Config{..} = if updateMode == SearchMode
-  then Legacy.search config
-  else describeProcess config >> buildMapFn config >>= \case
-    Left err -> errorInExpression expr err
-    Right  f -> if mixingStdin targets
-      then errorCannotMix . toList $ targets
-      else forM_ targets $
-             S.mapM_ (processFile updateMode f)
-             . S.filter ( matchesAny compiledFilters )
-             . S.filter ( not . ignored )
-             . S.map fst
-             . S.filter ( not . isDirectory . snd )
-             . tree
-             . unTarget
+process config@Config{..}
+  | updateMode == SearchMode = Legacy.search config
+  | otherwise = describeProcess config >> buildMapFn config >>= \case
+      Left err -> errorInExpression expr err
+      Right  f -> if mixingStdin targets
+        then errorCannotMix . toList $ targets
+        else forM_ targets $
+               S.mapM_ (processFile updateMode f)
+               . S.filter ( matchesAny compiledFilters )
+               . S.filter ( not . ignored )
+               . S.map fst
+               . S.filter ( not . isDirectory . snd )
+               . tree
+               . unTarget
   where
     compiledFilters = map compileFilter . Set.toList . allFilters $ config
 
@@ -67,10 +67,11 @@ processFile updateMode (MapMFn mf) path = do
       diff'       = getContextDiff ctxLines beforeLines afterLines
       beforeLines = C8.lines beforeBytes
       afterLines  = C8.lines afterBytes
-  when (beforeBytes /= afterBytes) $
-    -- TODO: doublecheck (gh-6) here.
-    case updateMode of
-      AskMode -> changePrompt >>= \case
+  if path == "-"
+    then saveChanges afterBytes
+    else when (beforeBytes /= afterBytes) $ case updateMode of
+      -- TODO: doublecheck (gh-6) here.
+      AskMode -> showChanges "Preview" doc >> changePrompt >>= \case
         AcceptChange -> saveChanges afterBytes >> putLn ("Saved: " <> show path)
         RejectChange -> putLn "File unchanged."
         QuitChanges  -> putLn "Exiting at user's request." >> exitSuccess
@@ -83,9 +84,11 @@ processFile updateMode (MapMFn mf) path = do
     ctxLines = 2
 
     saveChanges :: ByteString -> IO ()
-    saveChanges bs = do
-      putLn $ "Saving changes to " <> T.pack path
-      BS.writeFile path bs
+    saveChanges bs
+      | path == "-" = BS.putStr bs
+      | otherwise = do
+          putLn $ "Saving changes to " <> T.pack path
+          BS.writeFile path bs
 
     showChanges :: Text -> Doc -> IO ()
     showChanges label doc = do
@@ -118,7 +121,11 @@ processFile updateMode (MapMFn mf) path = do
     render' = T.pack . PP.render
 
 allFilters :: Config -> Set FilenameFilter
-allFilters Config{..} = expandExtraFilters specialModeMay filenameFilters
+allFilters Config{..}
+  | isStdin   = Set.empty
+  | otherwise = expandExtraFilters specialModeMay filenameFilters
+  where
+    isStdin = targets == Target "-" :| []
 
 buildMapFn :: Config -> IO (Either InterpreterError MappingFn)
 buildMapFn config@Config{..}

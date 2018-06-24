@@ -14,7 +14,7 @@ module Refactorio.Prelude.Examples
      , makeScreenshot
      , postText
      , preText
-     , version
+     , vers
      ) where
 
 import           Refactorio.Prelude.Basic as Exports hiding ( (.=) )
@@ -36,7 +36,7 @@ data ExampleData = ExampleData
   , _preText     :: Maybe Text
   , _postText    :: Maybe Text
   , _cmd         :: Text
-  , _version     :: Int
+  , _vers        :: Int
   } deriving Show
 
 makeLenses ''ExampleData
@@ -53,7 +53,7 @@ instance ToJSON   ExampleData where
   toJSON exData = object $
     [ "name"    .= (exData ^. exampleName)
     , "cmd"     .= (exData ^. cmd)
-    , "version" .= (exData ^. version)
+    , "version" .= (exData ^. vers)
     ] -- TODO: simplify
     ++ case exData ^. preText of
          Nothing -> []
@@ -75,7 +75,7 @@ makeScreenshot exData = getWindowId >>= \case
     RP.sleep 0.2
     makeScreenshotOf winId exData
     RP.sleep 0.9
-    return $ exData & version +~ 1
+    return $ exData & vers +~ 1
   where
     fullCmd = replaceExe exe . replaceTarget target $ exData ^. cmd
     target  = "examples"                 -- TODO
