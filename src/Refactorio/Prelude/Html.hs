@@ -1,5 +1,4 @@
 {-# LANGUAGE NoImplicitPrelude #-}
-{-# LANGUAGE OverloadedStrings #-}
 
 module Refactorio.Prelude.Html
      ( module Exports
@@ -11,8 +10,8 @@ import Refactorio.Prelude.Basic as Exports hiding ( children
                                                   , elements
                                                   )
 
-import Text.XML.Lens            as Exports
 import Text.XML
+import Text.XML.Lens            as Exports
 
 html :: Prism' ByteString Document
 html = prism g s

@@ -21,7 +21,7 @@ hs = iso get set
       other     -> panic . show $ other
 
     set :: Module SrcSpanInfo -> ByteString
-    set = panic "set' undefined"
+    set = panic "hs set' undefined"
 
     mode' :: ParseMode
     mode' = ParseMode "refactorio-live" Haskell2010 defaultExtensions

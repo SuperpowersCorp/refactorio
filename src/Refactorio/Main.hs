@@ -14,6 +14,8 @@ import           Refactorio.SpecialMode
 import           Refactorio.Types
 import           X.Rainbow
 
+-- import qualified Data.List.NonEmpty as NE
+
 main :: IO ()
 main = void $ customExecParser prefs opts >>= process . wrapSrc
   where
@@ -23,8 +25,7 @@ main = void $ customExecParser prefs opts >>= process . wrapSrc
       }
 
     opts = info (parser <**> helper) $ fullDesc
-           <> header   "Refactorio - Optical Refactoring Tool"
-           <> progDesc "Zen and the art of optical file maintenance."
+      <> header "Refactorio - Optical Refactoring Tool"
 
 wrapSrc :: Config -> Config
 wrapSrc = identity
@@ -42,28 +43,36 @@ parser = prefixConfigParser
   where
     prefixConfigParser :: Parser Config
     prefixConfigParser = reorder
-      <$> expressionParser
+      <$> monadicParser
+      <*> expressionParser
       <*> targetParser
       <*> filenameFilterSetParser
       <*> optional preludeParser
       <*> updateModeParser
       <*> specialModeParser
 
-    -- So Optparse Applicative will generate the options in the right order
-    reorder ex ta ff pr um sp = Config ff ex pr sp um ta
+    -- So Optparse Applicative will generate the options in our preferred order
+    reorder mo ex ta ff pr um sp = Config ff ex mo pr sp um ta
+
+monadicParser :: Parser Bool
+monadicParser = switch
+  ( long "io"
+ <> help "Add IO to expr type ('ByteString -> IO ByteString')"
+  )
 
 expressionParser :: Parser Expression
 expressionParser = Expression . Text.pack <$> argument str
   ( metavar "EXPR"
- <> help    "ByteString -> ByteString"
+ <> help    "A Haskell expression of type 'ByteString -> ByteString'"
   )
 
-targetParser :: Parser Target
-targetParser = Target <$> strOption
+targetParser :: Parser (NonEmpty Target)
+-- targetParser = NE.fromList <$> some ( Target <$> strOption -- TODO: causes even "refio --help" to hang for some reason
+targetParser = pure. Target <$> strOption
   ( long        "target"
  <> short       't'
  <> metavar     "TARGET"
- <> help        "A file/directory to search/replace"
+ <> help        "A file/directory to traverse"
  <> value       "."
  <> showDefault
   )
@@ -74,8 +83,7 @@ filenameFilterSetParser = Set.fromList . map (FilenameFilter . Text.pack) <$> ma
              <> short   'g'
              <> metavar "GLOB"
              <> help    "Glob matches to include (eg '*.ini', 'f??b?r.c')"
-              )
-  )
+              ) )
 
 preludeParser :: Parser FilePath
 preludeParser = strOption
@@ -137,8 +145,7 @@ specialModeParser = resolve <$> ( (,,,,,)
   <*> langSwitch Yaml
                ( long "yaml"
               <> help "Include .y(a)ml files and make YAML ops available"
-               )
-                                )
+               ) )
   where
     langSwitch m = (mmap m <$>) . switch
 

@@ -23,14 +23,11 @@ import           X.Streaming.Files                            ( FileInfo
                                                               , tree
                                                               )
 
-replace :: Config -> Text -> IO ()
-replace Config{..} _mapFnSrc = panic "legacyReplace not implemented yet"
-
 search :: Config -> IO ()
 search config@Config{..} = do
   putChunksLn
     [ chunk within & withinHdr theme
-    , chunk (T.pack . unTarget $ target) & withinValue theme
+    , chunk (T.pack . show . map unTarget $ targets) & withinValue theme
     ]
   putChunksLn
     [ chunk query & searchHdr theme
@@ -44,27 +41,22 @@ search config@Config{..} = do
      justify s = T.replicate (T.length within - T.length s) " " <> s
      theme     = defaultTheme
 
--- DRY UP vs Engine
--- TODO: read .*ignore files from the target dir down to the current file, caching
---       along the way, etc. but for now...
-ignored :: FilePath -> Bool
-ignored path = ocd
-  || path `contains`   ".stack-work"
-  || path `startsWith` ".git/"
-  || path `contains`   "/.git/"
-  where
-    ocd = False
+searchFileByLens :: Config -> IO (Either InterpreterError MappingFn)
+searchFileByLens _config@Config{..} = makeLens (unExpression expr) >>= \case
+  Left err -> panic . show $ err
+  Right _trav -> panic "Right _trav undefined"
 
 searchByLens :: Config -> IO ()
 searchByLens Config {..} = makeLens (unExpression expr) >>= \case
   Left err -> print err
-  Right trav -> S.mapM_ (showMatches trav)
-    . S.chain reportFile
-    . S.filter ( matchesAny compiledFilters . fst )
-    . S.filter (\(p, _) -> ".hs" `L.isSuffixOf` p && not (".stack-work" `L.isInfixOf` p))
-    . tree
-    . unTarget
-    $ target
+  Right trav -> forM_ targets $ \target ->
+    S.mapM_ (showMatches trav)
+      . S.chain reportFile
+      . S.filter ( matchesAny compiledFilters . fst )
+      . S.filter (\(p, _) -> ".hs" `L.isSuffixOf` p && not (".stack-work" `L.isInfixOf` p))
+      . tree
+      . unTarget
+      $ target
     where
       showMatches t (p, _) = findMatches t p
                                >>= mapM_ (\x -> printPrettily theme x >> nl)
@@ -148,3 +140,6 @@ putColorFrom theme span src = do
           post     = chunk $ T.drop (srcSpanEndColumn span)   lx
 
           lx = fromMaybe (panic "unpossible!") . lastMay $ xs
+
+replace :: Config -> Text -> IO ()
+replace Config{..} _mapFnSrc = panic "legacyReplace not implemented yet"

@@ -63,6 +63,7 @@ library
                      , pandoc-lens
                      , pretty
                      , process
+                     , profunctors
                      , protolude
                      , rainbow
                      , regex-pcre-builtin
@@ -102,6 +103,7 @@ executable refactorio
                      , pandoc-lens
                      , pretty
                      , process
+                     , profunctors
                      , protolude
                      , refactorio
                      , regex-pcre-builtin
@@ -140,6 +142,7 @@ test-suite refactorio-test
                      , pandoc-lens
                      , pretty
                      , process
+                     , profunctors
                      , protolude
                      , refactorio
                      , regex-pcre-builtin
