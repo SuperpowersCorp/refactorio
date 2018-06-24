@@ -74,8 +74,9 @@ makeScreenshot exData = getWindowId >>= \case
     void . system . RP.unpack $ fullCmd
     RP.sleep 0.2
     makeScreenshotOf winId exData
-    RP.sleep 0.9
-    return $ exData & vers +~ 1
+    RP.sleep 0.2
+    -- return $ exData & vers +~ 1
+    return exData
   where
     fullCmd = replaceExe exe . replaceTarget target $ exData ^. cmd
     target  = "examples"                 -- TODO

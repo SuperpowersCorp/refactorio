@@ -27,7 +27,7 @@ search :: Config -> IO ()
 search config@Config{..} = do
   putChunksLn
     [ chunk within & withinHdr theme
-    , chunk (T.pack . show . map unTarget $ targets) & withinValue theme
+    , chunk (T.pack . show . map unTarget . toList $ targets) & withinValue theme
     ]
   putChunksLn
     [ chunk query & searchHdr theme

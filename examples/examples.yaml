@@ -1,6 +1,6 @@
 settings:
   target: ../example-data
-  exe: "stack exec refactorio --"  # TODO: This is currently hardcoded
+  # exe: "stack exec refactorio --"  # TODO: This is currently hardcoded
 examples:
 - pre: "Current help output at screenshot generation time"
   name: "help"
@@ -13,24 +13,24 @@ examples:
 - pre: "Multiply the value of the key 'baz' by 10."
   name: yaml
   version: 0
-  cmd: "$EXE -t $TARGET/examples.yaml -p --yaml 'H.yaml . key \"examples\" . key \"version\" . _Number +~ 32'"
-- pre: "HTML example coming soon."
-  name: html
-  version: 0
-  cmd: "echo HTML makes me sad - real example coming soon."
+  cmd: "$EXE -t $TARGET/examples.yaml -p --yaml 'H.yaml . key \"examples\" . key \"version\" . _Number +~ 32' | head -40"
+# - pre: "HTML example coming soon."
+#   name: html
+#   version: 0
+#   cmd: "echo HTML makes me sad - real example coming soon."
 - pre: "C'mon, you've never needed to \"find all the authors with names longer than 15 characters and then sort all of the letters in their name that are above 'm' in place?\" Pshaw."
   name: xml
   version: 0
-  cmd: "$EXE -t $TARGET -p --xml 'convertTo(a::LByteString) . xml . node \"book\" . node \"author\" . text . filtered ((>12) . Text.length) . partsOf (each.filtered (>Prelude.head \"m\")) %~ sort'"
+  cmd: "$EXE -t $TARGET/books.xml -p --xml 'convertTo(a::LByteString) . xml . node \"book\" . node \"author\" . text . filtered ((>12) . Text.length) . partsOf (each.filtered (>Prelude.head \"m\")) %~ sort'"
 - pre: "Drop regex's in anywhere you like, eg. \"uppercase and reverse the characters in the value of the JSON object at this key that match this regular expression\":"
   name: regex
   version: 0
   cmd: "$EXE -t $TARGET -p --json 'key \"quiz\" . key \"sport\" . key \"q1\" . key \"answer\" . _String . Text.unpacked . regex [r|[aeiou]|] . matchedString %~ map Char.toUpper'"
-- pre: "Reach inside eg. gzipped files and do what you gotta do:"
-  post: "(Not sure what's up with that \"trailing garbage.\")"
-  name: zlib
-  version: 0
-  cmd: "cat $TARGET/b.json.gz | $EXE -t - --json 'convert . from Z.gzipped . from convert . key \"baz\" . _Number *~ 85' | gzcat -"
+# - pre: "Reach inside eg. gzipped files and do what you gotta do:"
+#   post: "(Not sure what's up with that \"trailing garbage.\")"
+#   name: zlib
+#   version: 0
+#   cmd: "cat $TARGET/b.json.gz | $EXE -t - --json 'convert . from Z.gzipped . from convert . key \"baz\" . _Number *~ 85' | gzcat -"
 - cmd: "$EXE -p -t examples/quiz.json --json '(key \"quiz\" . key \"sport\" . key \"q1\" . key \"answer\" . _String %~ Text.toUpper) . (key \"quiz\" . key \"maths\" . key \"q2\" . key \"options\" . _Array . traverse . _String .~ \"censored\")'"
   name: composing-multiple-edits
   version: 0
@@ -43,7 +43,7 @@ examples:
   cmd: "$EXE -t src/Refactorio/Main.hs --search --haskell _Module.biplate._ModuleName.end"
 - name: hs-string
   version: 0
-  cmd: "$EXE -t src/Refactorio/Main.hs --search --haskell _Module.biplate._String.end"
+  cmd: "$EXE -t src/Refactorio/Main.hs --search --haskell _Module.biplate._String.end | head -40"
 - name: hs-fieldupdate
   version: 0
   cmd: "$EXE -t src/Refactorio/Theme.hs --search --haskell _Module.biplate._FieldUpdate.end"
@@ -59,9 +59,7 @@ examples:
 - name: json-review-string
   version: 0
   cmd: "$EXE -p -t examples/quiz.json --json 'key \"quiz\" . members .~ _String # \"DELETED\"'"
-- name: versions
-  version: 0
-  cmd: "$EXE -p -t examples/quiz.json --json 'key \"version\" . _String . patch +~ 1'"
-- name: number-show
-  version: 0
-  cmd: "$EXE -p -t examples/examples.yaml --yaml 'yaml . key \"examples\" . key \"version\" . _Number . isNegative %~ not'
+# - name: decimal
+#   version: 0
+#   cmd: "$EXE -t - 'convert.decimal +~ 1'"
+#   stdin: "10"

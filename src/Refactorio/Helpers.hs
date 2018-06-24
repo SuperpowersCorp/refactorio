@@ -52,7 +52,7 @@ yaml = iso g s
     g = view (from convert) . Json.encode . yamlBsToValue
 
     yamlBsToValue :: ByteString -> Json.Value
-    yamlBsToValue = either (panic "yamlBsToValue decode failed") identity
+    yamlBsToValue = either (panic . ("YAML decoding failure: " <>) . show) identity
       . Yaml.decodeEither
 
     s :: ByteString -> ByteString

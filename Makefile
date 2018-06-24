@@ -40,7 +40,7 @@ make-example-index:
 
 make-screenshots:
 	stack exec $(EXE) -- --examples -p -t examples/examples.yaml --io \
-	  'traverseOf (H.yaml . key "examples" . _Array . traverse . _JSON) safeMakeScreenshot'
+	  'traverseOf (yaml . key "examples" . _Array . traverse . _JSON) makeScreenshot'
 
 run:
 	stack exec $(EXE) $(STACK_ARGS) -- refactorio $(ARGS)

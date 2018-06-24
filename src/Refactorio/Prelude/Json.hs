@@ -1,8 +1,6 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 
-module Refactorio.Prelude.Json
-     ( module Exports
-     ) where
+module Refactorio.Prelude.Json ( module Exports ) where
 
 import Refactorio.Prelude.Basic as Exports
 

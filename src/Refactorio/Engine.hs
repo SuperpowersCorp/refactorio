@@ -156,7 +156,7 @@ describeProcess config@Config{..} = do
   case specialModeMay of
     Nothing   -> return ()
     Just mode -> putLnMay $ "Special processing activated: " <> show mode
-  putLnMay $ "Targets: " <> show (map unTarget targets)
+  putLnMay $ "Targets: " <> show (map unTarget . toList $ targets)
   putLnMay $ if null filters
     then "No filters."
     else "Filters: " <> show (map unFilenameFilter . Set.toList $ filters)
