@@ -15,22 +15,27 @@ Lens based Haskell refactoring toolkit.
 
 ## Usage
 
-Refactorio - Optical Refactoring Tool
+    Refactorio - Optical Refactoring Tool
 
-    Usage: refactorio EXPR [-t|--target TARGET] [-g|--glob GLOB] [--prelude MODULE]
-                      ([-a|--ask] | [-p|--preview] | [-r|--review] | [-m|--modify])
+    Usage: refactorio [--io] EXPR [-t|--target TARGET] [-g|--glob GLOB]
+                      [--prelude MODULE] ([-a|--ask] | [-p|--preview] |
+                      [-m|--modify] | [--review] | [-s|--search]) [--examples]
                       [--haskell|--hs] [--html] [--json] [--xml] [--yaml]
-      Zen and the art of optical file maintenance.
 
     Available options:
-      EXPR                     ByteString -> ByteString
-      -t,--target TARGET       A file/directory to search/replace (default: ".")
+      --io                     Add IO to expr type ('ByteString -> IO ByteString')
+      EXPR                     A Haskell expression of type 'ByteString ->
+                               ByteString'
+      -t,--target TARGET       A file/directory to traverse (default: ".")
       -g,--glob GLOB           Glob matches to include (eg '*.ini', 'f??b?r.c')
       --prelude MODULE         Use a specific Prelude module
       -a,--ask                 Ask before changing files (default)
       -p,--preview             Only show the changes that would be made
-      -r,--review              Make the changes and show details of changes
       -m,--modify              Make the changes and summarize changed filenames
+      --review                 Make the changes and show details of changes
+      -s,--search              Activate alternate search mode (Haskell mode only
+                               right now)
+      --examples               Temporary mode for creating examples
       --haskell,--hs           Include .hs files and make Haskell ops available
       --html                   Include .htm(l) files and make XML ops available
       --json                   Include .json files and make JSON ops available
