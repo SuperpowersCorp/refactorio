@@ -133,9 +133,13 @@ the value of the JSON object at this key that match this regular expression":
 
 Reach inside eg. gzipped files and do what you gotta do:
 
-![gzipped Example](examples/gzipped.jpg)
+<!-- ![gzipped Example](examples/gzipped.jpg) -->
 
-(Not sure what's up with that "trailing garbage.")
+    Example is temporarily unavailable, but goes something like:
+
+    cat foo.json.gz | refio -t - --json 'convert . from Z.gzipped . from convert . key \"baz\" . _Number *~ 85' > bar.json.gz
+
+<!-- (Not sure what's up with that "trailing garbage.") -->
 
 ### Type Conversions
 
