@@ -10,10 +10,10 @@ examples:
   pre: "Increment the value at key 'baz' by 1962."
   cmd: "$EXE -p -t $TARGET --json 'key \"quiz\" . key \"sport\" . key \"q1\" . key \"options\" . _Array . each . _String %~ Text.toUpper'"
   version: 0
-- name: yaml
-  pre: "Multiply the value of the key 'baz' by 10."
-  cmd: "$EXE -t $TARGET/examples.yaml -p --yaml 'yaml . key \"examples\" ... key \"version\" . _Number +~ 32' | head -40"
-  version: 0
+# - name: yaml
+#   pre: "Multiply the value of the key 'baz' by 10."
+#   cmd: "$EXE -t $TARGET/examples.yaml -p --yaml 'yaml . key \"examples\" ... key \"version\" . _Number +~ 32' | head -40"
+#   version: 0
 # - name: html
 #   pre: "HTML example coming soon."
 #   cmd: "echo HTML makes me sad - real example coming soon."

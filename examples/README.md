@@ -15,13 +15,6 @@ Increment the value at key 'baz' by 1962.
 
 ![json](json.jpg)
 
-yaml
-----
-
-Multiply the value of the key 'baz' by 10.
-
-![yaml](yaml.jpg)
-
 xml
 ---
 
