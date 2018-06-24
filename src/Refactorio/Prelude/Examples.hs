@@ -101,7 +101,7 @@ generateIndex srcBytes = case eitherDecode . view (yaml . convert) $ srcBytes of
             alt   = text name
             name  = ex ^. (exampleName . convert)
             title = mempty
-            url   = "examples/" ++ name ++ ".jpg"
+            url   = name ++ ".jpg"
 
         prefix = maybe mempty (para . fromString . view convert) $ ex ^. preText
         suffix = maybe mempty (para . fromString . view convert) $ ex ^. postText

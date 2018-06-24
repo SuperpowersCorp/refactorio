@@ -36,7 +36,7 @@ make-examples: make-screenshots make-example-index
 make-example-index:
 	cat examples/examples.yaml \
 	  | stack exec $(EXE) -- --examples -t - 'generateIndex' \
-	  > examples/README.html
+	  > examples/README.md
 
 make-screenshots:
 	stack exec $(EXE) -- --examples -p -t examples/examples.yaml --io \
