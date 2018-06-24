@@ -58,16 +58,10 @@ Any `ByteString -> ByteString` function definition will work, for example:
 
     over convert Text.toUpper
 
-There is a shortcut for using `&` style lens application in point-free style.
-The last `over` example can be written as:
+    # or equivalently
+    convert %~ Text.toUpper
 
-    & convert %~ Text.toUpper
-
-which allows the use of the wider range of operators, eg.
-
-    & key "foo" . _Number *~ 3
-    & key "foo" . _Number +~ 10
-    etc
+    key "foo" . _Number *~ 3
 
 ### Ask Mode (-a / --ask)
 
@@ -150,11 +144,11 @@ exist which can be used like so:
 
 When types can be infered:
 
-    % refio --html -t /tmp/voltron/src '& convert %~ Text.toUpper'
+    % refio --html -t /tmp/voltron/src 'convert %~ Text.toUpper'
 
 When types have to be clarified:
 
-    % refio --html -t /tmp/voltron/src '& convertTo(a::LByteString).xml...name %~ Text.toUpper'
+    % refio --html -t /tmp/voltron/src 'convertTo(a::LByteString).xml...name %~ Text.toUpper'
 
 ### Haskell (via [haskell-src-exts](https://hackage.haskell.org/package/haskell-src-exts) and [haskell-src-exts-prisms](https://hackage.haskell.org/package/haskell-src-exts-prisms)):
 
@@ -182,15 +176,11 @@ For now the easiest way to get it working is build it with `stack build` and the
 and run it from the refactorio project root to get an experience something
 like:
 
-    refio --json 'over (key "foo" . key "bar" . _Number) (+3)' -t ../voltron/test/fixtures
+    refio --json 'key "foo" . key "bar" . _Number *~ 15' -t ./examples
 
 or
 
-    refio --json '& key "foo" . key "bar" . _Number *~ 15' -t ../voltron/test/fixtures
-
-or
-
-    refio -s --haskell _Module.biplate._ModuleName.end -t ../voltron/src
+    refio -s --haskell _Module.biplate._ModuleName.end
 
 (where the `-t`/`--target` is a file or directory to process and can be outside
 of the refactorio project root).
@@ -225,5 +215,3 @@ conflicting imports (eg. _String in `lens-aeson` and in
 mode" flag (eg. `--haskell`, `--json`, etc) Refactorio will attempt to use
 `Refactorio.Prelude.{ModeName}` (eg `Refactorio.Prelude.Haskell`, etc).  If no
 special mode is provided, `Refactorio.Prelude.Basic` is used.
-
-(TODO: clarify/elaborate on preludes)
