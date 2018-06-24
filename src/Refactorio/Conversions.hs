@@ -83,3 +83,6 @@ instance Convert BS.ByteString LT.Text where
 
 instance Convert BS.ByteString String where
   convert = convertTo (a :: T.Text) . unpacked
+
+instance Convert String BS.ByteString where
+  convert = from convert

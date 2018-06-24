@@ -12,7 +12,7 @@ examples:
   version: 0
 - name: yaml
   pre: "Multiply the value of the key 'baz' by 10."
-  cmd: "$EXE -t $TARGET/examples.yaml -p --yaml 'yaml . key "examples" ... key "version" . _Number +~ 32' | head -40"
+  cmd: "$EXE -t $TARGET/examples.yaml -p --yaml 'yaml . key \"examples\" ... key \"version\" . _Number +~ 32' | head -40"
   version: 0
 # - name: html
 #   pre: "HTML example coming soon."

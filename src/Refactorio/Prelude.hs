@@ -31,6 +31,7 @@ import           Control.Lens   as Exports        ( (%~)
                                                   )
 import           Data.Data      as Exports        ( Data )
 import           Data.Data.Lens as Exports        ( upon )
+import           Data.Default   as Exports
 import           Data.List      as List
 import           Data.String    as Exports        ( String )
 import           Data.Text      as Exports        ( unpack )

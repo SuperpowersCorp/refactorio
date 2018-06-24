@@ -49,6 +49,7 @@ library
                      , base >= 4.7 && < 5
                      , bytestring
                      , containers
+                     , data-default
                      , directory
                      , exceptions
                      , haskell-src-exts
@@ -59,9 +60,11 @@ library
                      , lens
                      , lens-aeson
                      , lens-regex
-                     , optparse-applicative
                      , number-show
+                     , optparse-applicative
+                     , pandoc
                      , pandoc-lens
+                     , pandoc-types
                      , pretty
                      , process
                      , profunctors
@@ -93,6 +96,7 @@ executable refactorio
                      , base
                      , bytestring
                      , containers
+                     , data-default
                      , directory
                      , exceptions
                      , hexml-lens
@@ -103,7 +107,9 @@ executable refactorio
                      , lens-regex
                      , number-show
                      , optparse-applicative
+                     , pandoc
                      , pandoc-lens
+                     , pandoc-types
                      , pretty
                      , process
                      , profunctors
@@ -134,6 +140,7 @@ test-suite refactorio-test
                      , base
                      , bytestring
                      , containers
+                     , data-default
                      , directory
                      , exceptions
                      , hexml-lens
@@ -144,7 +151,9 @@ test-suite refactorio-test
                      , lens-aeson
                      , lens-regex
                      , number-show
+                     , pandoc
                      , pandoc-lens
+                     , pandoc-types
                      , pretty
                      , process
                      , profunctors
