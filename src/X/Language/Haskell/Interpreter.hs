@@ -29,7 +29,7 @@ build possiblePreludes src = getHomeDirectory >>= \home -> runInterpreter $ do
       ]
   -- TODO: allow setting via CLI
   -- TODO: should we include '.'? probably not?
-  set [ searchPath := [ home <> "/src/refactorio" ] ]
+  set [ searchPath := [ home <> "/src/refactorio/.stack-work/install/x86_64-osx/lts-9.21/8.0.2/pkgdb" ] ]
   -- TODO: catch errors and try the rest.
   setImportsQ hardcodedImports
   interpret (unpack ("(" <> src <> ")")) infer
