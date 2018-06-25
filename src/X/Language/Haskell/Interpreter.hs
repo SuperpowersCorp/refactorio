@@ -6,12 +6,13 @@ module X.Language.Haskell.Interpreter
      , build
      ) where
 
-import Refactorio.Prelude
+import Refactorio.Prelude           hiding ( get )
 
 import Language.Haskell.Interpreter
+import System.Directory                    ( getHomeDirectory )
 
 build :: Typeable a => [String] -> Text -> IO (Either InterpreterError a)
-build possiblePreludes src = runInterpreter $ do
+build possiblePreludes src = getHomeDirectory >>= \home -> runInterpreter $ do
   -- TODO: make extensions CLI options
   set [ languageExtensions
         := [ FlexibleContexts
@@ -26,6 +27,9 @@ build possiblePreludes src = runInterpreter $ do
            , ScopedTypeVariables
            ]
       ]
+  -- TODO: allow setting via CLI
+  -- TODO: should we include '.'? probably not?
+  set [ searchPath := [ home <> "/src/refactorio" ] ]
   -- TODO: catch errors and try the rest.
   setImportsQ hardcodedImports
   interpret (unpack ("(" <> src <> ")")) infer

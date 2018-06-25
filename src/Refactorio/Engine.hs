@@ -203,7 +203,7 @@ errorCannotMix targets = reportError hdr msg
 errorInExpression :: Expression -> InterpreterError -> IO ()
 errorInExpression expr e = reportError hdr msg
   where
-    hdr = "Failed to compile expression:\n\n    " <> unExpression expr <> "\n"
+    hdr = "Failed to compile expression:\n\n    " <> unExpression expr <> "\n\n"
 
     msg = T.pack $ case e of
       GhcException s        -> "GHC Exception:\n\n" <> s
