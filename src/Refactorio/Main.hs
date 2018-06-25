@@ -122,38 +122,29 @@ updateModeParser =
   <|> pure AskMode
 
 specialModeParser :: Parser (Maybe SpecialMode)
-specialModeParser = resolve <$> ( (,,,,,)
-  <$> langSwitch Examples
-               ( long "examples"
-              <> help "Temporary mode for creating examples"
-               )
-  <*> langSwitch Haskell
-               ( long "haskell"
-              <> long "hs"
-              <> help "Include .hs files and make Haskell ops available"
-               )
-  <*> langSwitch Html
-               ( long "html"
-              <> help "Include .htm(l) files and make XML ops available"
-               )
-  <*> langSwitch Json
-               ( long "json"
-              <> help "Include .json files and make JSON ops available"
-               )
-  <*> langSwitch Xml
-               ( long "xml"
-              <> help "Include .xml files and make XML ops available"
-               )
-  <*> langSwitch Yaml
-               ( long "yaml"
-              <> help "Include .y(a)ml files and make YAML ops available"
-               ) )
+specialModeParser =
+  langSwitch Examples ( long "examples"
+                     <> help "Temporary mode for creating examples"
+                      )
+  <|> langSwitch Haskell ( long "haskell"
+                        <> long "hs"
+                        <> help "Include .hs files and make Haskell ops available"
+                         )
+  <|> langSwitch Html ( long "html"
+                     <> help "Include .htm(l) files and make XML ops available"
+                      )
+  <|> langSwitch Json ( long "json"
+                     <> help "Include .json files and make JSON ops available"
+                      )
+  <|> langSwitch Xml ( long "xml"
+                    <> help "Include .xml files and make XML ops available"
+                     )
+  <|> langSwitch Yaml ( long "yaml"
+                     <> help "Include .y(a)ml files and make YAML ops available"
+                      )
   where
     langSwitch m = (mmap m <$>) . switch
 
     mmap :: SpecialMode -> Bool -> Maybe SpecialMode
     mmap sm True  = Just sm
     mmap _  False = Nothing
-
-    -- allows us to size the tuple arbitrarily
-    resolve = head . catMaybes . view (partsOf each)
