@@ -182,13 +182,17 @@ preludesFrom Config{..} = catMaybes
     defaultPrelude = Just "Refactorio.Prelude.Basic"
 
 reportError :: Text -> Text -> IO ()
-reportError hdr msg = do
-  nl
-  putChunkLn $ chunk hdr & fore c
-  putChunkLn $ chunk msg & fore c
-  nl
+reportError hdr msg = byteStringMakerFromEnvironment >>= \maker ->
+  mapM_ (BS.hPutStr stderr) . chunksToByteStrings maker $
+    [ chunk hdr & fore c
+    , chunk msg & fore c
+    , nlc
+    ]
   where
     c = red  -- TODO: theme
+
+nlc :: Chunk Text
+nlc = chunk "\n"
 
 errorCannotMix :: [Target] -> IO ()
 errorCannotMix targets = reportError hdr msg
