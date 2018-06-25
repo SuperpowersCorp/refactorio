@@ -219,3 +219,7 @@ conflicting imports (eg. _String in `lens-aeson` and in
 mode" flag (eg. `--haskell`, `--json`, etc) Refactorio will attempt to use
 `Refactorio.Prelude.{ModeName}` (eg `Refactorio.Prelude.Haskell`, etc).  If no
 special mode is provided, `Refactorio.Prelude.Basic` is used.
+
+## Similar Projects
+
+- [hawk](https://github.com/gelisam/hawk)
