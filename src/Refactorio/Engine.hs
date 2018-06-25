@@ -31,19 +31,18 @@ import           X.Streaming.Files                               ( tree )
 
 process :: Config -> IO ()
 process config@Config{..}
+  | mixingStdin targets      = errorCannotMix . toList $ targets
   | updateMode == SearchMode = Legacy.search config
-  | otherwise = describeProcess config >> buildMapFn config >>= \case
+  | otherwise                = describeProcess config >> buildMapFn config >>= \case
       Left err -> errorInExpression expr err
-      Right  f -> if mixingStdin targets
-        then errorCannotMix . toList $ targets
-        else forM_ targets $
-               S.mapM_ (processFile updateMode f)
-               . S.filter ( matchesAny compiledFilters )
-               . S.filter ( not . ignored )
-               . S.map fst
-               . S.filter ( not . isDirectory . snd )
-               . tree
-               . unTarget
+      Right  f -> forM_ targets $
+                    S.mapM_ (processFile updateMode f)
+                      . S.filter ( matchesAny compiledFilters )
+                      . S.filter ( not . ignored )
+                      . S.map fst
+                      . S.filter ( not . isDirectory . snd )
+                      . tree
+                      . unTarget
   where
     compiledFilters = map compileFilter . Set.toList . allFilters $ config
 

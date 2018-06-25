@@ -5,6 +5,7 @@ module Refactorio.Main ( main ) where
 
 import           Refactorio.Prelude        as P    hiding ( (<>) )
 
+import qualified Data.List.NonEmpty        as NE
 import qualified Data.Set                  as Set
 import qualified Data.Text                 as Text
 import           Options.Applicative               hiding ( prefs )
@@ -13,8 +14,6 @@ import           Refactorio.FilenameFilter
 import           Refactorio.SpecialMode
 import           Refactorio.Types
 import           X.Rainbow
-
--- import qualified Data.List.NonEmpty as NE
 
 main :: IO ()
 main = void $ customExecParser prefs opts >>= process . wrapSrc
@@ -67,15 +66,18 @@ expressionParser = Expression . Text.pack <$> argument str
   )
 
 targetParser :: Parser (NonEmpty Target)
--- targetParser = NE.fromList <$> some ( Target <$> strOption -- TODO: causes even "refio --help" to hang for some reason
-targetParser = pure. Target <$> strOption
-  ( long        "target"
- <> short       't'
- <> metavar     "TARGET"
- <> help        "A file/directory to traverse"
- <> value       "."
- <> showDefault
-  )
+targetParser =
+  ( NE.fromList
+    <$> some ( Target <$> strOption
+               ( long    "target"
+              <> short   't'
+              <> metavar "TARGET"
+              <> help    "One or more files/directories to traverse (defaults to stdin, use '-' to force stdin)"
+               )
+             )
+  ) <|> (pure . pure) defaultTarget
+  where
+    defaultTarget = Target "-"
 
 filenameFilterSetParser :: Parser (Set FilenameFilter)
 filenameFilterSetParser = Set.fromList . map (FilenameFilter . Text.pack) <$> many
