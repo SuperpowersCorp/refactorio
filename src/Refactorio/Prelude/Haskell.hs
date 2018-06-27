@@ -24,5 +24,7 @@ import X.Language.Haskell.Exts.Prisms as Exports
 end :: Field1 s t a b => Lens s t a b
 end = _1
 
+-- _Hask Prism is exported from X.Language.Haskell.Exts.Prisms
+
 target :: (Functor f, Field2 s t a b) => (a -> f b) -> s -> f t
 target = _2

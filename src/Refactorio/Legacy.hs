@@ -41,10 +41,10 @@ search config@Config{..} = do
      justify s = T.replicate (T.length within - T.length s) " " <> s
      theme     = defaultTheme
 
-searchFileByLens :: Config -> IO (Either InterpreterError MappingFn)
-searchFileByLens _config@Config{..} = makeLens (unExpression expr) >>= \case
-  Left err -> panic . show $ err
-  Right _trav -> panic "Right _trav undefined"
+-- searchFileByLens :: Config -> IO (Either InterpreterError MappingFn)
+-- searchFileByLens _config@Config{..} = makeLens (unExpression expr) >>= \case
+--   Left err -> panic . show $ err
+--   Right _trav -> panic "Right _trav undefined"
 
 searchByLens :: Config -> IO ()
 searchByLens Config {..} = makeLens (unExpression expr) >>= \case

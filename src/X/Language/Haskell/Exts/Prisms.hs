@@ -16,7 +16,12 @@ import qualified Language.Haskell.Exts.Prisms         as X
 import           X.Language.Haskell.Exts.Prisms.Types as Exports
 
 -- TODO: Surely there's a way to avoid the 'ambiguous l' problem without
+-- duplicating all this code?
 
+-- TODO: should change it to be a prism from (FilePath, ByteString) so we can
+--       pass the filepath to parseMode to get meaningful error messags.
+--       ... will have to modify the driver to pass the path and modify
+--       everything else to expect it.
 _Hask :: Prism' ByteString (Module SrcSpanInfo, [Comment])
 _Hask = prism get_ set_
   where
@@ -24,10 +29,14 @@ _Hask = prism get_ set_
     get_ = Char8.pack . uncurry exactPrint
 
     set_ :: ByteString -> Either ByteString (Module SrcSpanInfo, [Comment])
-    set_ bs = case parseWithComments ourParseMode . Char8.unpack $ bs of
+    set_ bs = case parseWithComments parseMode . Char8.unpack $ bs of
                 ParseOk modWithComments -> Right modWithComments
                 ParseFailed srcLoc' msg -> panic . show $ (msg,srcLoc',bs)
                 -- ParseFailed _ _         -> Left bs
+
+    parseMode = ourParseMode { parseFilename = path}
+
+    path = "_Hask Prism contents"
 
     -- TODO: unhardcode
 ourParseMode :: ParseMode
@@ -35,22 +44,29 @@ ourParseMode = defaultParseMode
   { baseLanguage          = Haskell2010
   , ignoreLanguagePragmas = False
   , extensions            = configuredExtensions
-  , parseFilename         = path
   }
   where
     configuredExtensions = extensions defaultParseMode ++ tempManualExtensions
     tempManualExtensions = fmap EnableExtension
-      [ FlexibleContexts
+      [ -- AllowAmbiguousTypes
+      -- ,
+        DataKinds
+      , FlexibleContexts
       , FlexibleInstances
       , InstanceSigs
+      , LambdaCase
+      , MultiWayIf
       , MultiParamTypeClasses
+      , OverloadedLabels
       , OverloadedStrings
       , RankNTypes
+      , RecordWildCards
       , ScopedTypeVariables
+      , StandaloneDeriving
       , TemplateHaskell
+      , TupleSections
       , ViewPatterns
       ]
-    path = "REFACTORIO*BUFFER"
 
 _ParenFormula :: Prism'
                  (BooleanFormula SrcSpanInfo)

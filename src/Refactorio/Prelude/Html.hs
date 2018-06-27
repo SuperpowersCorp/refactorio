@@ -2,7 +2,7 @@
 
 module Refactorio.Prelude.Html
      ( module Exports
-     , html
+     , _Html
      ) where
 
 import Refactorio.Prelude.Basic as Exports hiding ( children
@@ -13,8 +13,8 @@ import Refactorio.Prelude.Basic as Exports hiding ( children
 import Text.XML
 import Text.XML.Lens            as Exports
 
-html :: Prism' ByteString Document
-html = prism g s
+_Html :: Prism' ByteString Document
+_Html = prism g s
   where
     g :: Document -> ByteString
     g = view convert . renderLBS renderSettings

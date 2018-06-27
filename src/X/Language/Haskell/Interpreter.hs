@@ -15,8 +15,10 @@ build :: Typeable a => [String] -> Text -> IO (Either InterpreterError a)
 build possiblePreludes src = getHomeDirectory >>= \home -> runInterpreter $ do
   -- TODO: make extensions CLI options
   set [ languageExtensions
-        := [ FlexibleContexts
+        := [ AllowAmbiguousTypes
+           , FlexibleContexts
            , FlexibleInstances
+           , GADTs
            , FunctionalDependencies
            , MultiParamTypeClasses
            , NoImplicitPrelude
@@ -25,6 +27,8 @@ build possiblePreludes src = getHomeDirectory >>= \home -> runInterpreter $ do
            , QuasiQuotes
            , RecordWildCards
            , ScopedTypeVariables
+           , TupleSections
+           , TypeApplications
            ]
       ]
   -- TODO: allow setting via CLI
