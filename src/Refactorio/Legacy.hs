@@ -16,7 +16,9 @@ import           Language.Haskell.Interpreter
 import           Refactorio.FilenameFilter
 import           Refactorio.Theme
 import           Refactorio.Types
-import           X.Language.Haskell.Exts.Prisms               ( ourParseMode )
+import           X.Language.Haskell.Exts.Prisms               ( configureParseMode
+                                                              , extractExtensions
+                                                              )
 import           X.Language.Haskell.Interpreter               ( build )
 import           X.Rainbow
 import           X.Streaming.Files                            ( FileInfo
@@ -78,7 +80,9 @@ makeLens = build preludes
 findMatches :: ATraversal' (Module SrcSpanInfo) SrcSpanInfo -> FilePath -> IO [SrcSpanInfo]
 findMatches trav path = do
   sourceString <- unpack <$> readFile path
-  case parseFileContentsWithMode (ourParseMode { parseFilename = path }) sourceString of
+  let extensions = extractExtensions sourceString
+      mode       = (configureParseMode extensions) { parseFilename = path }
+  case parseFileContentsWithMode mode sourceString of
     ParseFailed srcLoc' err -> panic $ "ERROR at " <> show srcLoc' <> ": " <> show err
     ParseOk parsedMod       -> return $ toListOf (cloneTraversal trav) parsedMod
 

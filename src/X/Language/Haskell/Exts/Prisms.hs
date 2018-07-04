@@ -1,22 +1,21 @@
+{-# LANGUAGE LambdaCase        #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RankNTypes        #-}
 
 module X.Language.Haskell.Exts.Prisms where
 
-import           Refactorio.Prelude                              hiding ( Alt )
+import           Refactorio.Prelude                               hiding ( Alt )
 
-import           Control.Lens                                           ( Iso'
-                                                                        , Prism'
-                                                                        , prism
-                                                                        )
-import           Data.ByteString.Char8                as Char8
+import           Control.Lens                                            ( Iso'
+                                                                         , Prism'
+                                                                         , prism
+                                                                         )
+import           Data.ByteString.Char8                 as Char8
 import           Language.Haskell.Exts
-import qualified Language.Haskell.Exts.Prisms         as X
-import           X.Language.Haskell.Exts.Prisms.Types as Exports
-
--- TODO: Surely there's a way to avoid the 'ambiguous l' problem without
--- duplicating all this code?
+import qualified Language.Haskell.Exts.Prisms          as X
+import           Refactorio.Conversions                                  ( convert )
+import           X.Language.Haskell.Exts.Prisms.Types  as Exports
 
 -- TODO: should change it to be a prism from (FilePath, ByteString) so we can
 --       pass the filepath to parseMode to get meaningful error messags.
@@ -33,40 +32,37 @@ _Hask = prism get_ set_
                 ParseOk modWithComments -> Right modWithComments
                 ParseFailed srcLoc' msg -> panic . show $ (msg,srcLoc',bs)
                 -- ParseFailed _ _         -> Left bs
+      where
+        parseMode = (configureParseMode foundExtensions) { parseFilename = path}
 
-    parseMode = ourParseMode { parseFilename = path}
+        foundExtensions :: [Extension]
+        foundExtensions = extractExtensions . view convert $ bs
 
-    path = "_Hask Prism contents"
+        path = "_Hask Prism contents"
 
-    -- TODO: unhardcode
-ourParseMode :: ParseMode
-ourParseMode = defaultParseMode
+extractExtensions :: String -> [Extension]
+extractExtensions = (EnableExtension MultiParamTypeClasses:) . unpackExts . readExtensions
+  -- We append MultiParamTypeClasses because haskell-src-exts seems to need it
+  -- sometimes even when nothing else does, and it should never hurt anything.
+  where
+    unpackExts :: Maybe (Maybe Language, [Extension]) -> [Extension]
+    unpackExts = \case
+      Nothing -> panic "could not parse language pragmas"
+      Just (_, exts) -> exts
+
+-- TODO: unhardcode
+configureParseMode :: [Extension] -> ParseMode
+configureParseMode foundExtensions = defaultParseMode
   { baseLanguage          = Haskell2010
   , ignoreLanguagePragmas = False
   , extensions            = configuredExtensions
   }
   where
-    configuredExtensions = extensions defaultParseMode ++ tempManualExtensions
-    tempManualExtensions = fmap EnableExtension
-      [ -- AllowAmbiguousTypes
-      -- ,
-        DataKinds
-      , FlexibleContexts
-      , FlexibleInstances
-      , InstanceSigs
-      , LambdaCase
-      , MultiWayIf
-      , MultiParamTypeClasses
-      , OverloadedLabels
-      , OverloadedStrings
-      , RankNTypes
-      , RecordWildCards
-      , ScopedTypeVariables
-      , StandaloneDeriving
-      , TemplateHaskell
-      , TupleSections
-      , ViewPatterns
-      ]
+    configuredExtensions = extensions defaultParseMode ++ foundExtensions
+
+-- TODO: Surely there's a way to avoid the 'ambiguous l' problem without
+-- duplicating all this code?
+-- ================================================================================
 
 _ParenFormula :: Prism'
                  (BooleanFormula SrcSpanInfo)

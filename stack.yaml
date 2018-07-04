@@ -6,6 +6,7 @@ packages:
 allow-newer: true
 
 extra-deps:
+- Cabal-2.0.0.2
 - aeson-lens-0.5.0.0
 - haskell-src-exts-prisms-1.18.2.0
 - hexml-lens-0.2.1

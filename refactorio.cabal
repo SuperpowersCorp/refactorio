@@ -43,7 +43,8 @@ library
                      , X.Language.Haskell.Interpreter
                      , X.Rainbow
                      , X.Streaming.Files
-  build-depends:       Diff
+  build-depends:       Cabal
+                     , Diff
                      , Glob
                      , aeson
                      , base >= 4.7 && < 5
@@ -90,7 +91,8 @@ executable refactorio
   hs-source-dirs:      app
   main-is:             Main.hs
   ghc-options:         -Wall -threaded -rtsopts -with-rtsopts=-N
-  build-depends:       Diff
+  build-depends:       Cabal
+                     , Diff
                      , Glob
                      , aeson
                      , base
@@ -133,7 +135,8 @@ test-suite refactorio-test
   hs-source-dirs:      test
   main-is:             Spec.hs
   ghc-options:         -Wall -threaded -rtsopts -with-rtsopts=-N
-  build-depends:       Diff
+  build-depends:       Cabal
+                     , Diff
                      , Glob
                      , QuickCheck
                      , aeson
