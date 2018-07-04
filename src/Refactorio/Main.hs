@@ -123,10 +123,7 @@ updateModeParser =
 
 specialModeParser :: Parser (Maybe SpecialMode)
 specialModeParser =
-  langSwitch Examples ( long "examples"
-                     <> help "Temporary mode for creating examples"
-                      )
-  <|> langSwitch Haskell ( long "haskell"
+  langSwitch Haskell ( long "haskell"
                         <> long "hs"
                         <> help "Include .hs files and make Haskell ops available"
                          )

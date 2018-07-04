@@ -28,7 +28,6 @@ library
                      , Refactorio.Legacy
                      , Refactorio.Prelude
                      , Refactorio.Prelude.Basic
-                     , Refactorio.Prelude.Examples
                      , Refactorio.Prelude.Haskell
                      , Refactorio.Prelude.Html
                      , Refactorio.Prelude.Json

@@ -45,9 +45,6 @@ expandExtraFilters specialModeMay existing
 
 filtersForSpecialMode :: SpecialMode -> Set FilenameFilter
 filtersForSpecialMode m = fromList . map FilenameFilter $ case m of
-  Examples -> [ "**/*.yaml"
-              , "**/*.yml"
-              ]
   Haskell  -> [ "**/*.hs" ]
   Html     -> [ "**/*.html", "**/*.xhtml", "**/*.htm" ]
   Json     -> [ "**/*.json" ]

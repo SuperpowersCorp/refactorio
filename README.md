@@ -19,7 +19,7 @@ Lens based Haskell refactoring toolkit.
 
     Usage: refactorio [--io] EXPR [-t|--target TARGET] [-g|--glob GLOB]
                       [--prelude MODULE] ([-a|--ask] | [-p|--preview] |
-                      [-m|--modify] | [--review] | [-s|--search]) [--examples]
+                      [-m|--modify] | [--review] | [-s|--search])
                       [--haskell|--hs] [--html] [--json] [--xml] [--yaml]
 
     Available options:
@@ -35,7 +35,6 @@ Lens based Haskell refactoring toolkit.
       --review                 Make the changes and show details of changes
       -s,--search              Activate alternate search mode (Haskell mode only
                                right now)
-      --examples               Temporary mode for creating examples
       --haskell,--hs           Include .hs files and make Haskell ops available
       --html                   Include .htm(l) files and make XML ops available
       --json                   Include .json files and make JSON ops available
