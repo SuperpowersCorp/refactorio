@@ -19,14 +19,16 @@ Lens based Haskell refactoring toolkit.
 
     Usage: refactorio [--io] EXPR [-t|--target TARGET] [-g|--glob GLOB]
                       [--prelude MODULE] ([-a|--ask] | [-p|--preview] |
-                      [-m|--modify] | [--review] | [-s|--search])
-                      [--haskell|--hs] [--html] [--json] [--xml] [--yaml]
+                      [-m|--modify] | [--review] | [-s|--search]) ([--haskell|--hs]
+                      | [--html] | [--javascript|--js] | [--json] | [--xml] |
+                      [--yaml])
 
     Available options:
       --io                     Add IO to expr type ('ByteString -> IO ByteString')
       EXPR                     A Haskell expression of type 'ByteString ->
                                ByteString'
-      -t,--target TARGET       A file/directory to traverse (default: ".")
+      -t,--target TARGET       One or more files/directories to traverse (defaults
+                               to stdin, use '-' to force stdin)
       -g,--glob GLOB           Glob matches to include (eg '*.ini', 'f??b?r.c')
       --prelude MODULE         Use a specific Prelude module
       -a,--ask                 Ask before changing files (default)
@@ -37,6 +39,7 @@ Lens based Haskell refactoring toolkit.
                                right now)
       --haskell,--hs           Include .hs files and make Haskell ops available
       --html                   Include .htm(l) files and make XML ops available
+      --javascript,--js        Include .js files and make JavaScript ops available
       --json                   Include .json files and make JSON ops available
       --xml                    Include .xml files and make XML ops available
       --yaml                   Include .y(a)ml files and make YAML ops available
