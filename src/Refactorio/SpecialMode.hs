@@ -9,6 +9,7 @@ import Refactorio.Prelude
 data SpecialMode
   = Haskell
   | Html
+  | JavaScript
   | Json
   | Xml
   | Yaml

@@ -45,13 +45,14 @@ expandExtraFilters specialModeMay existing
 
 filtersForSpecialMode :: SpecialMode -> Set FilenameFilter
 filtersForSpecialMode m = fromList . map FilenameFilter $ case m of
-  Haskell  -> [ "**/*.hs" ]
-  Html     -> [ "**/*.html", "**/*.xhtml", "**/*.htm" ]
-  Json     -> [ "**/*.json" ]
-  Xml      -> [ "**/*.xml" ]
-  Yaml     -> [ "**/*.yaml"
-              , "**/*.yml"
-              ]
+  Haskell    -> [ "**/*.hs" ]
+  Html       -> [ "**/*.html", "**/*.xhtml", "**/*.htm" ]
+  JavaScript -> [ "**/*.js" ]
+  Json       -> [ "**/*.json" ]
+  Xml        -> [ "**/*.xml" ]
+  Yaml       -> [ "**/*.yaml"
+                , "**/*.yml"
+                ]
 
 matches :: CompiledFilter -> FilePath -> Bool
 matches = match

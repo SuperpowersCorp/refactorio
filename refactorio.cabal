@@ -30,6 +30,7 @@ library
                      , Refactorio.Prelude.Basic
                      , Refactorio.Prelude.Haskell
                      , Refactorio.Prelude.Html
+                     , Refactorio.Prelude.JavaScript
                      , Refactorio.Prelude.Json
                      , Refactorio.Prelude.Xml
                      , Refactorio.Prelude.Yaml
@@ -57,6 +58,7 @@ library
                      , hexml-lens
                      , hexpat-lens
                      , hint
+                     , language-javascript-optics
                      , lens
                      , lens-aeson
                      , lens-regex
@@ -103,6 +105,7 @@ executable refactorio
                      , hexml-lens
                      , hexpat-lens
                      , hint
+                     , language-javascript-optics
                      , lens
                      , lens-aeson
                      , lens-regex
@@ -149,6 +152,7 @@ test-suite refactorio-test
                      , hexpat-lens
                      , hint
                      , hspec
+                     , language-javascript-optics
                      , lens
                      , lens-aeson
                      , lens-regex

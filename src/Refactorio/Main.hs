@@ -124,12 +124,16 @@ updateModeParser =
 specialModeParser :: Parser (Maybe SpecialMode)
 specialModeParser =
   langSwitch Haskell ( long "haskell"
-                        <> long "hs"
-                        <> help "Include .hs files and make Haskell ops available"
-                         )
+                    <> long "hs"
+                    <> help "Include .hs files and make Haskell ops available"
+                     )
   <|> langSwitch Html ( long "html"
                      <> help "Include .htm(l) files and make XML ops available"
                       )
+  <|> langSwitch JavaScript ( long "javascript"
+                           <> long "js"
+                           <> help "Include .js files and make JavaScript ops available"
+                            )
   <|> langSwitch Json ( long "json"
                      <> help "Include .json files and make JSON ops available"
                       )
