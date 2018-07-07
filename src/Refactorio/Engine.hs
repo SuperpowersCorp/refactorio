@@ -28,6 +28,8 @@ import           X.Language.Haskell.Interpreter                  ( GhcError( err
                                                                  )
 import           X.Rainbow
 import           X.Streaming.Files                               ( tree )
+import System.Posix.Terminal (queryTerminal)
+import System.Posix.IO (stdOutput)
 
 process :: Config -> IO ()
 process config@Config{..}
@@ -89,8 +91,23 @@ processFile updateMode (MapMFn mf) path = do
           putLn $ "Saving changes to " <> T.pack path
           BS.writeFile path bs
 
+    -- TODO: DRY up/simplify the color vs. BW stuff.
     showChanges :: Text -> Doc -> IO ()
-    showChanges label doc = do
+    showChanges label doc = queryTerminal stdOutput >>= \case
+      True  -> showChangesColor label doc
+      False -> showChangesBW label doc
+
+    showChangesBW :: Text -> Doc -> IO ()
+    showChangesBW label doc = do
+      nl
+      putLn $ label <> " of changes to: " <> show path
+      putLn divider
+      bwDisplay doc
+      where
+        divider = T.pack . replicate 64 $ '='
+
+    showChangesColor :: Text -> Doc -> IO ()
+    showChangesColor label doc = do
       nl
       putChunkLn $ (chunk . unpack $ label <> " of changes to: " <> show path) & fore yellow
       putChunkLn $ chunk divider & fore yellow
@@ -116,8 +133,20 @@ processFile updateMode (MapMFn mf) path = do
           | s `startsWith` "+" = putChunkLn $ chunk s & fore green
           | otherwise          = putChunkLn $ chunk s & fore grey
 
-    render' :: Doc -> Text
-    render' = T.pack . PP.render
+        render' :: Doc -> Text
+        render' = T.pack . PP.render
+
+    bwDisplay :: Doc -> IO ()
+    bwDisplay = mapM_ colorLn . T.lines . render'
+      where
+        colorLn :: Text -> IO ()
+        colorLn s
+          | s `startsWith` "-" = putLn s
+          | s `startsWith` "+" = putLn s
+          | otherwise          = putLn s
+
+        render' :: Doc -> Text
+        render' = T.pack . PP.render
 
 allFilters :: Config -> Set FilenameFilter
 allFilters Config{..}
