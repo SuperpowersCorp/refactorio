@@ -5,17 +5,17 @@
 
 module X.Language.Haskell.Exts.Prisms where
 
-import           Refactorio.Prelude                               hiding ( Alt )
+import           Refactorio.Prelude                              hiding ( Alt )
 
-import           Control.Lens                                            ( Iso'
-                                                                         , Prism'
-                                                                         , prism
-                                                                         )
-import           Data.ByteString.Char8                 as Char8
+import           Control.Lens                                           ( Iso'
+                                                                        , Prism'
+                                                                        , prism
+                                                                        )
+import           Data.ByteString.Char8                as Char8
 import           Language.Haskell.Exts
-import qualified Language.Haskell.Exts.Prisms          as X
-import           Refactorio.Conversions                                  ( convert )
-import           X.Language.Haskell.Exts.Prisms.Types  as Exports
+import qualified Language.Haskell.Exts.Prisms         as X
+import           Refactorio.Conversions                                 ( convert )
+import           X.Language.Haskell.Exts.Prisms.Types as Exports
 
 -- TODO: should change it to be a prism from (FilePath, ByteString) so we can
 --       pass the filepath to parseMode to get meaningful error messags.
