@@ -20,8 +20,8 @@ Lens based Haskell refactoring toolkit.
     Usage: refactorio [--io] EXPR [-t|--target TARGET] [-g|--glob GLOB]
                       [--prelude MODULE] ([-a|--ask] | [-p|--preview] |
                       [-m|--modify] | [--review] | [-s|--search]) ([--haskell|--hs]
-                      | [--html] | [--javascript|--js] | [--json] | [--xml] |
-                      [--yaml])
+                      | [--html] | [--javascript|--js] | [--c] | [--json] | [--xml]
+                      | [--yaml])
 
     Available options:
       --io                     Add IO to expr type ('ByteString -> IO ByteString')
@@ -40,6 +40,7 @@ Lens based Haskell refactoring toolkit.
       --haskell,--hs           Include .hs files and make Haskell ops available
       --html                   Include .htm(l) files and make XML ops available
       --javascript,--js        Include .js files and make JavaScript ops available
+      --c                      Include .c files and make C ops available
       --json                   Include .json files and make JSON ops available
       --xml                    Include .xml files and make XML ops available
       --yaml                   Include .y(a)ml files and make YAML ops available

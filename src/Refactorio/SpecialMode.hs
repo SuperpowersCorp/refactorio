@@ -7,7 +7,8 @@ import Refactorio.Prelude
 
 
 data SpecialMode
-  = Haskell
+  = C
+  | Haskell
   | Html
   | JavaScript
   | Json

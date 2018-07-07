@@ -3,8 +3,12 @@ resolver: lts-9.21
 packages:
 - location: .
 - location:
+    git: git@github.com:SuperpowersCorp/language-c-optics.git
+    commit: d0516661d7360a42f23621e2ef8a251246057b6e
+  extra-dep: true
+- location:
     git: git@github.com:SuperpowersCorp/language-javascript-optics.git
-    commit: 955281f699295823391c57275f1935a0d4c30f7f
+    commit: 2fe765a91f0b3ac8516ab5998d12254b33218872
   extra-dep: true
 
 allow-newer: true

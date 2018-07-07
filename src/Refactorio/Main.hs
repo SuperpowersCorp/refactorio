@@ -134,6 +134,9 @@ specialModeParser =
                            <> long "js"
                            <> help "Include .js files and make JavaScript ops available"
                             )
+  <|> langSwitch C ( long "c"
+                  <> help "Include .c files and make C ops available"
+                   )
   <|> langSwitch Json ( long "json"
                      <> help "Include .json files and make JSON ops available"
                       )
