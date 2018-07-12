@@ -42,6 +42,7 @@ library
                      , X.Language.Haskell.Exts.Prisms
                      , X.Language.Haskell.Exts.Prisms.Types
                      , X.Language.Haskell.Interpreter
+                     , X.Language.Haskell.TH
                      , X.Rainbow
                      , X.Streaming.Files
   build-depends:       Cabal
@@ -76,9 +77,11 @@ library
                      , rainbow
                      , regex-pcre-builtin
                      , safe
+                     , split
                      , streaming
                      , string-conv
                      , taggy-lens
+                     , template-haskell
                      , text
                      , unix
                      , versions
@@ -123,7 +126,9 @@ executable refactorio
                      , protolude
                      , refactorio
                      , regex-pcre-builtin
+                     , split
                      , taggy-lens
+                     , template-haskell
                      , text
                      , unix
                      , versions
@@ -170,7 +175,9 @@ test-suite refactorio-test
                      , protolude
                      , refactorio
                      , regex-pcre-builtin
+                     , split
                      , taggy-lens
+                     , template-haskell
                      , text
                      , unix
                      , versions

@@ -21,6 +21,8 @@ import           System.IO                                       ( hFlush
                                                                  , stdout
                                                                  )
 import           System.Posix.Files
+import           System.Posix.IO                                 ( stdOutput )
+import           System.Posix.Terminal                           ( queryTerminal )
 import           Text.PrettyPrint               as PP     hiding ( (<>) )
 import           X.Language.Haskell.Interpreter                  ( GhcError( errMsg )
                                                                  , InterpreterError(..)
@@ -28,8 +30,6 @@ import           X.Language.Haskell.Interpreter                  ( GhcError( err
                                                                  )
 import           X.Rainbow
 import           X.Streaming.Files                               ( tree )
-import System.Posix.Terminal (queryTerminal)
-import System.Posix.IO (stdOutput)
 
 process :: Config -> IO ()
 process config@Config{..}

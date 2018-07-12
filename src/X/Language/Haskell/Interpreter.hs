@@ -1,42 +1,52 @@
+{-# LANGUAGE LambdaCase        #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TemplateHaskell   #-}
 
 module X.Language.Haskell.Interpreter
      ( module Language.Haskell.Interpreter
      , build
      ) where
 
-import Refactorio.Prelude           hiding ( get )
+import Refactorio.Prelude                  hiding ( get )
 
+import Data.Char                                  ( isSpace )
+import Data.List.Split                            ( splitOn )
 import Language.Haskell.Interpreter
-import System.Directory                    ( getHomeDirectory )
+import Language.Haskell.Interpreter.Unsafe        ( unsafeRunInterpreterWithArgs )
+import Text.Printf                                ( printf )
+import X.Language.Haskell.TH                      ( lookupCompileEnvExp )
+
+extraGhcArgs :: [String] -> [String]
+extraGhcArgs = fmap (printf "-package-db %s")
 
 build :: Typeable a => [String] -> Text -> IO (Either InterpreterError a)
-build possiblePreludes src = getHomeDirectory >>= \home -> runInterpreter $ do
-  -- TODO: make extensions CLI options
-  set [ languageExtensions
-        := [ AllowAmbiguousTypes
-           , FlexibleContexts
-           , FlexibleInstances
-           , GADTs
-           , FunctionalDependencies
-           , MultiParamTypeClasses
-           , NoImplicitPrelude
-           , LambdaCase
-           , OverloadedStrings
-           , QuasiQuotes
-           , RecordWildCards
-           , ScopedTypeVariables
-           , TupleSections
-           , TypeApplications
-           ]
-      ]
-  -- TODO: allow setting via CLI
-  -- TODO: should we include '.'? probably not?
-  set [ searchPath := [ home <> "/src/refactorio/.stack-work/install/x86_64-osx/lts-9.21/8.0.2/pkgdb" ] ]
-  -- TODO: catch errors and try the rest.
-  setImportsQ hardcodedImports
-  interpret (unpack ("(" <> src <> ")")) infer
+build possiblePreludes src = do
+  args <- extraGhcArgs <$> packageDbPaths
+  putLn $ "ARGS: " <> show args
+  unsafeRunInterpreterWithArgs args $ do
+    -- TODO: make extensions CLI options
+    set [ languageExtensions
+          := [ AllowAmbiguousTypes
+             , FlexibleContexts
+             , FlexibleInstances
+             , GADTs
+             , FunctionalDependencies
+             , MultiParamTypeClasses
+             , NoImplicitPrelude
+             , LambdaCase
+             , OverloadedStrings
+             , QuasiQuotes
+             , RecordWildCards
+             , ScopedTypeVariables
+             , TupleSections
+             , TypeApplications
+             ]
+        ]
+    -- TODO: allow setting via CLI / runtime environment variable
+    -- TODO: catch errors and try the rest.
+    setImportsQ hardcodedImports
+    interpret (unpack ("(" <> src <> ")")) infer
   where
     preludeImport = maybe [] importPrelude . head $ possiblePreludes
 
@@ -82,3 +92,27 @@ build possiblePreludes src = getHomeDirectory >>= \home -> runInterpreter $ do
 
 importPrelude :: String -> [(String, Maybe String)]
 importPrelude s = [(s, Nothing)]
+
+packageDbPaths :: IO [FilePath]
+packageDbPaths = do
+  paths <- runtimePackageDbPaths
+  return $ case paths of
+    [] -> compileTimePackageDbPaths
+    other -> other
+
+-- TODO: implement to allow overriding on command line / from env
+runtimePackageDbPaths :: IO [FilePath]
+runtimePackageDbPaths = return []
+
+-- TODO: handle non-sandbox installs
+compileTimePackageDbPaths :: [FilePath]
+compileTimePackageDbPaths = case compileTimePathsMay of
+  Nothing -> ["compileTimePackageDbPaths-was-nothing"]
+  Just s  -> filter (not . null . trim) . splitOn ":" $ s
+  where
+    compileTimePathsMay = $(lookupCompileEnvExp "HASKELL_PACKAGE_SANDBOXES")
+
+trim :: String -> String
+trim = f . f
+   where
+     f = reverse . dropWhile isSpace
