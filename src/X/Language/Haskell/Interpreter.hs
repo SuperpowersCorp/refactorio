@@ -10,12 +10,15 @@ module X.Language.Haskell.Interpreter
 
 import Refactorio.Prelude                  hiding ( get )
 
+import Data.String (lines)
 import Data.Char                                  ( isSpace )
 import Data.List.Split                            ( splitOn )
 import Language.Haskell.Interpreter
 import Language.Haskell.Interpreter.Unsafe        ( unsafeRunInterpreterWithArgs )
 import Text.Printf                                ( printf )
 import X.Language.Haskell.TH                      ( lookupCompileEnvExp )
+import System.Environment                         ( lookupEnv )
+import System.Process                             ( readProcessWithExitCode )
 
 extraGhcArgs :: [String] -> [String]
 extraGhcArgs = fmap (printf "-package-db %s")
@@ -100,14 +103,36 @@ packageDbPaths = do
     [] -> compileTimePackageDbPaths
     other -> other
 
--- TODO: implement to allow overriding on command line / from env
 runtimePackageDbPaths :: IO [FilePath]
-runtimePackageDbPaths = return []
+runtimePackageDbPaths = lookupEnv "REFACTORIO_PACKAGE_PATH" >>= \case
+  Nothing -> return []
+  Just pathStr -> do
+    paths <- expand pathStr
+    return . filter (not . null . trim) . splitOn ":" $ paths
+  where
+    expand :: String -> IO String
+    expand path
+      | path `endsWith` ":" = do
+          defaultDatabasePath <- getDefaultPackageDbPath
+          putLn $ "DEFAULT DATABASE PATH: " <> show defaultDatabasePath
+          return $ path ++ defaultDatabasePath
+      | otherwise = return path
+
+-- TODO: must be a better way
+getDefaultPackageDbPath :: IO FilePath
+getDefaultPackageDbPath = readProcessWithExitCode "ghc-pkg" ["list"] "" >>= \case
+  (ExitFailure _, _, stderr') ->
+    panic $ "Failed to read default package database path:\n" <> show stderr'
+  (ExitSuccess, stdout', _) -> return . parsePathsFromGhcPkgList $ stdout'
+
+parsePathsFromGhcPkgList :: String -> FilePath
+parsePathsFromGhcPkgList = intercalate ":" . filter (`startsWith` "/") . lines
 
 -- TODO: handle non-sandbox installs
 compileTimePackageDbPaths :: [FilePath]
 compileTimePackageDbPaths = case compileTimePathsMay of
   Nothing -> ["compileTimePackageDbPaths-was-nothing"]
+  -- TODO: use ';' instead ':' on windows
   Just s  -> filter (not . null . trim) . splitOn ":" $ s
   where
     compileTimePathsMay = $(lookupCompileEnvExp "HASKELL_PACKAGE_SANDBOXES")
@@ -116,3 +141,13 @@ trim :: String -> String
 trim = f . f
    where
      f = reverse . dropWhile isSpace
+
+-- If GHC_PACKAGE_PATH is set, use that
+--
+
+-- address this (from https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/packages.html#package-databases):
+--
+-- However, if GHC_PACKAGE_PATH ends in a separator, the default databases
+-- (i.e. the user and global package databases, in that order) are appended to
+-- the path. For example, to augment the usual set of packages with a database
+-- of your own, you could say (on Unix):
