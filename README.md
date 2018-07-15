@@ -140,7 +140,7 @@ Reach inside eg. gzipped files and do what you gotta do:
 
 Example is temporarily unavailable, but goes something like:
 
-    refio -t foo.json.gz --json 'convert . from Z.gzipped . from convert . key \"baz\" . _Number *~ 85'
+    refactorio -t foo.json.gz --json 'convert . from Z.gzipped . from convert . key \"baz\" . _Number *~ 85'
 
 <!-- (Not sure what's up with that "trailing garbage.") -->
 
@@ -151,11 +151,11 @@ exist which can be used like so:
 
 When types can be infered:
 
-    % refio --html -t /tmp/voltron/src 'convert %~ Text.toUpper'
+    % refactorio --html -t /tmp/voltron/src 'convert %~ Text.toUpper'
 
 When types have to be clarified:
 
-    % refio --html -t /tmp/voltron/src 'convertTo(a::LByteString).xml...name %~ Text.toUpper'
+    % refactorio --html -t /tmp/voltron/src 'convertTo(a::LByteString).xml...name %~ Text.toUpper'
 
 ### Haskell (via [haskell-src-exts](https://hackage.haskell.org/package/haskell-src-exts) and [haskell-src-exts-prisms](https://hackage.haskell.org/package/haskell-src-exts-prisms)):
 
@@ -163,14 +163,14 @@ TODO: revamp after re-wiring
 
 Try these on your projects:
 
-    refio --haskell _Module.biplate._ModuleName.end
-    refio --haskell _Module.biplate._Int.end
-    refio --haskell _Module.biplate._String.end
-    refio --haskell _Module.biplate._FieldUpdate.end
-    refio --haskell _Module.biplate._Frac.end
-    refio --haskell '_Module.biplate._Int.filtered(odd.view target).end'
-    refio --haskell '_Module.biplate._Int.filtered(even.view target).end'
-    refio --haskell '_Module.biplate._Int.filtered((>10).view target).end'
+    refactorio --haskell _Module.biplate._ModuleName.end
+    refactorio --haskell _Module.biplate._Int.end
+    refactorio --haskell _Module.biplate._String.end
+    refactorio --haskell _Module.biplate._FieldUpdate.end
+    refactorio --haskell _Module.biplate._Frac.end
+    refactorio --haskell '_Module.biplate._Int.filtered(odd.view target).end'
+    refactorio --haskell '_Module.biplate._Int.filtered(even.view target).end'
+    refactorio --haskell '_Module.biplate._Int.filtered((>10).view target).end'
 
 There are [more examples here](examples/).
 
