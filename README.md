@@ -176,18 +176,14 @@ There are [more examples here](examples/).
 
 ## Pro-Tip
 
-For now the easiest way to get it working is build it with `stack build` and then:
+For now the easiest way to get it working is to `stack install .` in this
+directory.  Then commands like this should work:
 
-    alias refio="stack exec refactorio --"
-
-and run it from the refactorio project root to get an experience something
-like:
-
-    refio --json 'key "foo" . key "bar" . _Number *~ 15' -t ./examples
+    refactorio --json 'key "foo" . key "bar" . _Number *~ 15' -t ./examples
 
 or
 
-    refio -s --haskell _Module.biplate._ModuleName.end
+    cat Somefile.hs | refactorio -s --haskell _Module.biplate._ModuleName.end -
 
 (where the `-t`/`--target` is a file or directory to process and can be outside
 of the refactorio project root).
