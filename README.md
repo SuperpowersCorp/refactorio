@@ -103,13 +103,13 @@ Here are a few examples to whet your appetite.  For more see
 
 ### JSON (via [lens-aeson](https://hackage.haskell.org/package/lens-aeson)):
 
-"Increment the value at key 'baz' by 1962."
+"Upper case the string values of the array found under 'quiz.sport.q1.options'."
 
 ![JSON Example](examples/json.jpg)
 
 ### YAML (same operators):
 
-"Multiply the value of the key 'baz' by 10."
+"Multiply the value of the key 'version' by 32."
 
 ![YAML Example](examples/yaml.jpg)
 
